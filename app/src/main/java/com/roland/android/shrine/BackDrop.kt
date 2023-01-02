@@ -1,5 +1,6 @@
 package com.roland.android.shrine
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -22,6 +23,7 @@ val menuData = listOf("Featured", "Apartment", "Accessories", "Shoes", "Tops", "
 @Composable
 fun BackDrop() {
     val scope = rememberCoroutineScope()
+    var menuSelection by remember { mutableStateOf(0) }
     val backdropState = rememberBackdropScaffoldState(BackdropValue.Concealed)
 
     BackdropScaffold(
@@ -29,14 +31,23 @@ fun BackDrop() {
             TopAppBar(scope, backdropState)
         },
         backLayerContent = {
-            BackdropMenuItem()
+            BackdropMenuItem(
+                activeMenuItem = menuSelection,
+                onMenuItemSelect = {
+                    menuSelection = it
+                }
+            )
         },
         frontLayerContent = {
-            Column(
-                Modifier.padding(32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) { Text("This is content for the front layer") }
+            if (menuSelection == 0) {
+                Cart()
+            } else {
+                Column(
+                    Modifier.padding(32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) { Text("This is content for category: ${menuData[menuSelection]}") }
+            }
         },
         frontLayerShape = MaterialTheme.shapes.large,
         scaffoldState = backdropState
@@ -78,7 +89,8 @@ private fun TopAppBar(
         actions = {
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = "Search icon"
+                contentDescription = "Search icon",
+                modifier = Modifier.padding(end = 8.dp)
             )
         },
         elevation = 0.dp
@@ -86,7 +98,10 @@ private fun TopAppBar(
 }
 
 @Composable
-private fun BackdropMenuItem() {
+private fun BackdropMenuItem(
+    activeMenuItem: Int,
+    onMenuItemSelect : (index: Int) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -94,8 +109,14 @@ private fun BackdropMenuItem() {
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        menuData.forEach { item ->
-            MenuItem(text = item)
+        menuData.forEachIndexed { index, item ->
+            MenuItem(
+                index = index,
+                text = item,
+                activeMenu = activeMenuItem
+            ) {
+                onMenuItemSelect(it)
+            }
         }
         Divider(
             modifier = Modifier.width(56.dp),
@@ -109,11 +130,31 @@ private fun BackdropMenuItem() {
 }
 
 @Composable
-private fun MenuItem(text: String) {
-    Text(
-        text.uppercase(),
-        style = MaterialTheme.typography.subtitle1
-    )
+private fun MenuItem(
+    index: Int = -1,
+    text: String,
+    activeMenu: Int = -1,
+    onClick: (index: Int) -> Unit = {}
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .height(32.dp)
+            .clickable {
+                onClick(index)
+            }
+    ) {
+        if (activeMenu == index) {
+            Image(
+                painterResource(id = R.drawable.tab_indicator),
+                contentDescription = null
+            )
+        }
+        Text(
+            text.uppercase(),
+            style = MaterialTheme.typography.subtitle1
+        )
+    }
 }
 
 @ExperimentalMaterialApi
