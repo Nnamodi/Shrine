@@ -19,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,14 +28,12 @@ import androidx.compose.ui.unit.sp
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import kotlinx.coroutines.launch
 
-val menuData = listOf("Featured", "Apartment", "Accessories", "Shoes", "Tops", "Bottoms", "Dresses")
-
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun BackDrop() {
     val scope = rememberCoroutineScope()
-    var menuSelection by remember { mutableStateOf(0) }
+    var menuSelection by remember { mutableStateOf(Category.Featured) }
     val scaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
     var backdropRevealed by remember { mutableStateOf(scaffoldState.isRevealed) }
 
@@ -63,14 +62,14 @@ fun BackDrop() {
             )
         },
         frontLayerContent = {
-            if (menuSelection == 0) {
+            if (menuSelection == Category.Featured) {
                 Cart()
             } else {
                 Column(
                     Modifier.padding(32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
-                ) { Text("This is content for category: ${menuData[menuSelection]}") }
+                ) { Text("This is content for category: $menuSelection") }
             }
         },
         frontLayerShape = MaterialTheme.shapes.large,
@@ -144,7 +143,8 @@ private fun TopAppBar(
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = "Search icon",
-                modifier = Modifier.padding(end = 8.dp)
+                tint = LocalContentColor.current.copy(alpha = ContentAlpha.high),
+                modifier = Modifier.padding(end = 12.dp)
             )
         },
         elevation = 0.dp
@@ -153,8 +153,8 @@ private fun TopAppBar(
 
 @Composable
 private fun TopAppBarText(
-    text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    text: String = "Shrine"
 ) {
     Text(
         text.uppercase(),
@@ -192,67 +192,87 @@ fun MenuSearchField() {
                 text = "Search Shrine"
             )
         }
+        Divider(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+        )
     }
 }
 
 @Composable
 private fun BackdropMenuItem(
-    activeMenuItem: Int,
-    onMenuItemSelect : (index: Int) -> Unit
+    modifier: Modifier = Modifier,
+    activeMenuItem: Category = Category.Featured,
+    onMenuItemSelect: (Category) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(32.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
+            .then(modifier),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        menuData.forEachIndexed { index, item ->
-            MenuItem(
-                index = index,
-                text = item,
-                activeMenu = activeMenuItem
-            ) {
-                onMenuItemSelect(it)
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Category.values().forEach { menu ->
+                MenuItem(
+                    modifier = Modifier.clickable { onMenuItemSelect(menu) }
+                ) {
+                    MenuText(
+                        text = menu.name,
+                        activeDecoration = {
+                            if (menu == activeMenuItem) {
+                                Image(
+                                    painterResource(id = R.drawable.tab_indicator),
+                                    contentDescription = "Active category icon"
+                                )
+                            }
+                        }
+                    )
+                }
             }
+            MenuItem {
+                Divider(
+                    modifier = Modifier
+                        .width(56.dp)
+                        .padding(vertical = 12.dp),
+                    color = MaterialTheme.colors.onSurface.copy(ContentAlpha.disabled)
+                )
+            }
+            MenuItem { MenuText() }
         }
-        Divider(
-            modifier = Modifier.width(56.dp),
-            color = MaterialTheme.colors.onBackground
-        )
+    }
+}
+
+@Composable
+fun MenuText(
+    text: String = "My Account",
+    activeDecoration: @Composable () -> Unit = {}
+) {
+    Box(
+        modifier = Modifier.height(44.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        activeDecoration()
         Text(
-            text = "My Account".uppercase(),
+            text = text.uppercase(),
             style = MaterialTheme.typography.subtitle1
         )
     }
 }
 
 @Composable
-private fun MenuItem(
-    index: Int = -1,
-    text: String,
-    activeMenu: Int = -1,
-    onClick: (index: Int) -> Unit = {}
+fun MenuItem(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit = {}
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .height(32.dp)
-            .clickable {
-                onClick(index)
-            }
-    ) {
-        if (activeMenu == index) {
-            Image(
-                painterResource(id = R.drawable.tab_indicator),
-                contentDescription = null
-            )
-        }
-        Text(
-            text.uppercase(),
-            style = MaterialTheme.typography.subtitle1
-        )
-    }
+            .fillMaxWidth(0.5f)
+            .clip(MaterialTheme.shapes.medium)
+            .then(modifier)
+    ) { content() }
 }
 
 @ExperimentalAnimationApi

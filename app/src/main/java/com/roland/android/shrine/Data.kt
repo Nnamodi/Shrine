@@ -16,6 +16,16 @@ enum class Vendor {
     Squiggle
 }
 
+enum class Category {
+    Featured,
+    Apartment,
+    Accessories,
+    Shoes,
+    Tops,
+    Bottoms,
+    Dresses
+}
+
 val SampleItemsData = listOf(
     ItemData(
         id = 0,
