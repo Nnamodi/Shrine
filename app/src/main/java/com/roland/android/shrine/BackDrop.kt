@@ -42,22 +42,28 @@ fun BackDrop() {
             TopAppBar(
                 backdropRevealed = backdropRevealed,
                 onBackdropReveal = {
-                    scope.launch {
-                        if (scaffoldState.isConcealed) {
-                            scaffoldState.reveal()
-                        } else {
-                            scaffoldState.conceal()
+                    if (!scaffoldState.isAnimationRunning) {
+                        backdropRevealed = it
+                        scope.launch {
+                            if (scaffoldState.isConcealed) {
+                                scaffoldState.reveal()
+                            } else {
+                                scaffoldState.conceal()
+                            }
                         }
                     }
-                    backdropRevealed = it
                 }
             )
         },
         backLayerContent = {
             BackdropMenuItem(
                 activeMenuItem = menuSelection,
+                backdropRevealed = backdropRevealed,
+                modifier = Modifier.padding(top = 12.dp, bottom = 32.dp),
                 onMenuItemSelect = {
+                    backdropRevealed = false
                     menuSelection = it
+                    scope.launch { scaffoldState.conceal() }
                 }
             )
         },
@@ -73,6 +79,7 @@ fun BackDrop() {
             }
         },
         frontLayerShape = MaterialTheme.shapes.large,
+        gesturesEnabled = false,
         scaffoldState = scaffoldState
     )
 }
@@ -102,10 +109,12 @@ private fun TopAppBar(
             ) {
                 AnimatedVisibility(
                     visible = !backdropRevealed,
-                    enter = fadeIn(animationSpec = tween(100, 90, LinearEasing))
-                            + slideInHorizontally(initialOffsetX = { with(density) { (-20).dp.roundToPx() } }, animationSpec = tween(durationMillis = 270, easing = LinearEasing)),
-                    exit = fadeOut(animationSpec = tween(durationMillis = 120, easing = LinearEasing))
-                            + slideOutHorizontally(targetOffsetX = { with(density) { (-20).dp.roundToPx() } }, animationSpec = tween(durationMillis = 120, easing = LinearEasing))
+                    enter = fadeIn(animationSpec = tween(100, 90, LinearEasing)) +
+                                slideInHorizontally(initialOffsetX = { with(density) { (-20).dp.roundToPx() } },
+                                    animationSpec = tween(durationMillis = 270, easing = LinearEasing)),
+                    exit = fadeOut(animationSpec = tween(durationMillis = 120, easing = LinearEasing)) +
+                               slideOutHorizontally(targetOffsetX = { with(density) { (-20).dp.roundToPx() } },
+                                   animationSpec = tween(durationMillis = 120, easing = LinearEasing))
                 ) {
                     Icon(
                         painterResource(id = R.drawable.menu),
@@ -133,10 +142,30 @@ private fun TopAppBar(
                 )
             }
 
-            if (!backdropRevealed) {
-                TopAppBarText(text = "Shrine")
-            } else {
-                MenuSearchField()
+            AnimatedContent(
+                targetState = backdropRevealed,
+                transitionSpec = {
+                    if (targetState) {
+                        // Conceal to reveal
+                        fadeIn(animationSpec = tween(240, 120, LinearEasing)) +
+                            slideInHorizontally(initialOffsetX = { with(density) { (30).dp.roundToPx() } },
+                                animationSpec = tween(durationMillis = 270, easing = LinearEasing)) with
+                        fadeOut(animationSpec = tween(durationMillis = 120, easing = LinearEasing)) +
+                            slideOutHorizontally(targetOffsetX = { with(density) { (-30).dp.roundToPx() } },
+                                animationSpec = tween(durationMillis = 120, easing = LinearEasing))
+                    } else {
+                        // Reveal to conceal
+                        fadeIn(animationSpec = tween(100, 90, LinearEasing)) +
+                            slideInHorizontally(initialOffsetX = { with(density) { (-30).dp.roundToPx() } },
+                                animationSpec = tween(durationMillis = 270, easing = LinearEasing)) with
+                        fadeOut(animationSpec = tween(durationMillis = 90, easing = LinearEasing)) +
+                            slideOutHorizontally(targetOffsetX = { with(density) { (-30).dp.roundToPx() } },
+                                animationSpec = tween(durationMillis = 90, easing = LinearEasing))
+                    }.using(SizeTransform(clip = false))
+                },
+                contentAlignment = Alignment.CenterStart
+            ) { revealed ->
+                if (revealed) MenuSearchField() else TopAppBarText()
             }
         },
         actions = {
@@ -199,9 +228,11 @@ fun MenuSearchField() {
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 private fun BackdropMenuItem(
     modifier: Modifier = Modifier,
+    backdropRevealed: Boolean = true,
     activeMenuItem: Category = Category.Featured,
     onMenuItemSelect: (Category) -> Unit = {}
 ) {
@@ -211,35 +242,42 @@ private fun BackdropMenuItem(
             .then(modifier),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        AnimatedVisibility(
+            visible = backdropRevealed
         ) {
-            Category.values().forEach { menu ->
-                MenuItem(
-                    modifier = Modifier.clickable { onMenuItemSelect(menu) }
-                ) {
-                    MenuText(
-                        text = menu.name,
-                        activeDecoration = {
-                            if (menu == activeMenuItem) {
-                                Image(
-                                    painterResource(id = R.drawable.tab_indicator),
-                                    contentDescription = "Active category icon"
-                                )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val menus = Category.values()
+
+                menus.forEachIndexed { index, menu ->
+                    MenuItem(
+                        modifier = Modifier.clickable { onMenuItemSelect(menu) },
+                        index = index
+                    ) {
+                        MenuText(
+                            text = menu.name,
+                            activeDecoration = {
+                                if (menu == activeMenuItem) {
+                                    Image(
+                                        painterResource(id = R.drawable.tab_indicator),
+                                        contentDescription = "Active category icon"
+                                    )
+                                }
                             }
-                        }
+                        )
+                    }
+                }
+                MenuItem(index = menus.size) {
+                    Divider(
+                        modifier = Modifier
+                            .width(56.dp)
+                            .padding(vertical = 12.dp),
+                        color = MaterialTheme.colors.onSurface.copy(ContentAlpha.disabled)
                     )
                 }
+                MenuItem(index = menus.size + 1) { MenuText() }
             }
-            MenuItem {
-                Divider(
-                    modifier = Modifier
-                        .width(56.dp)
-                        .padding(vertical = 12.dp),
-                    color = MaterialTheme.colors.onSurface.copy(ContentAlpha.disabled)
-                )
-            }
-            MenuItem { MenuText() }
         }
     }
 }
@@ -261,14 +299,22 @@ fun MenuText(
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
-fun MenuItem(
+fun AnimatedVisibilityScope.MenuItem(
     modifier: Modifier = Modifier,
+    index: Int,
     content: @Composable () -> Unit = {}
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
+            .animateEnterExit(
+                enter = fadeIn(animationSpec = tween(durationMillis = 240,
+                    delayMillis = index * 15 + 60,
+                    easing = LinearEasing)),
+                exit = fadeOut(animationSpec = tween(durationMillis = 90, easing = LinearEasing))
+            )
             .fillMaxWidth(0.5f)
             .clip(MaterialTheme.shapes.medium)
             .then(modifier)
