@@ -1,5 +1,7 @@
 package com.roland.android.shrine
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.N)
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
@@ -69,7 +72,20 @@ fun BackDrop() {
         },
         frontLayerContent = {
             if (menuSelection == Category.Featured) {
-                Cart()
+                BoxWithConstraints(
+                    Modifier.fillMaxSize()
+                ) {
+                    var expanded by remember { mutableStateOf(false) }
+
+                    CartExpandedBottomSheet(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .clickable { expanded = !expanded },
+                        expanded = expanded,
+                        maxHeight = maxHeight,
+                        maxWidth = maxWidth
+                    )
+                }
             } else {
                 Column(
                     Modifier.padding(32.dp),
@@ -243,7 +259,9 @@ private fun BackdropMenuItem(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AnimatedVisibility(
-            visible = backdropRevealed
+            visible = backdropRevealed,
+            enter = EnterTransition.None,
+            exit = ExitTransition.None
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -321,6 +339,7 @@ fun AnimatedVisibilityScope.MenuItem(
     ) { content() }
 }
 
+@RequiresApi(Build.VERSION_CODES.N)
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Preview
