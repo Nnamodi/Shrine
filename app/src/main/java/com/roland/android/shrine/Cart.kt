@@ -2,15 +2,18 @@ package com.roland.android.shrine
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -20,7 +23,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,7 +32,9 @@ import com.roland.android.shrine.ui.theme.ShrineTheme
 import java.lang.Integer.min
 
 @Composable
-fun ExpandedCart() {
+fun ExpandedCart(
+    onCollapse: () -> Unit = {}
+) {
     Surface(
         color = MaterialTheme.colors.surface
     ) {
@@ -40,7 +44,7 @@ fun ExpandedCart() {
                 .verticalScroll(rememberScrollState())
         ) {
 
-            CartHeader(SampleItemsData.size)
+            CartHeader(SampleItemsData.size) { onCollapse() }
 
             SampleItemsData.forEach {
                 CartItem(it)
@@ -60,11 +64,14 @@ fun ExpandedCart() {
 
 @Composable
 fun CollapsedCart(
-    items: List<ItemData> = SampleItemsData.subList(fromIndex = 0, toIndex = 3)
+    items: List<ItemData> = SampleItemsData.subList(fromIndex = 0, toIndex = 3),
+    onTap: () -> Unit = {}
 ) {
     Row(
-        Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(24.dp)
+        Modifier
+            .padding(start = 24.dp, top = 8.dp, bottom = 8.dp, end = 16.dp)
+            .clickable { onTap() },
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Box(
             Modifier.size(40.dp),
@@ -105,12 +112,13 @@ enum class CartBottomSheetState {
 @RequiresApi(Build.VERSION_CODES.N)
 @ExperimentalAnimationApi
 @Composable
-fun CartExpandedBottomSheet(
+fun CartBottomSheet(
     modifier: Modifier = Modifier,
     items: List<ItemData> = SampleItemsData,
     expanded: Boolean = false,
     maxHeight: Dp,
-    maxWidth: Dp
+    maxWidth: Dp,
+    onExpand: (Boolean) -> Unit = {}
 ) {
     val cartTransition = updateTransition(
         targetState = when {
@@ -125,7 +133,7 @@ fun CartExpandedBottomSheet(
         transitionSpec = {
             when {
                 CartBottomSheetState.Expanded isTransitioningTo CartBottomSheetState.Collapsed ->
-                    tween(durationMillis = 455, delayMillis = 67)
+                    tween(durationMillis = 433, delayMillis = 67)
                 CartBottomSheetState.Collapsed isTransitioningTo CartBottomSheetState.Expanded ->
                     tween(durationMillis = 150)
                 else -> tween(durationMillis = 450)
@@ -134,12 +142,12 @@ fun CartExpandedBottomSheet(
         label = "cartOffset"
     ) {
         when (it) {
-            CartBottomSheetState.Hidden -> maxHeight
+            CartBottomSheetState.Hidden -> maxWidth
             CartBottomSheetState.Expanded -> 0.dp
             else -> {
-                val size = min(2, items.size)
-                val width = 24 + 48 + (size + 1) + 16 + size + 16
-                (maxWidth.value + width).dp
+                val size = min(3, items.size)
+                val width = 24 + 40 * (size + 1) + 16 * size + 16
+                (maxWidth.value - width).dp
             }
         }
     }
@@ -170,30 +178,50 @@ fun CartExpandedBottomSheet(
         if (it == CartBottomSheetState.Expanded) 0.dp else 24.dp
     }
 
-    Box(
-        modifier
-            .shadow(
-                elevation = 8.dp,
-                shape = CutCornerShape(topStart = cornerSize)
-            )
-            .height(cartHeight)
-            .background(
-                color = MaterialTheme.colors.secondary,
-                shape = CutCornerShape(topStart = cornerSize)
-            )
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .offset(x = cartOffset)
+            .height(cartHeight),
+        shape = CutCornerShape(topStart = cornerSize),
+        color = MaterialTheme.colors.secondary,
+        elevation = 8.dp
     ) {
-        cartTransition.AnimatedContent { targetState ->
-            if (targetState == CartBottomSheetState.Expanded) {
-                ExpandedCart()
-            } else {
-                CollapsedCart()
+        Box {
+            cartTransition.AnimatedContent(
+                transitionSpec = {
+                    when {
+                        CartBottomSheetState.Expanded isTransitioningTo CartBottomSheetState.Collapsed ->
+                            fadeIn(animationSpec = tween(durationMillis = 117,
+                                delayMillis = 117,
+                                easing = LinearEasing)) with
+                                    fadeOut(animationSpec = tween(durationMillis = 117,
+                                        easing = LinearEasing))
+                        CartBottomSheetState.Collapsed isTransitioningTo CartBottomSheetState.Expanded ->
+                            fadeIn(animationSpec = tween(durationMillis = 150,
+                                delayMillis = 150,
+                                easing = LinearEasing)) with
+                                    fadeOut(animationSpec = tween(durationMillis = 150,
+                                        easing = LinearEasing))
+                        else -> EnterTransition.None with ExitTransition.None
+                    }.using(SizeTransform(clip = false))
+                },
+            ) { targetState ->
+                if (targetState == CartBottomSheetState.Expanded) {
+                    ExpandedCart { onExpand(false) }
+                } else {
+                    CollapsedCart { onExpand(true) }
+                }
             }
         }
     }
 }
 
 @Composable
-private fun CartHeader(itemSize: Int) {
+private fun CartHeader(
+    itemSize: Int,
+    onCollapse: () -> Unit = {}
+) {
     Surface(
         color = MaterialTheme.colors.surface
     ) {
@@ -201,7 +229,7 @@ private fun CartHeader(itemSize: Int) {
             Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = {}) {
+            IconButton(onClick = { onCollapse() }) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = "Down Arrow"
@@ -278,27 +306,20 @@ private fun CartItem(item: ItemData) {
 @ExperimentalAnimationApi
 @Preview
 @Composable
-fun CollapsedCartPreview() {
+fun CartBottomSheetPreview() {
     ShrineTheme {
         BoxWithConstraints(
             Modifier.fillMaxSize()
         ) {
             var expanded by remember { mutableStateOf(false) }
 
-            CartExpandedBottomSheet(
+            CartBottomSheet(
                 modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .clickable { expanded = !expanded },
+                    .align(Alignment.BottomEnd),
                 expanded = expanded,
                 maxHeight = maxHeight,
                 maxWidth = maxWidth
-            )
+            ) { expanded = it }
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun CartPreview() {
-//    ShrineTheme { ExpandedCart() }
-//}

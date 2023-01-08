@@ -71,28 +71,11 @@ fun BackDrop() {
             )
         },
         frontLayerContent = {
-            if (menuSelection == Category.Featured) {
-                BoxWithConstraints(
-                    Modifier.fillMaxSize()
-                ) {
-                    var expanded by remember { mutableStateOf(false) }
-
-                    CartExpandedBottomSheet(
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .clickable { expanded = !expanded },
-                        expanded = expanded,
-                        maxHeight = maxHeight,
-                        maxWidth = maxWidth
-                    )
-                }
-            } else {
-                Column(
-                    Modifier.padding(32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) { Text("This is content for category: $menuSelection") }
-            }
+            Column(
+                Modifier.padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) { Text("This is content for category: $menuSelection") }
         },
         frontLayerShape = MaterialTheme.shapes.large,
         gesturesEnabled = false,
