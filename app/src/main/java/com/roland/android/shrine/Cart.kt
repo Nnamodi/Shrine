@@ -3,10 +3,7 @@ package com.roland.android.shrine
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.RemoveCircleOutline
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,12 +25,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import java.lang.Integer.min
 
 @Composable
 fun ExpandedCart(
+    items: List<ItemData>,
     onCollapse: () -> Unit = {}
 ) {
     Surface(
@@ -42,21 +42,13 @@ fun ExpandedCart(
             Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
+                .padding(bottom = 50.dp)
         ) {
 
-            CartHeader(SampleItemsData.size) { onCollapse() }
+            CartHeader(items.size) { onCollapse() }
 
-            SampleItemsData.forEach {
+            items.forEach {
                 CartItem(it)
-            }
-
-            Button(
-                onClick = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 24.dp)
-            ) {
-                Text(text = "Proceed to checkout".uppercase())
             }
         }
     }
@@ -64,14 +56,15 @@ fun ExpandedCart(
 
 @Composable
 fun CollapsedCart(
-    items: List<ItemData> = SampleItemsData.subList(fromIndex = 0, toIndex = 3),
+    items: List<ItemData>,
     onTap: () -> Unit = {}
 ) {
     Row(
         Modifier
             .padding(start = 24.dp, top = 8.dp, bottom = 8.dp, end = 16.dp)
             .clickable { onTap() },
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             Modifier.size(40.dp),
@@ -116,13 +109,14 @@ fun CartBottomSheet(
     modifier: Modifier = Modifier,
     items: List<ItemData> = SampleItemsData,
     expanded: Boolean = false,
+    hidden: Boolean = false,
     maxHeight: Dp,
     maxWidth: Dp,
     onExpand: (Boolean) -> Unit = {}
 ) {
     val cartTransition = updateTransition(
         targetState = when {
-//            hidden -> CartBottomSheetState.Hidden
+            hidden -> CartBottomSheetState.Hidden
             expanded -> CartBottomSheetState.Expanded
             else -> CartBottomSheetState.Collapsed
         },
@@ -208,12 +202,46 @@ fun CartBottomSheet(
                 },
             ) { targetState ->
                 if (targetState == CartBottomSheetState.Expanded) {
-                    ExpandedCart { onExpand(false) }
+                    ExpandedCart(
+                        items = items,
+                        onCollapse = { onExpand(false) }
+                    )
                 } else {
-                    CollapsedCart { onExpand(true) }
+                    CollapsedCart(
+                        items = items.subList(fromIndex = 0, toIndex = 3),
+                        onTap = { onExpand(true) }
+                    )
                 }
             }
+
+            cartTransition.AnimatedVisibility(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                visible = { it == CartBottomSheetState.Expanded },
+                enter = fadeIn(animationSpec = tween(durationMillis = 150, delayMillis = 150, LinearEasing)) +
+                        expandIn(animationSpec = tween(durationMillis = 250, delayMillis = 250, easing = LinearOutSlowInEasing), initialSize = { IntSize.Zero }),
+                exit = fadeOut(animationSpec = tween(durationMillis = 117, easing = LinearEasing)) +
+                        shrinkOut(animationSpec = tween(durationMillis = 100, easing = FastOutLinearInEasing), targetSize = { IntSize.Zero })
+            ) {
+                CheckoutButton()
+            }
         }
+    }
+}
+
+@Composable
+private fun CheckoutButton() {
+    Button(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        onClick = {}
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.ShoppingCart,
+            contentDescription = "Shopping cart icon"
+        )
+        Spacer(Modifier.width(16.dp))
+        Text(text = "Proceed to checkout".uppercase())
     }
 }
 

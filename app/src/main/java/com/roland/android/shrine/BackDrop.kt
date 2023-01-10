@@ -34,7 +34,9 @@ import kotlinx.coroutines.launch
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
-fun BackDrop() {
+fun BackDrop(
+    onReveal: (Boolean) -> Unit = {}
+) {
     val scope = rememberCoroutineScope()
     var menuSelection by remember { mutableStateOf(Category.Featured) }
     val scaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
@@ -47,6 +49,7 @@ fun BackDrop() {
                 onBackdropReveal = {
                     if (!scaffoldState.isAnimationRunning) {
                         backdropRevealed = it
+                        onReveal(it)
                         scope.launch {
                             if (scaffoldState.isConcealed) {
                                 scaffoldState.reveal()
@@ -65,6 +68,7 @@ fun BackDrop() {
                 modifier = Modifier.padding(top = 12.dp, bottom = 32.dp),
                 onMenuItemSelect = {
                     backdropRevealed = false
+                    onReveal(false)
                     menuSelection = it
                     scope.launch { scaffoldState.conceal() }
                 }
