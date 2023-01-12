@@ -38,7 +38,7 @@ fun BackDrop(
     onReveal: (Boolean) -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
-    var menuSelection by remember { mutableStateOf(Category.Featured) }
+    var menuSelection by remember { mutableStateOf(Category.All) }
     val scaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
     var backdropRevealed by remember { mutableStateOf(scaffoldState.isRevealed) }
 
@@ -236,7 +236,7 @@ fun MenuSearchField() {
 private fun BackdropMenuItem(
     modifier: Modifier = Modifier,
     backdropRevealed: Boolean = true,
-    activeMenuItem: Category = Category.Featured,
+    activeMenuItem: Category = Category.All,
     onMenuItemSelect: (Category) -> Unit = {}
 ) {
     Column(

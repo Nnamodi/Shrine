@@ -5,6 +5,7 @@ data class ItemData(
     val title: String,
     val price: Int,
     val vendor: Vendor,
+    val category: Category,
     val photoResId: Int,
 )
 
@@ -16,14 +17,20 @@ enum class Vendor {
     Squiggle
 }
 
+fun getVendorResId(vendor: Vendor): Int =
+    when (vendor) {
+        Vendor.Alphi -> R.drawable.logo_alphi
+        Vendor.Labrjk -> R.drawable.logo_lmb
+        Vendor.Mal -> R.drawable.logo_mal
+        Vendor.Six -> R.drawable.logo_6
+        else -> R.drawable.logo_squiggle
+    }
+
 enum class Category {
-    Featured,
-    Apartment,
+    All,
     Accessories,
-    Shoes,
-    Tops,
-    Bottoms,
-    Dresses
+    Clothing,
+    Home
 }
 
 val SampleItemsData = listOf(
@@ -32,6 +39,7 @@ val SampleItemsData = listOf(
         title = "Vagabond sack",
         price = 120,
         vendor = Vendor.Squiggle,
+        category = Category.Accessories,
         photoResId = R.drawable.photo_0
     ),
     ItemData(
@@ -39,6 +47,7 @@ val SampleItemsData = listOf(
         title = "Stella sunglasses",
         price = 50,
         vendor = Vendor.Mal,
+        category = Category.Accessories,
         photoResId = R.drawable.photo_1
     ),
     ItemData(
@@ -46,6 +55,7 @@ val SampleItemsData = listOf(
         title = "Whitney belt",
         price = 35,
         vendor = Vendor.Labrjk,
+        category = Category.Accessories,
         photoResId = R.drawable.photo_2
     ),
     ItemData(
@@ -53,6 +63,7 @@ val SampleItemsData = listOf(
         title = "Garden stand",
         price = 98,
         vendor = Vendor.Alphi,
+        category = Category.Accessories,
         photoResId = R.drawable.photo_3
     ),
     ItemData(
@@ -60,6 +71,7 @@ val SampleItemsData = listOf(
         title = "Strut earrings",
         price = 34,
         vendor = Vendor.Six,
+        category = Category.Accessories,
         photoResId = R.drawable.photo_4
     ),
     ItemData(
@@ -67,6 +79,7 @@ val SampleItemsData = listOf(
         title = "Varsity socks",
         price = 12,
         vendor = Vendor.Labrjk,
+        category = Category.Accessories,
         photoResId = R.drawable.photo_5
     ),
     ItemData(
@@ -74,6 +87,7 @@ val SampleItemsData = listOf(
         title = "Weave key ring",
         price = 16,
         vendor = Vendor.Six,
+        category = Category.Accessories,
         photoResId = R.drawable.photo_6
     ),
     ItemData(
@@ -81,6 +95,7 @@ val SampleItemsData = listOf(
         title = "Gatsby hat",
         price = 40,
         vendor = Vendor.Six,
+        category = Category.Accessories,
         photoResId = R.drawable.photo_7
     ),
     ItemData(
@@ -88,6 +103,7 @@ val SampleItemsData = listOf(
         title = "Shrug bag",
         price = 198,
         vendor = Vendor.Squiggle,
+        category = Category.Accessories,
         photoResId = R.drawable.photo_8
     ),
     ItemData(
@@ -95,6 +111,7 @@ val SampleItemsData = listOf(
         title = "Gilt desk trio",
         price = 58,
         vendor = Vendor.Alphi,
+        category = Category.Home,
         photoResId = R.drawable.photo_9
     )
 )
