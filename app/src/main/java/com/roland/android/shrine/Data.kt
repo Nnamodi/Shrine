@@ -113,5 +113,85 @@ val SampleItemsData = listOf(
         vendor = Vendor.Alphi,
         category = Category.Home,
         photoResId = R.drawable.photo_9
+    ),
+    ItemData(
+        id = 10,
+        title = "Copper wire rack",
+        price = 18,
+        vendor = Vendor.Alphi,
+        category = Category.Home,
+        photoResId = R.drawable.photo_10
+    ),
+    ItemData(
+        id = 11,
+        title = "Soothe ceramic set",
+        price = 28,
+        vendor = Vendor.Mal,
+        category = Category.Home,
+        photoResId = R.drawable.photo_11
+    ),
+    ItemData(
+        id = 12,
+        title = "Hurrahs tea set",
+        price = 34,
+        vendor = Vendor.Six,
+        category = Category.Home,
+        photoResId = R.drawable.photo_12
+    ),
+    ItemData(
+        id = 13,
+        title = "Blue stone mug",
+        price = 18,
+        vendor = Vendor.Mal,
+        category = Category.Home,
+        photoResId = R.drawable.photo_13
+    ),
+    ItemData(
+        id = 14,
+        title = "Rainwater tray",
+        price = 27,
+        vendor = Vendor.Six,
+        category = Category.Home,
+        photoResId = R.drawable.photo_14
+    ),
+    ItemData(
+        id = 15,
+        title = "Chambray napkin",
+        price = 27,
+        vendor = Vendor.Six,
+        category = Category.Home,
+        photoResId = R.drawable.photo_15
+    ),
+    ItemData(
+        id = 16,
+        title = "Succulent planters",
+        price = 16,
+        vendor = Vendor.Alphi,
+        category = Category.Home,
+        photoResId = R.drawable.photo_16
+    ),
+    ItemData(
+        id = 17,
+        title = "Quartet table",
+        price = 175,
+        vendor = Vendor.Squiggle,
+        category = Category.Home,
+        photoResId = R.drawable.photo_17
+    ),
+    ItemData(
+        id = 18,
+        title = "Kitchen quattro",
+        price = 129,
+        vendor = Vendor.Alphi,
+        category = Category.Home,
+        photoResId = R.drawable.photo_18
+    ),
+    ItemData(
+        id = 19,
+        title = "Clay sweater",
+        price = 48,
+        vendor = Vendor.Labrjk,
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_19
     )
 )
