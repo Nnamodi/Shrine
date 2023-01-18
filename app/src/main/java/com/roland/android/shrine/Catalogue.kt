@@ -132,13 +132,16 @@ fun Catalogue(
                             addToCart = addToCart
                         )
                     } else {
-                        CatalogueCard(
-                            modifier = Modifier
-                                .fillMaxWidth(0.8f)
-                                .fillMaxHeight(0.5f),
-                            data = item[0],
-                            addToCart = addToCart
-                        )
+                        Row(Modifier.fillMaxHeight()) {
+                            CatalogueCard(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.8f)
+                                    .fillMaxHeight(0.5f)
+                                    .align(Alignment.Bottom),
+                                data = item[0],
+                                addToCart = addToCart
+                            )
+                        }
                     }
                 } else {
                     CatalogueCard(

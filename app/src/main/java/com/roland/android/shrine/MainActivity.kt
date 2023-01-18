@@ -43,18 +43,24 @@ fun AppPreview() {
 fun AppUI() {
     var expanded by remember { mutableStateOf(false) }
     var hidden by remember { mutableStateOf(false) }
+    val cartItems = remember { mutableStateListOf<ItemData>() }
 
     BoxWithConstraints(
         Modifier.fillMaxSize()
     ) {
-        BackDrop { hidden = it }
+        BackDrop(
+            onReveal = { hidden = it },
+            addToCart = { cartItems.add(it) }
+        )
         CartBottomSheet(
-            modifier = Modifier
-                .align(Alignment.BottomEnd),
+            modifier = Modifier.align(Alignment.BottomEnd),
+            items = cartItems,
             expanded = expanded,
             hidden = hidden,
             maxHeight = maxHeight,
-            maxWidth = maxWidth
-        ) { expanded = it }
+            maxWidth = maxWidth,
+            onExpand = { expanded = it },
+            removeFromCart = { cartItems.remove(it) }
+        )
     }
 }

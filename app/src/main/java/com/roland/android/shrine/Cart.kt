@@ -33,7 +33,8 @@ import java.lang.Integer.min
 @Composable
 fun ExpandedCart(
     items: List<ItemData>,
-    onCollapse: () -> Unit = {}
+    onCollapse: () -> Unit = {},
+    removeFromCart: (ItemData) -> Unit = {}
 ) {
     Surface(
         color = MaterialTheme.colors.surface
@@ -44,11 +45,13 @@ fun ExpandedCart(
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 50.dp)
         ) {
-
             CartHeader(items.size) { onCollapse() }
 
             items.forEach {
-                CartItem(it)
+                CartItem(
+                    item = it,
+                    removeFromCart = removeFromCart
+                )
             }
         }
     }
@@ -60,8 +63,8 @@ fun CollapsedCart(
     onTap: () -> Unit = {}
 ) {
     Row(
-        Modifier
-            .padding(start = 24.dp, top = 8.dp, bottom = 8.dp, end = 16.dp)
+        modifier = Modifier
+            .padding(start = 24.dp, top = 8.dp, end = 16.dp, bottom = 8.dp)
             .clickable { onTap() },
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -107,12 +110,13 @@ enum class CartBottomSheetState {
 @Composable
 fun CartBottomSheet(
     modifier: Modifier = Modifier,
-    items: List<ItemData> = SampleItemsData,
+    items: List<ItemData> = SampleItemsData.filter { it.category == Category.Clothing },
     expanded: Boolean = false,
     hidden: Boolean = false,
     maxHeight: Dp,
     maxWidth: Dp,
-    onExpand: (Boolean) -> Unit = {}
+    onExpand: (Boolean) -> Unit = {},
+    removeFromCart: (ItemData) -> Unit = {}
 ) {
     val cartTransition = updateTransition(
         targetState = when {
@@ -204,11 +208,14 @@ fun CartBottomSheet(
                 if (targetState == CartBottomSheetState.Expanded) {
                     ExpandedCart(
                         items = items,
-                        onCollapse = { onExpand(false) }
+                        onCollapse = { onExpand(false) },
+                        removeFromCart = removeFromCart
                     )
                 } else {
                     CollapsedCart(
-                        items = items.subList(fromIndex = 0, toIndex = 3),
+                        items = if (items.size > 3) {
+                            items.subList(fromIndex = 0, toIndex = 3)
+                        } else { items },
                         onTap = { onExpand(true) }
                     )
                 }
@@ -272,7 +279,10 @@ private fun CartHeader(
 }
 
 @Composable
-private fun CartItem(item: ItemData) {
+private fun CartItem(
+    item: ItemData,
+    removeFromCart: (ItemData) -> Unit = {}
+) {
     Surface(
         color = MaterialTheme.colors.surface
     ) {
@@ -281,7 +291,7 @@ private fun CartItem(item: ItemData) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = {},
+                onClick = { removeFromCart(item) },
                 Modifier.padding(horizontal = 4.dp)
             ) {
                 Icon(
@@ -340,14 +350,18 @@ fun CartBottomSheetPreview() {
             Modifier.fillMaxSize()
         ) {
             var expanded by remember { mutableStateOf(false) }
+            val cartItems = remember { mutableStateListOf(SampleItemsData[4]) }
 
             CartBottomSheet(
                 modifier = Modifier
                     .align(Alignment.BottomEnd),
+                items = cartItems,
                 expanded = expanded,
                 maxHeight = maxHeight,
-                maxWidth = maxWidth
-            ) { expanded = it }
+                maxWidth = maxWidth,
+                onExpand = { expanded = it },
+                removeFromCart = { cartItems.remove(it) }
+            )
         }
     }
 }

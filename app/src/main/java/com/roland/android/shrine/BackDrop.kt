@@ -35,7 +35,8 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @Composable
 fun BackDrop(
-    onReveal: (Boolean) -> Unit = {}
+    onReveal: (Boolean) -> Unit = {},
+    addToCart: (ItemData) -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
     var menuSelection by remember { mutableStateOf(Category.All) }
@@ -75,11 +76,13 @@ fun BackDrop(
             )
         },
         frontLayerContent = {
-            Column(
-                Modifier.padding(32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) { Text("This is content for category: $menuSelection") }
+            Catalogue(
+                modifier = Modifier.fillMaxSize(),
+                items = SampleItemsData.filter {
+                    menuSelection == Category.All || it.category == menuSelection
+                },
+                addToCart = addToCart
+            )
         },
         frontLayerShape = MaterialTheme.shapes.large,
         gesturesEnabled = false,
