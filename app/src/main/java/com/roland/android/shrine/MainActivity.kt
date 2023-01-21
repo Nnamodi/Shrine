@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ShrineTheme { AppUI() }
+            ShrineTheme { AppUI { finish() } }
         }
     }
 }
@@ -33,14 +33,14 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppPreview() {
-    ShrineTheme { AppUI() }
+    ShrineTheme { AppUI { println("Logged out") } }
 }
 
 @RequiresApi(Build.VERSION_CODES.N)
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
-fun AppUI() {
+fun AppUI(logout: () -> Unit = {}) {
     var expanded by remember { mutableStateOf(false) }
     var hidden by remember { mutableStateOf(false) }
     val cartItems = remember { mutableStateListOf<ItemData>() }
@@ -50,7 +50,8 @@ fun AppUI() {
     ) {
         BackDrop(
             onReveal = { hidden = it },
-            addToCart = { cartItems.add(it) }
+            addToCart = { cartItems.add(it) },
+            logout = logout
         )
         CartBottomSheet(
             modifier = Modifier.align(Alignment.BottomEnd),

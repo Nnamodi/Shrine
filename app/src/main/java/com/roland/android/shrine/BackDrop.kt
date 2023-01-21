@@ -36,7 +36,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun BackDrop(
     onReveal: (Boolean) -> Unit = {},
-    addToCart: (ItemData) -> Unit = {}
+    addToCart: (ItemData) -> Unit = {},
+    logout: () -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
     var menuSelection by remember { mutableStateOf(Category.All) }
@@ -72,7 +73,8 @@ fun BackDrop(
                     onReveal(false)
                     menuSelection = it
                     scope.launch { scaffoldState.conceal() }
-                }
+                },
+                logout = logout
             )
         },
         frontLayerContent = {
@@ -240,7 +242,8 @@ private fun BackdropMenuItem(
     modifier: Modifier = Modifier,
     backdropRevealed: Boolean = true,
     activeMenuItem: Category = Category.All,
-    onMenuItemSelect: (Category) -> Unit = {}
+    onMenuItemSelect: (Category) -> Unit = {},
+    logout: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -284,7 +287,10 @@ private fun BackdropMenuItem(
                         color = MaterialTheme.colors.onSurface.copy(ContentAlpha.disabled)
                     )
                 }
-                MenuItem(index = menus.size + 1) { MenuText() }
+                MenuItem(
+                    modifier = Modifier.clickable { logout() },
+                    index = menus.size + 1
+                ) { MenuText() }
             }
         }
     }
@@ -292,7 +298,7 @@ private fun BackdropMenuItem(
 
 @Composable
 fun MenuText(
-    text: String = "My Account",
+    text: String = "Logout",
     activeDecoration: @Composable () -> Unit = {}
 ) {
     Box(
