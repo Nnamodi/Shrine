@@ -78,8 +78,16 @@ fun CollapsedCart(
                 contentDescription = "Shopping cart icon"
             )
         }
-        items.forEach { item ->
+        items.take(3).forEach { item ->
             CollapsedCartItem(item.photoResId, item.title)
+        }
+        if (items.size > 3) {
+            Box(
+                modifier = Modifier.size(width = 32.dp, height = 40.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("+${items.size - 3}")
+            }
         }
     }
 }
@@ -110,7 +118,7 @@ enum class CartBottomSheetState {
 @Composable
 fun CartBottomSheet(
     modifier: Modifier = Modifier,
-    items: List<ItemData> = SampleItemsData.filter { it.category == Category.Clothing },
+    items: List<ItemData> = SampleItemsData.take(10),
     expanded: Boolean = false,
     hidden: Boolean = false,
     maxHeight: Dp,
@@ -144,7 +152,8 @@ fun CartBottomSheet(
             CartBottomSheetState.Expanded -> 0.dp
             else -> {
                 val size = min(3, items.size)
-                val width = 24 + 40 * (size + 1) + 16 * size + 16
+                var width = 24 + 40 * (size + 1) + 16 * size + 16
+                if (items.size > 3) width += 32 + 16
                 (maxWidth.value - width).dp
             }
         }
@@ -213,9 +222,7 @@ fun CartBottomSheet(
                     )
                 } else {
                     CollapsedCart(
-                        items = if (items.size > 3) {
-                            items.subList(fromIndex = 0, toIndex = 3)
-                        } else { items },
+                        items = items,
                         onTap = { onExpand(true) }
                     )
                 }
@@ -267,13 +274,16 @@ private fun CartHeader(
             IconButton(onClick = { onCollapse() }) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = "Down Arrow"
+                    contentDescription = "Collapse cart icon"
                 )
             }
             Spacer(Modifier.width(4.dp))
             Text("Cart".uppercase())
             Spacer(Modifier.width(12.dp))
-            Text("$itemSize items".uppercase())
+            Text(
+                if (itemSize != 1) { "$itemSize items" }
+                else { "$itemSize item" }.uppercase()
+            )
         }
     }
 }
@@ -310,7 +320,7 @@ private fun CartItem(
                     Image(
                         painter = painterResource(id = item.photoResId),
                         modifier = Modifier.size(width = 100.dp, height = 100.dp),
-                        contentDescription = "Item image"
+                        contentDescription = item.title
                     )
                     Spacer(modifier = Modifier.padding(end = 16.dp))
                     Column(
@@ -353,9 +363,7 @@ fun CartBottomSheetPreview() {
             val cartItems = remember { mutableStateListOf(SampleItemsData[4]) }
 
             CartBottomSheet(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd),
-                items = cartItems,
+                modifier = Modifier.align(Alignment.BottomEnd),
                 expanded = expanded,
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
