@@ -1,5 +1,7 @@
 package com.roland.android.shrine
 
+import androidx.compose.animation.core.MutableTransitionState
+
 data class ItemData(
     val id: Int,
     val title: String,
@@ -7,6 +9,12 @@ data class ItemData(
     val vendor: Vendor,
     val category: Category,
     val photoResId: Int,
+)
+
+data class ExpandedCartItem(
+    val index: Int,
+    val visible: MutableTransitionState<Boolean> = MutableTransitionState(true),
+    val data: ItemData
 )
 
 enum class Vendor {

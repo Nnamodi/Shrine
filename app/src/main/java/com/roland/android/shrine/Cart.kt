@@ -7,10 +7,10 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -25,33 +25,41 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import java.lang.Integer.min
 
+@ExperimentalAnimationApi
 @Composable
 fun ExpandedCart(
-    items: List<ItemData>,
+    expandedCartItems: List<ExpandedCartItem>,
     onCollapse: () -> Unit = {},
-    removeFromCart: (ItemData) -> Unit = {}
+    removeFromCart: (ExpandedCartItem) -> Unit = {}
 ) {
     Surface(
-        color = MaterialTheme.colors.surface
+        color = MaterialTheme.colors.secondary
     ) {
-        Column(
-            Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = 50.dp)
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 64.dp)
         ) {
-            CartHeader(items.size) { onCollapse() }
+            item { CartHeader(expandedCartItems.size) { onCollapse() } }
 
-            items.forEach {
-                CartItem(
-                    item = it,
-                    removeFromCart = removeFromCart
-                )
+            itemsIndexed(
+                items = expandedCartItems,
+                key = { index, item -> "$index-${item.data.id}" }
+            ) { _, item ->
+                AnimatedVisibility(
+                    visibleState = item.visible,
+                    exit = fadeOut() + slideOut(targetOffset = { IntOffset(x = -it.width / 2, y = 0) })
+                ) {
+                    CartItem(
+                        item = item.data,
+                        removeFromCart = { removeFromCart(item) }
+                    )
+                }
             }
         }
     }
@@ -86,7 +94,10 @@ fun CollapsedCart(
                 modifier = Modifier.size(width = 32.dp, height = 40.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text("+${items.size - 3}")
+                Text(
+                    text = "+${items.size - 3}",
+                    style = MaterialTheme.typography.subtitle2
+                )
             }
         }
     }
@@ -124,8 +135,26 @@ fun CartBottomSheet(
     maxHeight: Dp,
     maxWidth: Dp,
     onExpand: (Boolean) -> Unit = {},
-    removeFromCart: (ItemData) -> Unit = {}
+    removeFromCart: (Int) -> Unit = {}
 ) {
+    val expandedCartItems by remember(items) {
+        derivedStateOf {
+            items.mapIndexed { index, it -> ExpandedCartItem(index = index, data = it) }
+        }
+    }
+
+    LaunchedEffect(expandedCartItems) {
+        snapshotFlow {
+            expandedCartItems.firstOrNull {
+                it.visible.isIdle && !it.visible.targetState
+            }
+        }.collect {
+            if (it != null) {
+                removeFromCart(it.index)
+            }
+        }
+    }
+
     val cartTransition = updateTransition(
         targetState = when {
             hidden -> CartBottomSheetState.Hidden
@@ -216,9 +245,9 @@ fun CartBottomSheet(
             ) { targetState ->
                 if (targetState == CartBottomSheetState.Expanded) {
                     ExpandedCart(
-                        items = items,
+                        expandedCartItems = expandedCartItems,
                         onCollapse = { onExpand(false) },
-                        removeFromCart = removeFromCart
+                        removeFromCart = { it.visible.targetState = false }
                     )
                 } else {
                     CollapsedCart(
@@ -360,15 +389,16 @@ fun CartBottomSheetPreview() {
             Modifier.fillMaxSize()
         ) {
             var expanded by remember { mutableStateOf(false) }
-            val cartItems = remember { mutableStateListOf(SampleItemsData[4]) }
+            val cartItems = remember { mutableStateListOf(*SampleItemsData.take(10).toTypedArray()) }
 
             CartBottomSheet(
                 modifier = Modifier.align(Alignment.BottomEnd),
+                items = cartItems,
                 expanded = expanded,
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
                 onExpand = { expanded = it },
-                removeFromCart = { cartItems.remove(it) }
+                removeFromCart = { cartItems.removeAt(it) }
             )
         }
     }

@@ -43,7 +43,7 @@ fun AppPreview() {
 fun AppUI(logout: () -> Unit = {}) {
     var expanded by remember { mutableStateOf(false) }
     var hidden by remember { mutableStateOf(false) }
-    val cartItems = remember { mutableStateListOf<ItemData>() }
+    val cartItems = remember { mutableStateListOf(*SampleItemsData.take(0).toTypedArray()) }
 
     BoxWithConstraints(
         Modifier.fillMaxSize()
@@ -61,7 +61,7 @@ fun AppUI(logout: () -> Unit = {}) {
             maxHeight = maxHeight,
             maxWidth = maxWidth,
             onExpand = { expanded = it },
-            removeFromCart = { cartItems.remove(it) }
+            removeFromCart = { cartItems.removeAt(it) }
         )
     }
 }
