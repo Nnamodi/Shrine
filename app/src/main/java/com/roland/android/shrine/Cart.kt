@@ -41,12 +41,14 @@ fun ExpandedCart(
     Surface(
         color = MaterialTheme.colors.secondary
     ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 64.dp)
-        ) {
-            item { CartHeader(expandedCartItems.size) { onCollapse() } }
+        CartHeader(expandedCartItems.size) { onCollapse() }
 
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 50.dp),
+            contentPadding = PaddingValues(bottom = 72.dp)
+        ) {
             itemsIndexed(
                 items = expandedCartItems,
                 key = { index, item -> "$index-${item.data.id}" }
@@ -57,6 +59,7 @@ fun ExpandedCart(
                 ) {
                     CartItem(
                         item = item.data,
+                        itemIsFirst = expandedCartItems.first() == item,
                         removeFromCart = { removeFromCart(item) }
                     )
                 }
@@ -296,23 +299,26 @@ private fun CartHeader(
     Surface(
         color = MaterialTheme.colors.surface
     ) {
-        Row(
-            Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = { onCollapse() }) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = "Collapse cart icon"
+        Column {
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = { onCollapse() }) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Collapse cart icon"
+                    )
+                }
+                Spacer(Modifier.width(4.dp))
+                Text("Cart".uppercase())
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    if (itemSize != 1) { "$itemSize items" }
+                    else { "$itemSize item" }.uppercase()
                 )
             }
-            Spacer(Modifier.width(4.dp))
-            Text("Cart".uppercase())
-            Spacer(Modifier.width(12.dp))
-            Text(
-                if (itemSize != 1) { "$itemSize items" }
-                else { "$itemSize item" }.uppercase()
-            )
+            Divider(color = MaterialTheme.colors.onSecondary.copy(alpha = 0.3f))
         }
     }
 }
@@ -320,6 +326,7 @@ private fun CartHeader(
 @Composable
 private fun CartItem(
     item: ItemData,
+    itemIsFirst: Boolean = false,
     removeFromCart: (ItemData) -> Unit = {}
 ) {
     Surface(
@@ -341,7 +348,9 @@ private fun CartItem(
             Column(
                 Modifier.fillMaxWidth()
             ) {
-                Divider(color = MaterialTheme.colors.onSecondary.copy(alpha = 0.3f))
+                if (!itemIsFirst) {
+                    Divider(color = MaterialTheme.colors.onSecondary.copy(alpha = 0.3f))
+                }
                 Row(
                     Modifier.padding(vertical = 20.dp),
                     verticalAlignment = Alignment.CenterVertically
