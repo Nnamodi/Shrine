@@ -1,6 +1,7 @@
-package com.roland.android.shrine
+package com.roland.android.shrine.data
 
 import androidx.compose.animation.core.MutableTransitionState
+import com.roland.android.shrine.R
 
 data class ItemData(
     val id: Int,

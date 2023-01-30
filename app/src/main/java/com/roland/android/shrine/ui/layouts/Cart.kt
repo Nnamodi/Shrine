@@ -1,4 +1,4 @@
-package com.roland.android.shrine
+package com.roland.android.shrine.ui.layouts
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -28,6 +28,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.roland.android.shrine.data.ExpandedCartItem
+import com.roland.android.shrine.data.ItemData
+import com.roland.android.shrine.data.SampleItemsData
+import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import java.lang.Integer.min
 
@@ -121,24 +125,17 @@ private fun CollapsedCartItem(
     )
 }
 
-enum class CartBottomSheetState {
-    Collapsed,
-    Expanded,
-    Hidden
-}
-
 @RequiresApi(Build.VERSION_CODES.N)
 @ExperimentalAnimationApi
 @Composable
 fun CartBottomSheet(
     modifier: Modifier = Modifier,
-    items: List<ItemData> = SampleItemsData.take(10),
-    expanded: Boolean = false,
-    hidden: Boolean = false,
+    items: List<ItemData>,
     maxHeight: Dp,
     maxWidth: Dp,
-    onExpand: (Boolean) -> Unit = {},
-    removeFromCart: (Int) -> Unit = {}
+    sheetState: CartBottomSheetState,
+    onRemoveFromCart: (Int) -> Unit = {},
+    onSheetStateChanged: (CartBottomSheetState) -> Unit = {}
 ) {
     val expandedCartItems by remember(items) {
         derivedStateOf {
@@ -153,17 +150,13 @@ fun CartBottomSheet(
             }
         }.collect {
             if (it != null) {
-                removeFromCart(it.index)
+                onRemoveFromCart(it.index)
             }
         }
     }
 
     val cartTransition = updateTransition(
-        targetState = when {
-            hidden -> CartBottomSheetState.Hidden
-            expanded -> CartBottomSheetState.Expanded
-            else -> CartBottomSheetState.Collapsed
-        },
+        targetState = sheetState,
         label = "cartTransition"
     )
 
@@ -220,8 +213,8 @@ fun CartBottomSheet(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .offset(x = cartOffset)
-            .height(cartHeight),
+            .height(cartHeight)
+            .offset(x = cartOffset),
         shape = CutCornerShape(topStart = cornerSize),
         color = MaterialTheme.colors.secondary,
         elevation = 8.dp
@@ -249,13 +242,13 @@ fun CartBottomSheet(
                 if (targetState == CartBottomSheetState.Expanded) {
                     ExpandedCart(
                         expandedCartItems = expandedCartItems,
-                        onCollapse = { onExpand(false) },
+                        onCollapse = { onSheetStateChanged(CartBottomSheetState.Collapsed) },
                         removeFromCart = { it.visible.targetState = false }
                     )
                 } else {
                     CollapsedCart(
                         items = items,
-                        onTap = { onExpand(true) }
+                        onTap = { onSheetStateChanged(CartBottomSheetState.Expanded) }
                     )
                 }
             }
@@ -397,17 +390,17 @@ fun CartBottomSheetPreview() {
         BoxWithConstraints(
             Modifier.fillMaxSize()
         ) {
-            var expanded by remember { mutableStateOf(false) }
+            var sheetState by remember { mutableStateOf(CartBottomSheetState.Collapsed) }
             val cartItems = remember { mutableStateListOf(*SampleItemsData.take(10).toTypedArray()) }
 
             CartBottomSheet(
                 modifier = Modifier.align(Alignment.BottomEnd),
                 items = cartItems,
-                expanded = expanded,
+                sheetState = sheetState,
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
-                onExpand = { expanded = it },
-                removeFromCart = { cartItems.removeAt(it) }
+                onSheetStateChanged = { sheetState = it },
+                onRemoveFromCart = { cartItems.removeAt(it) }
             )
         }
     }

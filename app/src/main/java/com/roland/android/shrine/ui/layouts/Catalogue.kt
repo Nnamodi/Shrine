@@ -1,4 +1,4 @@
-package com.roland.android.shrine
+package com.roland.android.shrine.ui.layouts
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -15,6 +15,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.roland.android.shrine.data.Category
+import com.roland.android.shrine.data.ItemData
+import com.roland.android.shrine.data.SampleItemsData
+import com.roland.android.shrine.data.getVendorResId
 import com.roland.android.shrine.ui.theme.ShrineTheme
 
 @Composable

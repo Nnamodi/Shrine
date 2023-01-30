@@ -1,4 +1,4 @@
-package com.roland.android.shrine
+package com.roland.android.shrine.ui.layouts
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -27,6 +27,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.roland.android.shrine.R
+import com.roland.android.shrine.data.Category
+import com.roland.android.shrine.data.ItemData
+import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import kotlinx.coroutines.launch
 
