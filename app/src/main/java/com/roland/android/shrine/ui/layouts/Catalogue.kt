@@ -1,44 +1,65 @@
 package com.roland.android.shrine.ui.layouts
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddShoppingCart
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.roland.android.shrine.data.Category
 import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.getVendorResId
 import com.roland.android.shrine.ui.theme.ShrineTheme
+import com.roland.android.shrine.utils.FirstCartItemData
 
 @Composable
 fun CatalogueCard(
     modifier: Modifier = Modifier,
     data: ItemData,
-    addToCart: (ItemData) -> Unit = {}
+    addToCart: (FirstCartItemData) -> Unit
 ) {
+    var imageSize by remember { mutableStateOf(IntSize.Zero) }
+    var position by remember { mutableStateOf(Offset.Zero) }
+
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .onGloballyPositioned {
+                position = it.positionInRoot()
+            }
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    addToCart(FirstCartItemData(data, imageSize, position))
+                })
+            },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(Modifier.weight(1f)) {
             Image(
                 painter = painterResource(id = data.photoResId),
-                modifier = Modifier.fillMaxSize(),
-                contentDescription = data.title,
-                contentScale = ContentScale.Crop
+                contentDescription = "Photo of ${data.title}",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .onGloballyPositioned { imageSize = it.size }
             )
-            IconButton(onClick = { addToCart(data) }) {
+            IconButton(onClick = {}) {
                 Icon(
                     imageVector = Icons.Outlined.AddShoppingCart,
                     contentDescription = "Add to cart"
@@ -73,7 +94,7 @@ fun CatalogueCardPreview() {
         CatalogueCard(
             modifier = Modifier.height(380.dp),
             data = SampleItemsData[5]
-        )
+        ) {}
     }
 }
 
@@ -95,7 +116,7 @@ private fun <T> transformToWeavedList(items: List<T>): List<List<T>> {
 fun Catalogue(
     modifier: Modifier = Modifier,
     items: List<ItemData>,
-    addToCart: (ItemData) -> Unit = {}
+    addToCart: (FirstCartItemData) -> Unit = {}
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
 

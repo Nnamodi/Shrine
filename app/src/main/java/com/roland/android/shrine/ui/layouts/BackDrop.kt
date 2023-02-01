@@ -29,9 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.Category
-import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.ui.theme.ShrineTheme
+import com.roland.android.shrine.utils.FirstCartItemData
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun BackDrop(
     onReveal: (Boolean) -> Unit = {},
-    addToCart: (ItemData) -> Unit = {},
+    addToCart: (FirstCartItemData) -> Unit = {},
     logout: () -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()

@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.ui.layouts.BackDrop
 import com.roland.android.shrine.ui.layouts.CartBottomSheet
+import com.roland.android.shrine.utils.FirstCartItem
+import com.roland.android.shrine.utils.FirstCartItemData
 
 @RequiresApi(Build.VERSION_CODES.N)
 @ExperimentalAnimationApi
@@ -21,6 +23,7 @@ import com.roland.android.shrine.ui.layouts.CartBottomSheet
 fun StartScreen(logout: () -> Unit = {}) {
     var sheetState by rememberSaveable  { mutableStateOf(CartBottomSheetState.Collapsed) }
     val cartItems = remember { mutableStateListOf(*SampleItemsData.take(0).toTypedArray()) }
+    var firstCartItem by remember { mutableStateOf<FirstCartItemData?>(null) }
 
     BoxWithConstraints(
         Modifier.fillMaxSize()
@@ -29,7 +32,10 @@ fun StartScreen(logout: () -> Unit = {}) {
             onReveal = { revealed ->
                 sheetState = if (revealed) CartBottomSheetState.Hidden else CartBottomSheetState.Collapsed
             },
-            addToCart = { cartItems.add(it) },
+            addToCart = {
+                if (cartItems.isEmpty()) firstCartItem = it
+                cartItems.add(it.data)
+            },
             logout = logout
         )
         CartBottomSheet(
@@ -39,8 +45,20 @@ fun StartScreen(logout: () -> Unit = {}) {
             maxHeight = maxHeight,
             maxWidth = maxWidth,
             onSheetStateChanged = { sheetState = it },
-            onRemoveFromCart = { cartItems.removeAt(it) }
+            onRemoveFromCart = {
+                cartItems.removeAt(it)
+                if (cartItems.isEmpty()) {
+                    firstCartItem = null
+                    sheetState = CartBottomSheetState.Collapsed
+                }
+            }
         )
+        if (firstCartItem != null) {
+            FirstCartItem(data = firstCartItem!!) {
+                // Temporary to dismiss
+                firstCartItem = null
+            }
+        }
     }
 }
 
