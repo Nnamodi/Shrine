@@ -11,13 +11,16 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -44,9 +47,9 @@ fun BackDrop(
     logout: () -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
-    var menuSelection by remember { mutableStateOf(Category.All) }
+    var menuSelection by rememberSaveable { mutableStateOf(Category.All) }
     val scaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
-    var backdropRevealed by remember { mutableStateOf(scaffoldState.isRevealed) }
+    var backdropRevealed by rememberSaveable { mutableStateOf(scaffoldState.isRevealed) }
 
     BackdropScaffold(
         appBar = {
@@ -252,6 +255,7 @@ private fun BackdropMenuItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
             .then(modifier),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

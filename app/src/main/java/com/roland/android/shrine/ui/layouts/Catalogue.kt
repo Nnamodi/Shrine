@@ -1,7 +1,6 @@
 package com.roland.android.shrine.ui.layouts
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -12,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
@@ -38,15 +36,7 @@ fun CatalogueCard(
     var position by remember { mutableStateOf(Offset.Zero) }
 
     Column(
-        modifier = modifier
-            .onGloballyPositioned {
-                position = it.positionInRoot()
-            }
-            .pointerInput(Unit) {
-                detectTapGestures(onTap = {
-                    addToCart(FirstCartItemData(data, imageSize, position))
-                })
-            },
+        modifier = modifier.onGloballyPositioned { position = it.positionInRoot() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(Modifier.weight(1f)) {
@@ -59,7 +49,7 @@ fun CatalogueCard(
                     .fillMaxHeight()
                     .onGloballyPositioned { imageSize = it.size }
             )
-            IconButton(onClick = {}) {
+            IconButton(onClick = { addToCart(FirstCartItemData(data, imageSize, position)) }) {
                 Icon(
                     imageVector = Icons.Outlined.AddShoppingCart,
                     contentDescription = "Add to cart"
@@ -73,17 +63,16 @@ fun CatalogueCard(
                     .offset(y = 12.dp)
             )
         }
-        Spacer(Modifier.height(20.dp))
         Text(
+            modifier = Modifier.padding(top = 20.dp),
             text = data.title,
             style = MaterialTheme.typography.subtitle2
         )
-        Spacer(Modifier.height(8.dp))
         Text(
+            modifier = Modifier.padding(top = 8.dp, bottom = 20.dp),
             text = "$${data.price}",
             style = MaterialTheme.typography.body2
         )
-        Spacer(Modifier.height(20.dp))
     }
 }
 
@@ -148,9 +137,9 @@ fun Catalogue(
                             data = item[1],
                             addToCart = addToCart
                         )
-                        Spacer(Modifier.height(40.dp))
                         CatalogueCard(
                             modifier = Modifier
+                                .padding(top = 40.dp)
                                 .weight(1f)
                                 .fillMaxWidth(0.85f),
                             data = item[0],

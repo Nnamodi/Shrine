@@ -89,7 +89,7 @@ fun FirstCartItem(
             cardOffset.x
         } else {
             with (LocalDensity.current) {
-                (screenWidth - 40 - 16).dp.toPx()
+                (screenWidth - 24 - 40 - 16).dp.toPx()
             }
         }
     }
@@ -134,15 +134,6 @@ fun FirstCartItem(
         )
     }
 }
-
-//@Composable
-//private fun Size.toDpSize(): DpSize {
-//    with(LocalDensity.current) {
-//        return DpSize(
-//            this@toDpSize.width.toDp(), this@toDpSize.height.toDp()
-//        )
-//    }
-//}
 
 data class FirstCartItemData(
     val data: ItemData,
