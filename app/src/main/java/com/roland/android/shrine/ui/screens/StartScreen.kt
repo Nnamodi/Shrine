@@ -44,6 +44,7 @@ fun StartScreen(logout: () -> Unit = {}) {
             sheetState = sheetState,
             maxHeight = maxHeight,
             maxWidth = maxWidth,
+            isFirstItem = firstCartItem != null,
             onSheetStateChanged = { sheetState = it },
             onRemoveFromCart = {
                 cartItems.removeAt(it)

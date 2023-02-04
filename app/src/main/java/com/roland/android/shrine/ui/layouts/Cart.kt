@@ -72,11 +72,20 @@ fun ExpandedCart(
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun CollapsedCart(
     items: List<ItemData>,
-    onTap: () -> Unit = {}
+    onTap: () -> Unit = {},
+    isFirstItem: Boolean
 ) {
+    val imageSize = updateTransition(MutableTransitionState(isFirstItem), label = "Image size")
+        .animateDp(
+            transitionSpec = { tween(durationMillis = 400, delayMillis = 400) },
+            label = "Animated size"
+        ) {
+            if (it) 0.dp else 40.dp
+        }
     Row(
         modifier = Modifier
             .padding(start = 24.dp, top = 8.dp, end = 16.dp, bottom = 8.dp)
@@ -94,7 +103,7 @@ fun CollapsedCart(
             )
         }
         items.take(3).forEach { item ->
-            CollapsedCartItem(item.photoResId, item.title)
+            CollapsedCartItem(item.photoResId, item.title, imageSize.value)
         }
         if (items.size > 3) {
             Box(
@@ -110,19 +119,23 @@ fun CollapsedCart(
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 private fun CollapsedCartItem(
     photoId: Int,
-    description: String
+    description: String,
+    imageSize: Dp
 ) {
-    Image(
-        painter = painterResource(id = photoId),
-        contentDescription = description,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .size(40.dp)
-            .clip(RoundedCornerShape(10.dp))
-    )
+    Box(modifier = Modifier.size(40.dp)) {
+        Image(
+            painter = painterResource(id = photoId),
+            contentDescription = description,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(imageSize)
+                .clip(RoundedCornerShape(10.dp))
+        )
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -134,6 +147,7 @@ fun CartBottomSheet(
     maxHeight: Dp,
     maxWidth: Dp,
     sheetState: CartBottomSheetState,
+    isFirstItem: Boolean = false,
     onRemoveFromCart: (Int) -> Unit = {},
     onSheetStateChanged: (CartBottomSheetState) -> Unit = {}
 ) {
@@ -149,9 +163,7 @@ fun CartBottomSheet(
                 it.visible.isIdle && !it.visible.targetState
             }
         }.collect {
-            if (it != null) {
-                onRemoveFromCart(it.index)
-            }
+            if (it != null) { onRemoveFromCart(it.index) }
         }
     }
 
@@ -248,6 +260,7 @@ fun CartBottomSheet(
                 } else {
                     CollapsedCart(
                         items = items,
+                        isFirstItem = isFirstItem,
                         onTap = { onSheetStateChanged(CartBottomSheetState.Expanded) }
                     )
                 }
@@ -396,11 +409,11 @@ fun CartBottomSheetPreview() {
             CartBottomSheet(
                 modifier = Modifier.align(Alignment.BottomEnd),
                 items = cartItems,
-                sheetState = sheetState,
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
-                onSheetStateChanged = { sheetState = it },
-                onRemoveFromCart = { cartItems.removeAt(it) }
+                sheetState = sheetState,
+                onRemoveFromCart = { cartItems.removeAt(it) },
+                onSheetStateChanged = { sheetState = it }
             )
         }
     }
