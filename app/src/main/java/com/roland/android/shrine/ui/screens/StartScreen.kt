@@ -49,7 +49,6 @@ fun StartScreen(logout: () -> Unit = {}) {
             onRemoveFromCart = {
                 cartItems.removeAt(it)
                 if (cartItems.isEmpty()) {
-                    firstCartItem = null
                     sheetState = CartBottomSheetState.Collapsed
                 }
             }

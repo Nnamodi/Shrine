@@ -189,8 +189,8 @@ fun CartBottomSheet(
             CartBottomSheetState.Expanded -> 0.dp
             else -> {
                 val size = min(3, items.size)
-                var width = 24 + 40 * (size + 1) + 16 * size + 16
-                if (items.size > 3) width += 32 + 16
+                var width = 24 + (40 + 16) + (size * (40 + 16))
+                if (items.size > 3) width += (32 + 16)
                 (maxWidth.value - width).dp
             }
         }

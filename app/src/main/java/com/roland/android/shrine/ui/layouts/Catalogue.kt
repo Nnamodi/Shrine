@@ -137,9 +137,9 @@ fun Catalogue(
                             data = item[1],
                             addToCart = addToCart
                         )
+                        Spacer(Modifier.height(40.dp))
                         CatalogueCard(
                             modifier = Modifier
-                                .padding(top = 40.dp)
                                 .weight(1f)
                                 .fillMaxWidth(0.85f),
                             data = item[0],

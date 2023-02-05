@@ -89,7 +89,7 @@ fun FirstCartItem(
             cardOffset.x
         } else {
             with (LocalDensity.current) {
-                (screenWidth - 24 - 40 - 16).dp.toPx()
+                (screenWidth - 40 - 16).dp.toPx()
             }
         }
     }
@@ -124,7 +124,7 @@ fun FirstCartItem(
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(itemSize.width.dp, itemSize.height.dp)
+                .size((itemSize.width / 2).dp, (itemSize.height / 2).dp)
                 .drawWithContent {
                     drawContent()
                     drawRect(ShrinePink200.copy(alpha = scrimAlpha))
