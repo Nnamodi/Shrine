@@ -1,6 +1,7 @@
 package com.roland.android.shrine.ui.layouts
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -30,13 +31,15 @@ import com.roland.android.shrine.utils.FirstCartItemData
 fun CatalogueCard(
     modifier: Modifier = Modifier,
     data: ItemData,
-    addToCart: (FirstCartItemData) -> Unit
+    addToCart: (FirstCartItemData) -> Unit = {},
+    navigateToDetail: (ItemData) -> Unit = {}
 ) {
     var imageSize by remember { mutableStateOf(IntSize.Zero) }
     var position by remember { mutableStateOf(Offset.Zero) }
 
     Column(
-        modifier = modifier.onGloballyPositioned { position = it.positionInRoot() },
+        modifier = modifier.clickable { navigateToDetail(data) }
+            .onGloballyPositioned { position = it.positionInRoot() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(Modifier.weight(1f)) {
@@ -83,7 +86,7 @@ fun CatalogueCardPreview() {
         CatalogueCard(
             modifier = Modifier.height(380.dp),
             data = SampleItemsData[5]
-        ) {}
+        )
     }
 }
 
@@ -105,7 +108,8 @@ private fun <T> transformToWeavedList(items: List<T>): List<List<T>> {
 fun Catalogue(
     modifier: Modifier = Modifier,
     items: List<ItemData>,
-    addToCart: (FirstCartItemData) -> Unit = {}
+    addToCart: (FirstCartItemData) -> Unit = {},
+    navigateToDetail: (ItemData) -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
 
@@ -135,7 +139,8 @@ fun Catalogue(
                                 .fillMaxWidth(0.85f)
                                 .align(Alignment.End),
                             data = item[1],
-                            addToCart = addToCart
+                            addToCart = addToCart,
+                            navigateToDetail = navigateToDetail
                         )
                         Spacer(Modifier.height(40.dp))
                         CatalogueCard(
@@ -143,7 +148,8 @@ fun Catalogue(
                                 .weight(1f)
                                 .fillMaxWidth(0.85f),
                             data = item[0],
-                            addToCart = addToCart
+                            addToCart = addToCart,
+                            navigateToDetail = navigateToDetail
                         )
                     } else {
                         Row(Modifier.fillMaxHeight()) {
@@ -153,7 +159,8 @@ fun Catalogue(
                                     .fillMaxHeight(0.5f)
                                     .align(Alignment.Bottom),
                                 data = item[0],
-                                addToCart = addToCart
+                                addToCart = addToCart,
+                                navigateToDetail = navigateToDetail
                             )
                         }
                     }
@@ -163,7 +170,8 @@ fun Catalogue(
                             .fillMaxWidth(0.8f)
                             .fillMaxHeight(0.5f),
                         data = item[0],
-                        addToCart = addToCart
+                        addToCart = addToCart,
+                        navigateToDetail = navigateToDetail
                     )
                 }
             }
@@ -181,7 +189,7 @@ fun CataloguePreview() {
             ) {
                 Catalogue(
                     items = SampleItemsData.filter { it.category == Category.Home }
-                )
+                ) {}
             }
         }
     }

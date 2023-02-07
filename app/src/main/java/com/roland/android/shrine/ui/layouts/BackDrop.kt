@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.Category
+import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
@@ -44,6 +45,7 @@ import kotlinx.coroutines.launch
 fun BackDrop(
     onReveal: (Boolean) -> Unit = {},
     addToCart: (FirstCartItemData) -> Unit = {},
+    navigateToDetail: (ItemData) -> Unit = {},
     logout: () -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
@@ -90,7 +92,8 @@ fun BackDrop(
                 items = SampleItemsData.filter {
                     menuSelection == Category.All || it.category == menuSelection
                 },
-                addToCart = addToCart
+                addToCart = addToCart,
+                navigateToDetail = navigateToDetail
             )
         },
         frontLayerShape = MaterialTheme.shapes.large,

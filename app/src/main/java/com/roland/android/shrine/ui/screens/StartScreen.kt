@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.ui.layouts.BackDrop
 import com.roland.android.shrine.ui.layouts.CartBottomSheet
@@ -20,7 +21,10 @@ import com.roland.android.shrine.utils.FirstCartItemData
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
-fun StartScreen(logout: () -> Unit = {}) {
+fun StartScreen(
+    navigateToDetail: (ItemData) -> Unit,
+    logout: () -> Unit = {}
+) {
     var sheetState by rememberSaveable  { mutableStateOf(CartBottomSheetState.Collapsed) }
     val cartItems = remember { mutableStateListOf(*SampleItemsData.take(0).toTypedArray()) }
     var firstCartItem by remember { mutableStateOf<FirstCartItemData?>(null) }
@@ -36,6 +40,7 @@ fun StartScreen(logout: () -> Unit = {}) {
                 if (cartItems.isEmpty()) firstCartItem = it
                 cartItems.add(it.data)
             },
+            navigateToDetail = navigateToDetail,
             logout = logout
         )
         CartBottomSheet(

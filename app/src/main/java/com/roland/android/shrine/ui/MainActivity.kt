@@ -9,7 +9,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.roland.android.shrine.ui.screens.StartScreen
+import androidx.navigation.compose.rememberNavController
+import com.roland.android.shrine.ui.screens.Navigation
 import com.roland.android.shrine.ui.theme.ShrineTheme
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -19,7 +20,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ShrineTheme { StartScreen { finish() } }
+            val navController = rememberNavController()
+
+            ShrineTheme {
+                Navigation(
+                    navController = navController,
+                    logout = { finish() }
+                )
+            }
         }
     }
 }
@@ -30,5 +38,7 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppPreview() {
-    ShrineTheme { StartScreen { println("Logged out") } }
+    ShrineTheme {
+        Navigation(navController = rememberNavController()) { println("Logged out") }
+    }
 }
