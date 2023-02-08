@@ -16,6 +16,7 @@ import com.roland.android.shrine.ui.layouts.BackDrop
 import com.roland.android.shrine.ui.layouts.CartBottomSheet
 import com.roland.android.shrine.utils.FirstCartItem
 import com.roland.android.shrine.utils.FirstCartItemData
+import com.roland.android.shrine.viewmodel.SharedViewModel
 
 @RequiresApi(Build.VERSION_CODES.N)
 @ExperimentalAnimationApi
@@ -23,6 +24,7 @@ import com.roland.android.shrine.utils.FirstCartItemData
 @Composable
 fun StartScreen(
     navigateToDetail: (ItemData) -> Unit,
+    sharedViewModel: SharedViewModel,
     logout: () -> Unit = {}
 ) {
     var sheetState by rememberSaveable  { mutableStateOf(CartBottomSheetState.Collapsed) }
@@ -40,7 +42,10 @@ fun StartScreen(
                 if (cartItems.isEmpty()) firstCartItem = it
                 cartItems.add(it.data)
             },
-            navigateToDetail = navigateToDetail,
+            navigateToDetail = {
+                sharedViewModel.setItemData(it)
+                navigateToDetail(it)
+            },
             logout = logout
         )
         CartBottomSheet(
