@@ -2,6 +2,8 @@ package com.roland.android.shrine.ui.layouts
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -42,7 +44,8 @@ fun ItemDetail(
         color = MaterialTheme.colors.surface
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .onGloballyPositioned { position = it.positionInRoot() }
         ) {
@@ -52,7 +55,8 @@ fun ItemDetail(
                 Image(
                     painterResource(id = item.photoResId),
                     contentDescription = item.title,
-                    modifier = Modifier.size(screenWidth.dp, imageHeight.dp)
+                    modifier = Modifier
+                        .size(screenWidth.dp, imageHeight.dp)
                         .onGloballyPositioned { imageSize = it.size },
                     contentScale = ContentScale.Crop
                 )
@@ -60,7 +64,11 @@ fun ItemDetail(
                     Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
                 }
             }
-            Column(Modifier.padding(20.dp)) {
+            Column(
+                modifier = Modifier
+                    .padding(20.dp)
+                    .align(Alignment.CenterHorizontally)
+            ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -109,7 +117,78 @@ fun ItemDetail(
                     )
                     Text("Add to cart".uppercase())
                 }
+                Divider(color = MaterialTheme.colors.onSurface.copy(alpha =  0.3f))
             }
+            ItemsFromVendor(item, addToCart )
+            OtherItems(item, addToCart )
+        }
+    }
+}
+
+@Composable
+private fun ItemsFromVendor(
+    item: ItemData,
+    addToCart: (FirstCartItemData) -> Unit
+) {
+    val vendorItems: List<ItemData> = SampleItemsData
+        .filter { it.vendor == item.vendor && it != item }
+
+    Text(
+        text = "More from ${item.vendor.name}".uppercase(),
+        style = MaterialTheme.typography.subtitle1,
+        modifier = Modifier.padding(20.dp)
+    )
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 20.dp),
+        contentPadding = PaddingValues(start = 20.dp)
+    ) {
+        itemsIndexed(
+            items = vendorItems,
+            key = { _, item -> item.id }
+        ) { _, item ->
+            CatalogueCard(
+                data = item,
+                modifier = Modifier
+                    .size(200.dp)
+                    .padding(end = 20.dp),
+                addToCart = addToCart
+            )
+        }
+    }
+}
+
+@Composable
+private fun OtherItems(
+    item: ItemData,
+    addToCart: (FirstCartItemData) -> Unit
+) {
+    val similarItems: List<ItemData> = SampleItemsData
+        .filter { it.category == item.category && it != item }
+
+    Text(
+        text = "You'll also like".uppercase(),
+        style = MaterialTheme.typography.subtitle1,
+        modifier = Modifier.padding(20.dp)
+    )
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 60.dp),
+        contentPadding = PaddingValues(start = 20.dp)
+    ) {
+        itemsIndexed(
+            items = similarItems,
+            key = { _, item -> item.id }
+        ) { _, item ->
+            CatalogueCard(
+                data = item,
+                modifier = Modifier
+                    .size(200.dp)
+                    .padding(end = 20.dp),
+                addToCart = addToCart
+            )
         }
     }
 }
