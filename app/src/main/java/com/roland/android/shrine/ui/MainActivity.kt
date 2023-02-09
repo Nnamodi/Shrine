@@ -7,8 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.roland.android.shrine.ui.screens.Navigation
 import com.roland.android.shrine.ui.theme.ShrineTheme
@@ -29,16 +27,5 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.N)
-@ExperimentalAnimationApi
-@ExperimentalMaterialApi
-@Preview
-@Composable
-fun AppPreview() {
-    ShrineTheme {
-        Navigation(navController = rememberNavController()) { println("Logged out") }
     }
 }

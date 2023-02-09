@@ -2,42 +2,58 @@ package com.roland.android.shrine.ui.layouts
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.AddShoppingCart
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.getVendorResId
 import com.roland.android.shrine.ui.theme.ShrineTheme
+import com.roland.android.shrine.utils.FirstCartItemData
+import kotlin.math.max
 
 @Composable
 fun ItemDetail(
     item: ItemData,
+    addToCart:(FirstCartItemData) -> Unit = {},
     onBackPressed: () -> Unit = {}
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val screenHeight = LocalConfiguration.current.screenHeightDp / 2.5
+    var imageSize by remember { mutableStateOf(IntSize.Zero) }
+    var position by remember { mutableStateOf(Offset.Zero) }
 
     Surface(
         color = MaterialTheme.colors.surface
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .onGloballyPositioned { position = it.positionInRoot() }
         ) {
             Box {
+                val imageHeight = max(300, screenHeight.toInt())
+
                 Image(
                     painterResource(id = item.photoResId),
                     contentDescription = item.title,
-                    modifier = Modifier.size(screenWidth.dp, screenHeight.dp),
+                    modifier = Modifier.size(screenWidth.dp, imageHeight.dp)
+                        .onGloballyPositioned { imageSize = it.size },
                     contentScale = ContentScale.Crop
                 )
                 IconButton(onClick = { onBackPressed() }) {
@@ -84,7 +100,7 @@ fun ItemDetail(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp, bottom = 16.dp),
-                    onClick = {}
+                    onClick = { addToCart(FirstCartItemData(item, imageSize, position)) }
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.AddShoppingCart,

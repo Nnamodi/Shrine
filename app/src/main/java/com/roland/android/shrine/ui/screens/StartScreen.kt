@@ -10,10 +10,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.roland.android.shrine.data.ItemData
-import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.ui.layouts.BackDrop
 import com.roland.android.shrine.ui.layouts.CartBottomSheet
+import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItem
 import com.roland.android.shrine.utils.FirstCartItemData
 import com.roland.android.shrine.viewmodel.SharedViewModel
@@ -28,7 +29,7 @@ fun StartScreen(
     logout: () -> Unit = {}
 ) {
     var sheetState by rememberSaveable  { mutableStateOf(CartBottomSheetState.Collapsed) }
-    val cartItems = remember { mutableStateListOf(*SampleItemsData.take(0).toTypedArray()) }
+    val cartItems = sharedViewModel.cartItems
     var firstCartItem by remember { mutableStateOf<FirstCartItemData?>(null) }
 
     BoxWithConstraints(
@@ -40,7 +41,7 @@ fun StartScreen(
             },
             addToCart = {
                 if (cartItems.isEmpty()) firstCartItem = it
-                cartItems.add(it.data)
+                sharedViewModel.addToCart(it.data)
             },
             navigateToDetail = {
                 sharedViewModel.setItemData(it)
@@ -51,13 +52,13 @@ fun StartScreen(
         CartBottomSheet(
             modifier = Modifier.align(Alignment.BottomEnd),
             items = cartItems,
-            sheetState = sheetState,
             maxHeight = maxHeight,
             maxWidth = maxWidth,
+            sheetState = sheetState,
             isFirstItem = firstCartItem != null,
             onSheetStateChanged = { sheetState = it },
             onRemoveFromCart = {
-                cartItems.removeAt(it)
+                sharedViewModel.removeFromCart(it)
                 if (cartItems.isEmpty()) {
                     sheetState = CartBottomSheetState.Collapsed
                 }
@@ -76,4 +77,15 @@ enum class CartBottomSheetState {
     Collapsed,
     Expanded,
     Hidden
+}
+
+@RequiresApi(Build.VERSION_CODES.N)
+@ExperimentalAnimationApi
+@ExperimentalMaterialApi
+@Preview
+@Composable
+fun StartScreenPreview() {
+    ShrineTheme {
+        StartScreen(navigateToDetail = {}, sharedViewModel = SharedViewModel())
+    }
 }
