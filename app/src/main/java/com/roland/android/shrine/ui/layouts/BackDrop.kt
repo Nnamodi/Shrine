@@ -1,6 +1,7 @@
 package com.roland.android.shrine.ui.layouts
 
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.animation.core.LinearEasing
@@ -107,7 +108,7 @@ fun BackDrop(
 @Composable
 private fun TopAppBar(
     backdropRevealed: Boolean,
-    onBackdropReveal: (Boolean) -> Unit = {},
+    onBackdropReveal: (Boolean) -> Unit = {}
 ) {
     TopAppBar(
         title = {
@@ -196,6 +197,12 @@ private fun TopAppBar(
         },
         elevation = 0.dp
     )
+
+    if (backdropRevealed) {
+        BackHandler {
+            onBackdropReveal(false)
+        }
+    }
 }
 
 @Composable

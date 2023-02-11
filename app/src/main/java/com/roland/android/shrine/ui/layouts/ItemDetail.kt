@@ -33,7 +33,8 @@ import kotlin.math.max
 fun ItemDetail(
     item: ItemData,
     addToCart:(FirstCartItemData) -> Unit = {},
-    onBackPressed: () -> Unit = {}
+    navigateToDetail: (ItemData) -> Unit = {},
+    onNavigateUp: () -> Unit = {}
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val screenHeight = LocalConfiguration.current.screenHeightDp / 2.5
@@ -60,7 +61,7 @@ fun ItemDetail(
                         .onGloballyPositioned { imageSize = it.size },
                     contentScale = ContentScale.Crop
                 )
-                IconButton(onClick = { onBackPressed() }) {
+                IconButton(onClick = { onNavigateUp() }) {
                     Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
                 }
             }
@@ -119,8 +120,8 @@ fun ItemDetail(
                 }
                 Divider(color = MaterialTheme.colors.onSurface.copy(alpha =  0.3f))
             }
-            ItemsFromVendor(item, addToCart )
-            OtherItems(item, addToCart )
+            ItemsFromVendor(item, addToCart, navigateToDetail)
+            OtherItems(item, addToCart, navigateToDetail)
         }
     }
 }
@@ -128,16 +129,19 @@ fun ItemDetail(
 @Composable
 private fun ItemsFromVendor(
     item: ItemData,
-    addToCart: (FirstCartItemData) -> Unit
+    addToCart: (FirstCartItemData) -> Unit,
+    navigateToDetail: (ItemData) -> Unit
 ) {
     val vendorItems: List<ItemData> = SampleItemsData
         .filter { it.vendor == item.vendor && it != item }
 
-    Text(
-        text = "More from ${item.vendor.name}".uppercase(),
-        style = MaterialTheme.typography.subtitle1,
-        modifier = Modifier.padding(20.dp)
-    )
+    if (vendorItems.isNotEmpty()) {
+        Text(
+            text = "More from ${item.vendor.name}".uppercase(),
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier.padding(20.dp)
+        )
+    }
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -153,7 +157,8 @@ private fun ItemsFromVendor(
                 modifier = Modifier
                     .size(200.dp)
                     .padding(end = 20.dp),
-                addToCart = addToCart
+                addToCart = addToCart,
+                navigateToDetail = navigateToDetail
             )
         }
     }
@@ -162,16 +167,19 @@ private fun ItemsFromVendor(
 @Composable
 private fun OtherItems(
     item: ItemData,
-    addToCart: (FirstCartItemData) -> Unit
+    addToCart: (FirstCartItemData) -> Unit,
+    navigateToDetail: (ItemData) -> Unit
 ) {
     val similarItems: List<ItemData> = SampleItemsData
         .filter { it.category == item.category && it != item }
 
-    Text(
-        text = "You'll also like".uppercase(),
-        style = MaterialTheme.typography.subtitle1,
-        modifier = Modifier.padding(20.dp)
-    )
+    if (similarItems.isNotEmpty()) {
+        Text(
+            text = "You might also like".uppercase(),
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier.padding(20.dp)
+        )
+    }
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -187,7 +195,8 @@ private fun OtherItems(
                 modifier = Modifier
                     .size(200.dp)
                     .padding(end = 20.dp),
-                addToCart = addToCart
+                addToCart = addToCart,
+                navigateToDetail = navigateToDetail
             )
         }
     }

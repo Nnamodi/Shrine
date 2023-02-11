@@ -1,6 +1,7 @@
 package com.roland.android.shrine.ui.screens
 
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -44,7 +45,7 @@ fun StartScreen(
                 sharedViewModel.addToCart(it.data)
             },
             navigateToDetail = {
-                sharedViewModel.setItemData(it)
+                sharedViewModel.addScreen(it)
                 navigateToDetail(it)
             },
             logout = logout
@@ -68,6 +69,14 @@ fun StartScreen(
             FirstCartItem(data = firstCartItem!!) {
                 // Temporary to dismiss
                 firstCartItem = null
+            }
+        }
+        BackHandler {
+            if (sheetState == CartBottomSheetState.Collapsed) {
+                logout()
+            }
+            if (sheetState == CartBottomSheetState.Expanded) {
+                sheetState = CartBottomSheetState.Collapsed
             }
         }
     }

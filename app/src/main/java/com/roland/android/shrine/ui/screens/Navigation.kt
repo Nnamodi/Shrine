@@ -32,8 +32,10 @@ fun Navigation(
         }
         composable("detailScreen") {
             DetailScreen(
-                sharedViewModel = sharedViewModel
-            ) { navController.navigateUp() }
+                navigateToDetail = { navController.navigate("detailScreen") },
+                sharedViewModel = sharedViewModel,
+                onNavigateUp = { navController.navigateUp() }
+            )
         }
     }
 }
