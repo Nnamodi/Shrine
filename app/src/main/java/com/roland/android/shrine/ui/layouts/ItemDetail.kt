@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.roland.android.shrine.data.ItemData
@@ -120,43 +121,17 @@ fun ItemDetail(
                 }
                 Divider(color = MaterialTheme.colors.onSurface.copy(alpha =  0.3f))
             }
-            ItemsFromVendor(item, addToCart, navigateToDetail)
-            OtherItems(item, addToCart, navigateToDetail)
-        }
-    }
-}
-
-@Composable
-private fun ItemsFromVendor(
-    item: ItemData,
-    addToCart: (FirstCartItemData) -> Unit,
-    navigateToDetail: (ItemData) -> Unit
-) {
-    val vendorItems: List<ItemData> = SampleItemsData
-        .filter { it.vendor == item.vendor && it != item }
-
-    if (vendorItems.isNotEmpty()) {
-        Text(
-            text = "More from ${item.vendor.name}".uppercase(),
-            style = MaterialTheme.typography.subtitle1,
-            modifier = Modifier.padding(20.dp)
-        )
-    }
-    LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 20.dp),
-        contentPadding = PaddingValues(start = 20.dp)
-    ) {
-        itemsIndexed(
-            items = vendorItems,
-            key = { _, item -> item.id }
-        ) { _, item ->
-            CatalogueCard(
-                data = item,
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(end = 20.dp),
+            OtherItems(
+                header = "More from ${item.vendor.name}",
+                bottomPadding = 20.dp,
+                otherItems = SampleItemsData.filter { it.vendor == item.vendor && it != item },
+                addToCart = addToCart,
+                navigateToDetail = navigateToDetail
+            )
+            OtherItems(
+                header = "You might also like",
+                bottomPadding = 60.dp,
+                otherItems = SampleItemsData.filter { it.category == item.category && it != item },
                 addToCart = addToCart,
                 navigateToDetail = navigateToDetail
             )
@@ -166,16 +141,15 @@ private fun ItemsFromVendor(
 
 @Composable
 private fun OtherItems(
-    item: ItemData,
+    header: String,
+    bottomPadding: Dp,
+    otherItems: List<ItemData>,
     addToCart: (FirstCartItemData) -> Unit,
     navigateToDetail: (ItemData) -> Unit
 ) {
-    val similarItems: List<ItemData> = SampleItemsData
-        .filter { it.category == item.category && it != item }
-
-    if (similarItems.isNotEmpty()) {
+    if (otherItems.isNotEmpty()) {
         Text(
-            text = "You might also like".uppercase(),
+            text = header.uppercase(),
             style = MaterialTheme.typography.subtitle1,
             modifier = Modifier.padding(20.dp)
         )
@@ -183,11 +157,11 @@ private fun OtherItems(
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 60.dp),
+            .padding(bottom = bottomPadding),
         contentPadding = PaddingValues(start = 20.dp)
     ) {
         itemsIndexed(
-            items = similarItems,
+            items = otherItems,
             key = { _, item -> item.id }
         ) { _, item ->
             CatalogueCard(

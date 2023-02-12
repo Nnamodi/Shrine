@@ -31,51 +31,54 @@ fun DetailScreen(
     val cartItems = sharedViewModel.cartItems
     var firstCartItem by remember { mutableStateOf<FirstCartItemData?>(null) }
 
-    BoxWithConstraints(
-        Modifier.fillMaxSize()
-    ) {
-        ItemDetail(
-            item = sharedViewModel.data,
-            addToCart = {
-                if (cartItems.isEmpty()) firstCartItem = it
-                sharedViewModel.addToCart(it.data)
-            },
-            navigateToDetail = {
-                sharedViewModel.addScreen(it)
-                navigateToDetail(it)
-            },
-            onNavigateUp = {
-                onNavigateUp()
-                sharedViewModel.removeLastScreen()
-            }
-        )
-        CartBottomSheet(
-            modifier = Modifier.align(Alignment.BottomEnd),
-            items = cartItems,
-            maxHeight = maxHeight,
-            maxWidth = maxWidth,
-            sheetState = sheetState,
-            isFirstItem = firstCartItem != null,
-            onSheetStateChanged = { sheetState = it },
-            onRemoveFromCart = {
-                sharedViewModel.removeFromCart(it)
-                if (cartItems.isEmpty()) {
-                    sheetState = CartBottomSheetState.Collapsed
+    if (sharedViewModel.data == null) { onNavigateUp() }
+    else {
+        BoxWithConstraints(
+            Modifier.fillMaxSize()
+        ) {
+            ItemDetail(
+                item = sharedViewModel.data!!,
+                addToCart = {
+                    if (cartItems.isEmpty()) firstCartItem = it
+                    sharedViewModel.addToCart(it.data)
+                },
+                navigateToDetail = {
+                    sharedViewModel.addScreen(it)
+                    navigateToDetail(it)
+                },
+                onNavigateUp = {
+                    onNavigateUp()
+                    sharedViewModel.removeLastScreen()
+                }
+            )
+            CartBottomSheet(
+                modifier = Modifier.align(Alignment.BottomEnd),
+                items = cartItems,
+                maxHeight = maxHeight,
+                maxWidth = maxWidth,
+                sheetState = sheetState,
+                isFirstItem = firstCartItem != null,
+                onSheetStateChanged = { sheetState = it },
+                onRemoveFromCart = {
+                    sharedViewModel.removeFromCart(it)
+                    if (cartItems.isEmpty()) {
+                        sheetState = CartBottomSheetState.Collapsed
+                    }
+                }
+            )
+            if (firstCartItem != null) {
+                FirstCartItem(data = firstCartItem!!) {
+                    // Temporary to dismiss
+                    firstCartItem = null
                 }
             }
-        )
-        if (firstCartItem != null) {
-            FirstCartItem(data = firstCartItem!!) {
-                // Temporary to dismiss
-                firstCartItem = null
-            }
-        }
-        BackHandler {
-            if (sheetState != CartBottomSheetState.Collapsed) {
-                sheetState = CartBottomSheetState.Collapsed
-            } else {
-                onNavigateUp()
-                sharedViewModel.removeLastScreen()
+            BackHandler {
+                if (sheetState != CartBottomSheetState.Collapsed) {
+                    sheetState = CartBottomSheetState.Collapsed
+                } else {
+                    onNavigateUp()
+                    sharedViewModel.removeLastScreen()
+                }
             }
         }
     }

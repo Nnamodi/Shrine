@@ -21,21 +21,26 @@ fun Navigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "startScreen"
+        startDestination = Destination.StartScreen.route
     ) {
-        composable("startScreen") {
+        composable(Destination.StartScreen.route) {
             StartScreen(
-                navigateToDetail = { navController.navigate("detailScreen") },
+                navigateToDetail = { navController.navigate(Destination.DetailScreen.route) },
                 sharedViewModel = sharedViewModel,
                 logout = logout
             )
         }
-        composable("detailScreen") {
+        composable(Destination.DetailScreen.route) {
             DetailScreen(
-                navigateToDetail = { navController.navigate("detailScreen") },
+                navigateToDetail = { navController.navigate(Destination.DetailScreen.route) },
                 sharedViewModel = sharedViewModel,
                 onNavigateUp = { navController.navigateUp() }
             )
         }
     }
+}
+
+sealed class Destination(val route: String) {
+    object StartScreen: Destination("start_screen")
+    object DetailScreen: Destination("detail_screen")
 }

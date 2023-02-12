@@ -11,7 +11,7 @@ import com.roland.android.shrine.data.SampleItemsData
 class SharedViewModel : ViewModel() {
     private val openedDetailScreens = mutableStateListOf<ItemData>()
 
-    var data by mutableStateOf(SampleItemsData[0])
+    var data by mutableStateOf<ItemData?>(null)
         private set
 
     val cartItems = mutableStateListOf(*SampleItemsData.take(0).toTypedArray())
@@ -30,8 +30,12 @@ class SharedViewModel : ViewModel() {
     }
 
     fun removeLastScreen() {
-        val lastScreen = openedDetailScreens.last()
-        openedDetailScreens.remove(lastScreen)
-        if (openedDetailScreens.isNotEmpty()) { data = openedDetailScreens.last() }
+        if (openedDetailScreens.isNotEmpty()) {
+            val lastScreen = openedDetailScreens.last()
+            openedDetailScreens.remove(lastScreen)
+        }
+        if (openedDetailScreens.isNotEmpty()) {
+            data = openedDetailScreens.last()
+        }
     }
 }
