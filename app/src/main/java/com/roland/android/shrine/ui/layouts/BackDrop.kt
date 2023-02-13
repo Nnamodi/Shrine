@@ -46,6 +46,7 @@ import kotlinx.coroutines.launch
 fun BackDrop(
     onReveal: (Boolean) -> Unit = {},
     addToCart: (FirstCartItemData) -> Unit = {},
+    addToWishlist: (ItemData) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit = {},
     logout: () -> Unit = {}
 ) {
@@ -94,6 +95,7 @@ fun BackDrop(
                     menuSelection == Category.All || it.category == menuSelection
                 },
                 addToCart = addToCart,
+                addToWishlist = addToWishlist,
                 navigateToDetail = navigateToDetail
             )
         },

@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -39,6 +40,7 @@ import java.lang.Integer.min
 @Composable
 fun ExpandedCart(
     expandedCartItems: List<ExpandedCartItem>,
+    wishlist: List<ItemData>,
     onCollapse: () -> Unit = {},
     removeFromCart: (ExpandedCartItem) -> Unit = {}
 ) {
@@ -67,6 +69,18 @@ fun ExpandedCart(
                         removeFromCart = { removeFromCart(item) }
                     )
                 }
+            }
+            item {
+                OtherItems(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colors.surface)
+                        .padding(vertical = 24.dp),
+                    header = "Wishlist",
+                    bottomPadding = 60.dp,
+                    otherItems = wishlist,
+                    addToCart = {},
+                    navigateToDetail = {}
+                )
             }
         }
     }
@@ -144,6 +158,7 @@ private fun CollapsedCartItem(
 fun CartBottomSheet(
     modifier: Modifier = Modifier,
     items: List<ItemData>,
+    wishlist: List<ItemData>,
     maxHeight: Dp,
     maxWidth: Dp,
     sheetState: CartBottomSheetState,
@@ -254,6 +269,7 @@ fun CartBottomSheet(
                 if (targetState == CartBottomSheetState.Expanded) {
                     ExpandedCart(
                         expandedCartItems = expandedCartItems,
+                        wishlist = wishlist,
                         onCollapse = { onSheetStateChanged(CartBottomSheetState.Collapsed) },
                         removeFromCart = { it.visible.targetState = false }
                     )
@@ -317,7 +333,10 @@ private fun CartHeader(
                     )
                 }
                 Spacer(Modifier.width(4.dp))
-                Text("Cart".uppercase())
+                Text(
+                    text = "Cart".uppercase(),
+                    style = MaterialTheme.typography.subtitle1
+                )
                 Spacer(Modifier.width(12.dp))
                 Text(
                     if (itemSize != 1) { "$itemSize items" }
@@ -405,10 +424,12 @@ fun CartBottomSheetPreview() {
         ) {
             var sheetState by remember { mutableStateOf(CartBottomSheetState.Collapsed) }
             val cartItems = remember { mutableStateListOf(*SampleItemsData.take(10).toTypedArray()) }
+            val wishlist = remember { SampleItemsData.takeLast(10) }
 
             CartBottomSheet(
                 modifier = Modifier.align(Alignment.BottomEnd),
                 items = cartItems,
+                wishlist = wishlist,
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
                 sheetState = sheetState,

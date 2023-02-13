@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddShoppingCart
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +34,7 @@ fun CatalogueCard(
     modifier: Modifier = Modifier,
     data: ItemData,
     addToCart: (FirstCartItemData) -> Unit = {},
+    addToWishlist: (ItemData) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit = {}
 ) {
     var imageSize by remember { mutableStateOf(IntSize.Zero) }
@@ -52,11 +55,19 @@ fun CatalogueCard(
                     .fillMaxHeight()
                     .onGloballyPositioned { imageSize = it.size }
             )
-            IconButton(onClick = { addToCart(FirstCartItemData(data, imageSize, position)) }) {
-                Icon(
-                    imageVector = Icons.Outlined.AddShoppingCart,
-                    contentDescription = "Add to cart"
-                )
+            Column {
+                IconButton(onClick = { addToCart(FirstCartItemData(data, imageSize, position)) }) {
+                    Icon(
+                        imageVector = Icons.Outlined.AddShoppingCart,
+                        contentDescription = "Add to cart"
+                    )
+                }
+                IconButton(onClick = { addToWishlist(data) }) {
+                    Icon(
+                        imageVector = Icons.Outlined.FavoriteBorder,
+                        contentDescription = "Add to wishlist"
+                    )
+                }
             }
             Image(
                 painter = painterResource(id = getVendorResId(data.vendor)),
@@ -109,6 +120,7 @@ fun Catalogue(
     modifier: Modifier = Modifier,
     items: List<ItemData>,
     addToCart: (FirstCartItemData) -> Unit = {},
+    addToWishlist: (ItemData) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -140,6 +152,7 @@ fun Catalogue(
                                 .align(Alignment.End),
                             data = item[1],
                             addToCart = addToCart,
+                            addToWishlist = addToWishlist,
                             navigateToDetail = navigateToDetail
                         )
                         Spacer(Modifier.height(40.dp))
@@ -149,6 +162,7 @@ fun Catalogue(
                                 .fillMaxWidth(0.85f),
                             data = item[0],
                             addToCart = addToCart,
+                            addToWishlist = addToWishlist,
                             navigateToDetail = navigateToDetail
                         )
                     } else {
@@ -160,6 +174,7 @@ fun Catalogue(
                                     .align(Alignment.Bottom),
                                 data = item[0],
                                 addToCart = addToCart,
+                                addToWishlist = addToWishlist,
                                 navigateToDetail = navigateToDetail
                             )
                         }
@@ -171,6 +186,7 @@ fun Catalogue(
                             .fillMaxHeight(0.5f),
                         data = item[0],
                         addToCart = addToCart,
+                        addToWishlist = addToWishlist,
                         navigateToDetail = navigateToDetail
                     )
                 }

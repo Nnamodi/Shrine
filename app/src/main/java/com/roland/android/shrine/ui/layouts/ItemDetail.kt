@@ -140,7 +140,8 @@ fun ItemDetail(
 }
 
 @Composable
-private fun OtherItems(
+fun OtherItems(
+    modifier: Modifier = Modifier,
     header: String,
     bottomPadding: Dp,
     otherItems: List<ItemData>,
@@ -148,30 +149,32 @@ private fun OtherItems(
     navigateToDetail: (ItemData) -> Unit
 ) {
     if (otherItems.isNotEmpty()) {
-        Text(
-            text = header.uppercase(),
-            style = MaterialTheme.typography.subtitle1,
-            modifier = Modifier.padding(20.dp)
-        )
-    }
-    LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = bottomPadding),
-        contentPadding = PaddingValues(start = 20.dp)
-    ) {
-        itemsIndexed(
-            items = otherItems,
-            key = { _, item -> item.id }
-        ) { _, item ->
-            CatalogueCard(
-                data = item,
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(end = 20.dp),
-                addToCart = addToCart,
-                navigateToDetail = navigateToDetail
+        Column(modifier) {
+            Text(
+                text = header.uppercase(),
+                style = MaterialTheme.typography.subtitle1,
+                modifier = Modifier.padding(20.dp)
             )
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = bottomPadding),
+                contentPadding = PaddingValues(start = 20.dp)
+            ) {
+                itemsIndexed(
+                    items = otherItems,
+                    key = { _, item -> item.id }
+                ) { _, item ->
+                    CatalogueCard(
+                        data = item,
+                        modifier = Modifier
+                            .size(200.dp)
+                            .padding(end = 20.dp),
+                        addToCart = addToCart,
+                        navigateToDetail = navigateToDetail
+                    )
+                }
+            }
         }
     }
 }

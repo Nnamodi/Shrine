@@ -31,6 +31,7 @@ fun StartScreen(
 ) {
     var sheetState by rememberSaveable  { mutableStateOf(CartBottomSheetState.Collapsed) }
     val cartItems = sharedViewModel.cartItems
+    val wishlist = sharedViewModel.wishlist
     var firstCartItem by remember { mutableStateOf<FirstCartItemData?>(null) }
 
     BoxWithConstraints(
@@ -48,11 +49,15 @@ fun StartScreen(
                 sharedViewModel.addScreen(it)
                 navigateToDetail(it)
             },
+            addToWishlist = {
+                sharedViewModel.addToWishlist(it)
+            },
             logout = logout
         )
         CartBottomSheet(
             modifier = Modifier.align(Alignment.BottomEnd),
             items = cartItems,
+            wishlist = wishlist,
             maxHeight = maxHeight,
             maxWidth = maxWidth,
             sheetState = sheetState,

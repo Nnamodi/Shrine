@@ -16,12 +16,22 @@ class SharedViewModel : ViewModel() {
 
     val cartItems = mutableStateListOf(*SampleItemsData.take(0).toTypedArray())
 
+    val wishlist = mutableStateListOf(*SampleItemsData.take(0).toTypedArray())
+
     fun addToCart(item: ItemData) {
         cartItems.add(item)
     }
 
     fun removeFromCart(index: Int) {
         cartItems.removeAt(index)
+    }
+
+    fun addToWishlist(item: ItemData) {
+        wishlist.add(item)
+    }
+
+    fun removeFromWishlist(index: Int) {
+        wishlist.removeAt(index)
     }
 
     fun addScreen(data: ItemData) {
