@@ -72,14 +72,15 @@ fun ExpandedCart(
             }
             item {
                 OtherItems(
+                    header = "Wishlist",
                     modifier = Modifier
                         .background(color = MaterialTheme.colors.surface)
                         .padding(vertical = 24.dp),
-                    header = "Wishlist",
                     bottomPadding = 60.dp,
                     otherItems = wishlist,
                     addToCart = {},
-                    navigateToDetail = {}
+                    navigateToDetail = {},
+                    shownInWishlist = true
                 )
             }
         }

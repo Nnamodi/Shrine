@@ -35,10 +35,14 @@ fun CatalogueCard(
     data: ItemData,
     addToCart: (FirstCartItemData) -> Unit = {},
     addToWishlist: (ItemData) -> Unit = {},
-    navigateToDetail: (ItemData) -> Unit = {}
+    navigateToDetail: (ItemData) -> Unit = {},
+    shownInWishlist: Boolean = false
 ) {
     var imageSize by remember { mutableStateOf(IntSize.Zero) }
     var position by remember { mutableStateOf(Offset.Zero) }
+    var favourited by remember { mutableStateOf(Icons.Outlined.FavoriteBorder) }
+    val favouriteIcon = if (favourited == Icons.Outlined.Favorite || data.favourited) {
+        Icons.Outlined.Favorite } else { Icons.Outlined.FavoriteBorder }
 
     Column(
         modifier = modifier.clickable { navigateToDetail(data) }
@@ -55,18 +59,20 @@ fun CatalogueCard(
                     .fillMaxHeight()
                     .onGloballyPositioned { imageSize = it.size }
             )
-            Column {
-                IconButton(onClick = { addToCart(FirstCartItemData(data, imageSize, position)) }) {
-                    Icon(
-                        imageVector = Icons.Outlined.AddShoppingCart,
-                        contentDescription = "Add to cart"
-                    )
-                }
-                IconButton(onClick = { addToWishlist(data) }) {
-                    Icon(
-                        imageVector = Icons.Outlined.FavoriteBorder,
-                        contentDescription = "Add to wishlist"
-                    )
+            if (!shownInWishlist) {
+                Column {
+                    IconButton(onClick = { addToCart(FirstCartItemData(data, imageSize, position)) }) {
+                        Icon(
+                            imageVector = Icons.Outlined.AddShoppingCart,
+                            contentDescription = "Add to cart"
+                        )
+                    }
+                    IconButton(onClick = { addToWishlist(data); favourited = Icons.Outlined.Favorite }) {
+                        Icon(
+                            imageVector = favouriteIcon,
+                            contentDescription = "Add to wishlist"
+                        )
+                    }
                 }
             }
             Image(

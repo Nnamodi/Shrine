@@ -34,6 +34,7 @@ import kotlin.math.max
 fun ItemDetail(
     item: ItemData,
     addToCart:(FirstCartItemData) -> Unit = {},
+    addToWishlist:(ItemData) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit = {},
     onNavigateUp: () -> Unit = {}
 ) {
@@ -126,6 +127,7 @@ fun ItemDetail(
                 bottomPadding = 20.dp,
                 otherItems = SampleItemsData.filter { it.vendor == item.vendor && it != item },
                 addToCart = addToCart,
+                addToWishlist = addToWishlist,
                 navigateToDetail = navigateToDetail
             )
             OtherItems(
@@ -133,6 +135,7 @@ fun ItemDetail(
                 bottomPadding = 60.dp,
                 otherItems = SampleItemsData.filter { it.category == item.category && it != item },
                 addToCart = addToCart,
+                addToWishlist = addToWishlist,
                 navigateToDetail = navigateToDetail
             )
         }
@@ -146,15 +149,25 @@ fun OtherItems(
     bottomPadding: Dp,
     otherItems: List<ItemData>,
     addToCart: (FirstCartItemData) -> Unit,
-    navigateToDetail: (ItemData) -> Unit
+    addToWishlist: (ItemData) -> Unit = {},
+    navigateToDetail: (ItemData) -> Unit,
+    shownInWishlist: Boolean = false
 ) {
     if (otherItems.isNotEmpty()) {
         Column(modifier) {
-            Text(
-                text = header.uppercase(),
-                style = MaterialTheme.typography.subtitle1,
-                modifier = Modifier.padding(20.dp)
-            )
+            Row {
+                Text(
+                    text = header.uppercase(),
+                    style = MaterialTheme.typography.subtitle1,
+                    modifier = Modifier.padding(start = 20.dp, top = 20.dp, bottom = 20.dp)
+                )
+                if (shownInWishlist) {
+                    Text(
+                        text = "(${otherItems.size})",
+                        modifier = Modifier.padding(vertical = 20.dp, horizontal = 12.dp)
+                    )
+                }
+            }
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -171,7 +184,9 @@ fun OtherItems(
                             .size(200.dp)
                             .padding(end = 20.dp),
                         addToCart = addToCart,
-                        navigateToDetail = navigateToDetail
+                        addToWishlist = addToWishlist,
+                        navigateToDetail = navigateToDetail,
+                        shownInWishlist = shownInWishlist
                     )
                 }
             }

@@ -43,6 +43,9 @@ fun DetailScreen(
                     if (cartItems.isEmpty()) firstCartItem = it
                     sharedViewModel.addToCart(it.data)
                 },
+                addToWishlist = {
+                    sharedViewModel.addToWishlist(it)
+                },
                 navigateToDetail = {
                     sharedViewModel.addScreen(it)
                     navigateToDetail(it)
