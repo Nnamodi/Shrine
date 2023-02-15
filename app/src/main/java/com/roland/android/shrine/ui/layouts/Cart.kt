@@ -76,7 +76,7 @@ fun ExpandedCart(
                     modifier = Modifier
                         .background(color = MaterialTheme.colors.surface)
                         .padding(vertical = 24.dp),
-                    bottomPadding = 60.dp,
+                    bottomPadding = 40.dp,
                     otherItems = wishlist,
                     addToCart = {},
                     navigateToDetail = {},

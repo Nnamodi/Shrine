@@ -50,6 +50,7 @@ fun DetailScreen(
                     sharedViewModel.addScreen(it)
                     navigateToDetail(it)
                 },
+                onViewWishlist = { sheetState = it },
                 onNavigateUp = {
                     onNavigateUp()
                     sharedViewModel.removeLastScreen()

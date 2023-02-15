@@ -29,7 +29,7 @@ fun StartScreen(
     sharedViewModel: SharedViewModel,
     logout: () -> Unit = {}
 ) {
-    var sheetState by rememberSaveable  { mutableStateOf(CartBottomSheetState.Collapsed) }
+    var sheetState by rememberSaveable { mutableStateOf(CartBottomSheetState.Collapsed) }
     val cartItems = sharedViewModel.cartItems
     val wishlist = sharedViewModel.wishlist
     var firstCartItem by remember { mutableStateOf<FirstCartItemData?>(null) }
@@ -52,6 +52,7 @@ fun StartScreen(
             addToWishlist = {
                 sharedViewModel.addToWishlist(it)
             },
+            onViewWishlist = { sheetState = it },
             logout = logout
         )
         CartBottomSheet(

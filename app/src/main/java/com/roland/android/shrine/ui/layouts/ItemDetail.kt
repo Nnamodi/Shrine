@@ -10,6 +10,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.AddShoppingCart
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,8 +28,10 @@ import androidx.compose.ui.unit.dp
 import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.getVendorResId
+import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
+import kotlinx.coroutines.launch
 import kotlin.math.max
 
 @Composable
@@ -36,15 +40,33 @@ fun ItemDetail(
     addToCart:(FirstCartItemData) -> Unit = {},
     addToWishlist:(ItemData) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit = {},
+    onViewWishlist: (CartBottomSheetState) -> Unit = {},
     onNavigateUp: () -> Unit = {}
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val screenHeight = LocalConfiguration.current.screenHeightDp / 2.5
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     var imageSize by remember { mutableStateOf(IntSize.Zero) }
     var position by remember { mutableStateOf(Offset.Zero) }
+    var favourited by remember { mutableStateOf(Icons.Outlined.FavoriteBorder) }
+    val favouriteIcon = if (favourited == Icons.Outlined.Favorite || item.favourited) {
+        Icons.Outlined.Favorite } else { Icons.Outlined.FavoriteBorder }
 
-    Surface(
-        color = MaterialTheme.colors.surface
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) {
+                Snackbar(
+                    modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 60.dp),
+                    action = {
+                        TextButton(onClick = { onViewWishlist(CartBottomSheetState.Expanded) }) {
+                            Text("View")
+                        }
+                    }
+                ) { Text("Item added to wishlist") }
+            }
+        },
+        backgroundColor = MaterialTheme.colors.surface
     ) {
         Column(
             modifier = Modifier
@@ -107,18 +129,33 @@ fun ItemDetail(
                     Text("Handmade item, carved from the trunk of an African Iroko tree to soothe your desire. Is very suitable for many, if not all, purposes.")
                 }
                 Divider(color = MaterialTheme.colors.onSurface.copy(alpha =  0.3f))
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 16.dp),
-                    onClick = { addToCart(FirstCartItemData(item, imageSize, position)) }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.AddShoppingCart,
-                        contentDescription = null,
-                        modifier = Modifier.padding(end = 16.dp)
-                    )
-                    Text("Add to cart".uppercase())
+                    Button(
+                        modifier = Modifier
+                            .padding(vertical = 16.dp)
+                            .weight(1f),
+                        onClick = { addToCart(FirstCartItemData(item, imageSize, position)) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.AddShoppingCart,
+                            contentDescription = null,
+                            modifier = Modifier.padding(end = 16.dp)
+                        )
+                        Text("Add to cart".uppercase())
+                    }
+                    IconButton(onClick = {
+                        if (!item.favourited) {
+                            addToWishlist(item); favourited = Icons.Outlined.Favorite
+                            scope.launch { snackbarHostState.showSnackbar("") }
+                        }
+                    }) {
+                        Icon(
+                            imageVector = favouriteIcon,
+                            contentDescription = "Add to wishlist"
+                        )
+                    }
                 }
                 Divider(color = MaterialTheme.colors.onSurface.copy(alpha =  0.3f))
             }
@@ -127,7 +164,10 @@ fun ItemDetail(
                 bottomPadding = 20.dp,
                 otherItems = SampleItemsData.filter { it.vendor == item.vendor && it != item },
                 addToCart = addToCart,
-                addToWishlist = addToWishlist,
+                addToWishlist = {
+                    scope.launch { snackbarHostState.showSnackbar("") }
+                    addToWishlist(it)
+                },
                 navigateToDetail = navigateToDetail
             )
             OtherItems(
@@ -135,7 +175,10 @@ fun ItemDetail(
                 bottomPadding = 60.dp,
                 otherItems = SampleItemsData.filter { it.category == item.category && it != item },
                 addToCart = addToCart,
-                addToWishlist = addToWishlist,
+                addToWishlist = {
+                    scope.launch { snackbarHostState.showSnackbar("") }
+                    addToWishlist(it)
+                },
                 navigateToDetail = navigateToDetail
             )
         }
@@ -184,7 +227,7 @@ fun OtherItems(
                             .size(200.dp)
                             .padding(end = 20.dp),
                         addToCart = addToCart,
-                        addToWishlist = addToWishlist,
+                        addToWishlist = { if (!item.favourited) { addToWishlist(item) } },
                         navigateToDetail = navigateToDetail,
                         shownInWishlist = shownInWishlist
                     )

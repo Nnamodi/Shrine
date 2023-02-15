@@ -35,6 +35,7 @@ import com.roland.android.shrine.R
 import com.roland.android.shrine.data.Category
 import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
+import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
 import kotlinx.coroutines.launch
@@ -48,8 +49,10 @@ fun BackDrop(
     addToCart: (FirstCartItemData) -> Unit = {},
     addToWishlist: (ItemData) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit = {},
+    onViewWishlist: (CartBottomSheetState) -> Unit = {},
     logout: () -> Unit = {}
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var menuSelection by rememberSaveable { mutableStateOf(Category.All) }
     val scaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
@@ -95,13 +98,28 @@ fun BackDrop(
                     menuSelection == Category.All || it.category == menuSelection
                 },
                 addToCart = addToCart,
-                addToWishlist = addToWishlist,
+                addToWishlist = {
+                    scope.launch { snackbarHostState.showSnackbar("") }
+                    addToWishlist(it)
+                },
                 navigateToDetail = navigateToDetail
             )
         },
         frontLayerShape = MaterialTheme.shapes.large,
         gesturesEnabled = false,
-        scaffoldState = scaffoldState
+        scaffoldState = scaffoldState,
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) {
+                Snackbar(
+                    modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 60.dp),
+                    action = {
+                        TextButton(onClick = { onViewWishlist(CartBottomSheetState.Expanded) }) {
+                            Text("View")
+                        }
+                    }
+                ) { Text("Item added to wishlist") }
+            }
+        }
     )
 }
 

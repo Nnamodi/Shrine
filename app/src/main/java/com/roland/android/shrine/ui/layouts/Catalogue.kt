@@ -45,7 +45,8 @@ fun CatalogueCard(
         Icons.Outlined.Favorite } else { Icons.Outlined.FavoriteBorder }
 
     Column(
-        modifier = modifier.clickable { navigateToDetail(data) }
+        modifier = modifier
+            .clickable { navigateToDetail(data) }
             .onGloballyPositioned { position = it.positionInRoot() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -158,7 +159,7 @@ fun Catalogue(
                                 .align(Alignment.End),
                             data = item[1],
                             addToCart = addToCart,
-                            addToWishlist = addToWishlist,
+                            addToWishlist = { if (!item[1].favourited) { addToWishlist(item[1]) } },
                             navigateToDetail = navigateToDetail
                         )
                         Spacer(Modifier.height(40.dp))
@@ -168,7 +169,7 @@ fun Catalogue(
                                 .fillMaxWidth(0.85f),
                             data = item[0],
                             addToCart = addToCart,
-                            addToWishlist = addToWishlist,
+                            addToWishlist = { if (!item[0].favourited) { addToWishlist(item[0]) } },
                             navigateToDetail = navigateToDetail
                         )
                     } else {
@@ -180,7 +181,7 @@ fun Catalogue(
                                     .align(Alignment.Bottom),
                                 data = item[0],
                                 addToCart = addToCart,
-                                addToWishlist = addToWishlist,
+                                addToWishlist = { if (!item[0].favourited) { addToWishlist(item[0]) } },
                                 navigateToDetail = navigateToDetail
                             )
                         }
@@ -192,7 +193,7 @@ fun Catalogue(
                             .fillMaxHeight(0.5f),
                         data = item[0],
                         addToCart = addToCart,
-                        addToWishlist = addToWishlist,
+                        addToWishlist = { if (!item[0].favourited) { addToWishlist(item[0]) } },
                         navigateToDetail = navigateToDetail
                     )
                 }
