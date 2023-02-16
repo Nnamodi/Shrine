@@ -52,6 +52,9 @@ fun StartScreen(
             addToWishlist = {
                 sharedViewModel.addToWishlist(it)
             },
+            removeFromWishlist = {
+                sharedViewModel.removeFromWishlist(it)
+            },
             onViewWishlist = { sheetState = it },
             logout = logout
         )
@@ -64,6 +67,10 @@ fun StartScreen(
             sheetState = sheetState,
             isFirstItem = firstCartItem != null,
             onSheetStateChanged = { sheetState = it },
+            navigateToDetail = {
+                sharedViewModel.addScreen(it)
+                navigateToDetail(it)
+            },
             onRemoveFromCart = {
                 sharedViewModel.removeFromCart(it)
                 if (cartItems.isEmpty()) {

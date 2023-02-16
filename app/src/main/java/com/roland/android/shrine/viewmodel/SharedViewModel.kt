@@ -27,14 +27,13 @@ class SharedViewModel : ViewModel() {
     }
 
     fun addToWishlist(item: ItemData) {
-        if (!item.favourited) {
-            wishlist.add(item)
-            item.favourited = true
-        }
+        wishlist.add(item)
+        item.favourited = true
     }
 
-    fun removeFromWishlist(index: Int) {
-        wishlist.removeAt(index)
+    fun removeFromWishlist(item: ItemData) {
+        wishlist.remove(item)
+        item.favourited = false
     }
 
     fun addScreen(data: ItemData) {

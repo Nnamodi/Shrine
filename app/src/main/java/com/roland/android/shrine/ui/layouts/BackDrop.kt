@@ -38,6 +38,7 @@ import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
+import com.roland.android.shrine.utils.SnackbarMessage
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -48,12 +49,14 @@ fun BackDrop(
     onReveal: (Boolean) -> Unit = {},
     addToCart: (FirstCartItemData) -> Unit = {},
     addToWishlist: (ItemData) -> Unit = {},
+    removeFromWishlist: (ItemData) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit = {},
     onViewWishlist: (CartBottomSheetState) -> Unit = {},
     logout: () -> Unit = {}
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    var favourite by remember { mutableStateOf(false) }
     var menuSelection by rememberSaveable { mutableStateOf(Category.All) }
     val scaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
     var backdropRevealed by rememberSaveable { mutableStateOf(scaffoldState.isRevealed) }
@@ -99,8 +102,12 @@ fun BackDrop(
                 },
                 addToCart = addToCart,
                 addToWishlist = {
+                    addToWishlist(it); favourite = true
                     scope.launch { snackbarHostState.showSnackbar("") }
-                    addToWishlist(it)
+                },
+                removeFromWishlist = {
+                    removeFromWishlist(it); favourite = false
+                    scope.launch { snackbarHostState.showSnackbar("") }
                 },
                 navigateToDetail = navigateToDetail
             )
@@ -113,11 +120,13 @@ fun BackDrop(
                 Snackbar(
                     modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 60.dp),
                     action = {
-                        TextButton(onClick = { onViewWishlist(CartBottomSheetState.Expanded) }) {
-                            Text("View")
+                        if (favourite) {
+                            TextButton(onClick = { onViewWishlist(CartBottomSheetState.Expanded) }) {
+                                Text("View")
+                            }
                         }
                     }
-                ) { Text("Item added to wishlist") }
+                ) { SnackbarMessage(favourite) }
             }
         }
     )

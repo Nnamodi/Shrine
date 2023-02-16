@@ -46,6 +46,9 @@ fun DetailScreen(
                 addToWishlist = {
                     sharedViewModel.addToWishlist(it)
                 },
+                removeFromWishlist = {
+                    sharedViewModel.removeFromWishlist(it)
+                },
                 navigateToDetail = {
                     sharedViewModel.addScreen(it)
                     navigateToDetail(it)
@@ -65,6 +68,10 @@ fun DetailScreen(
                 sheetState = sheetState,
                 isFirstItem = firstCartItem != null,
                 onSheetStateChanged = { sheetState = it },
+                navigateToDetail = {
+                    sharedViewModel.addScreen(it)
+                    navigateToDetail(it)
+                },
                 onRemoveFromCart = {
                     sharedViewModel.removeFromCart(it)
                     if (cartItems.isEmpty()) {

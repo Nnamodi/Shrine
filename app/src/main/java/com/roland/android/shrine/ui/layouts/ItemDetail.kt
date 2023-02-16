@@ -31,6 +31,8 @@ import com.roland.android.shrine.data.getVendorResId
 import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
+import com.roland.android.shrine.utils.SnackbarMessage
+import com.roland.android.shrine.utils.onFavoriteClicked
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
@@ -38,7 +40,8 @@ import kotlin.math.max
 fun ItemDetail(
     item: ItemData,
     addToCart:(FirstCartItemData) -> Unit = {},
-    addToWishlist:(ItemData) -> Unit = {},
+    addToWishlist: (ItemData) -> Unit = {},
+    removeFromWishlist: (ItemData) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit = {},
     onViewWishlist: (CartBottomSheetState) -> Unit = {},
     onNavigateUp: () -> Unit = {}
@@ -49,6 +52,7 @@ fun ItemDetail(
     val scope = rememberCoroutineScope()
     var imageSize by remember { mutableStateOf(IntSize.Zero) }
     var position by remember { mutableStateOf(Offset.Zero) }
+    var favourite by remember { mutableStateOf(false) }
     var favourited by remember { mutableStateOf(Icons.Outlined.FavoriteBorder) }
     val favouriteIcon = if (favourited == Icons.Outlined.Favorite || item.favourited) {
         Icons.Outlined.Favorite } else { Icons.Outlined.FavoriteBorder }
@@ -59,11 +63,13 @@ fun ItemDetail(
                 Snackbar(
                     modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 60.dp),
                     action = {
-                        TextButton(onClick = { onViewWishlist(CartBottomSheetState.Expanded) }) {
-                            Text("View")
+                        if (favourite) {
+                            TextButton(onClick = { onViewWishlist(CartBottomSheetState.Expanded) }) {
+                                Text("View")
+                            }
                         }
                     }
-                ) { Text("Item added to wishlist") }
+                ) { SnackbarMessage(favourite) }
             }
         },
         backgroundColor = MaterialTheme.colors.surface
@@ -146,10 +152,9 @@ fun ItemDetail(
                         Text("Add to cart".uppercase())
                     }
                     IconButton(onClick = {
-                        if (!item.favourited) {
-                            addToWishlist(item); favourited = Icons.Outlined.Favorite
-                            scope.launch { snackbarHostState.showSnackbar("") }
-                        }
+                        onFavoriteClicked(item, addToWishlist, removeFromWishlist) { favourited = it }
+                        favourite = item.favourited
+                        scope.launch { snackbarHostState.showSnackbar("") }
                     }) {
                         Icon(
                             imageVector = favouriteIcon,
@@ -165,8 +170,12 @@ fun ItemDetail(
                 otherItems = SampleItemsData.filter { it.vendor == item.vendor && it != item },
                 addToCart = addToCart,
                 addToWishlist = {
+                    addToWishlist(it); favourite = true
                     scope.launch { snackbarHostState.showSnackbar("") }
-                    addToWishlist(it)
+                },
+                removeFromWishlist = {
+                    removeFromWishlist(it); favourite = false
+                    scope.launch { snackbarHostState.showSnackbar("") }
                 },
                 navigateToDetail = navigateToDetail
             )
@@ -176,8 +185,12 @@ fun ItemDetail(
                 otherItems = SampleItemsData.filter { it.category == item.category && it != item },
                 addToCart = addToCart,
                 addToWishlist = {
+                    addToWishlist(it); favourite = true
                     scope.launch { snackbarHostState.showSnackbar("") }
-                    addToWishlist(it)
+                },
+                removeFromWishlist = {
+                    removeFromWishlist(it); favourite = false
+                    scope.launch { snackbarHostState.showSnackbar("") }
                 },
                 navigateToDetail = navigateToDetail
             )
@@ -193,6 +206,7 @@ fun OtherItems(
     otherItems: List<ItemData>,
     addToCart: (FirstCartItemData) -> Unit,
     addToWishlist: (ItemData) -> Unit = {},
+    removeFromWishlist: (ItemData) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit,
     shownInWishlist: Boolean = false
 ) {
@@ -227,7 +241,8 @@ fun OtherItems(
                             .size(200.dp)
                             .padding(end = 20.dp),
                         addToCart = addToCart,
-                        addToWishlist = { if (!item.favourited) { addToWishlist(item) } },
+                        addToWishlist = addToWishlist,
+                        removeFromWishlist = removeFromWishlist,
                         navigateToDetail = navigateToDetail,
                         shownInWishlist = shownInWishlist
                     )
@@ -241,6 +256,6 @@ fun OtherItems(
 @Composable
 fun ItemDetailPreview() {
     ShrineTheme {
-        ItemDetail(SampleItemsData[17])
+        ItemDetail(SampleItemsData[10])
     }
 }

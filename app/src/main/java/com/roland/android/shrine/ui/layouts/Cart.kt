@@ -42,6 +42,7 @@ fun ExpandedCart(
     expandedCartItems: List<ExpandedCartItem>,
     wishlist: List<ItemData>,
     onCollapse: () -> Unit = {},
+    navigateToDetail: (ItemData) -> Unit = {},
     removeFromCart: (ExpandedCartItem) -> Unit = {}
 ) {
     Surface(
@@ -66,7 +67,8 @@ fun ExpandedCart(
                     CartItem(
                         item = item.data,
                         itemIsFirst = expandedCartItems.first() == item,
-                        removeFromCart = { removeFromCart(item) }
+                        removeFromCart = { removeFromCart(item) },
+                        navigateToDetail = navigateToDetail
                     )
                 }
             }
@@ -79,7 +81,7 @@ fun ExpandedCart(
                     bottomPadding = 40.dp,
                     otherItems = wishlist,
                     addToCart = {},
-                    navigateToDetail = {},
+                    navigateToDetail = navigateToDetail,
                     shownInWishlist = true
                 )
             }
@@ -165,6 +167,7 @@ fun CartBottomSheet(
     sheetState: CartBottomSheetState,
     isFirstItem: Boolean = false,
     onRemoveFromCart: (Int) -> Unit = {},
+    navigateToDetail: (ItemData) -> Unit = {},
     onSheetStateChanged: (CartBottomSheetState) -> Unit = {}
 ) {
     val expandedCartItems by remember(items) {
@@ -272,6 +275,7 @@ fun CartBottomSheet(
                         expandedCartItems = expandedCartItems,
                         wishlist = wishlist,
                         onCollapse = { onSheetStateChanged(CartBottomSheetState.Collapsed) },
+                        navigateToDetail = navigateToDetail,
                         removeFromCart = { it.visible.targetState = false }
                     )
                 } else {
@@ -353,18 +357,21 @@ private fun CartHeader(
 private fun CartItem(
     item: ItemData,
     itemIsFirst: Boolean = false,
-    removeFromCart: (ItemData) -> Unit = {}
+    removeFromCart: (ItemData) -> Unit = {},
+    navigateToDetail: (ItemData) -> Unit = {}
 ) {
     Surface(
         color = MaterialTheme.colors.surface
     ) {
         Row(
-            Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { navigateToDetail(item) },
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
                 onClick = { removeFromCart(item) },
-                Modifier.padding(horizontal = 4.dp)
+                Modifier.padding(start = 4.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.RemoveCircleOutline,
@@ -383,7 +390,9 @@ private fun CartItem(
                 ) {
                     Image(
                         painter = painterResource(id = item.photoResId),
-                        modifier = Modifier.size(width = 100.dp, height = 100.dp),
+                        modifier = Modifier
+                            .size(width = 100.dp, height = 100.dp)
+                            .padding(start = 4.dp),
                         contentDescription = item.title
                     )
                     Spacer(modifier = Modifier.padding(end = 16.dp))

@@ -28,6 +28,7 @@ import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.getVendorResId
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
+import com.roland.android.shrine.utils.onFavoriteClicked
 
 @Composable
 fun CatalogueCard(
@@ -35,6 +36,7 @@ fun CatalogueCard(
     data: ItemData,
     addToCart: (FirstCartItemData) -> Unit = {},
     addToWishlist: (ItemData) -> Unit = {},
+    removeFromWishlist: (ItemData) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit = {},
     shownInWishlist: Boolean = false
 ) {
@@ -68,7 +70,9 @@ fun CatalogueCard(
                             contentDescription = "Add to cart"
                         )
                     }
-                    IconButton(onClick = { addToWishlist(data); favourited = Icons.Outlined.Favorite }) {
+                    IconButton(onClick = {
+                        onFavoriteClicked(data, addToWishlist, removeFromWishlist) { favourited = it }
+                    }) {
                         Icon(
                             imageVector = favouriteIcon,
                             contentDescription = "Add to wishlist"
@@ -128,6 +132,7 @@ fun Catalogue(
     items: List<ItemData>,
     addToCart: (FirstCartItemData) -> Unit = {},
     addToWishlist: (ItemData) -> Unit = {},
+    removeFromWishlist: (ItemData) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -159,7 +164,8 @@ fun Catalogue(
                                 .align(Alignment.End),
                             data = item[1],
                             addToCart = addToCart,
-                            addToWishlist = { if (!item[1].favourited) { addToWishlist(item[1]) } },
+                            addToWishlist = addToWishlist,
+                            removeFromWishlist = removeFromWishlist,
                             navigateToDetail = navigateToDetail
                         )
                         Spacer(Modifier.height(40.dp))
@@ -169,7 +175,8 @@ fun Catalogue(
                                 .fillMaxWidth(0.85f),
                             data = item[0],
                             addToCart = addToCart,
-                            addToWishlist = { if (!item[0].favourited) { addToWishlist(item[0]) } },
+                            addToWishlist = addToWishlist,
+                            removeFromWishlist = removeFromWishlist,
                             navigateToDetail = navigateToDetail
                         )
                     } else {
@@ -181,7 +188,8 @@ fun Catalogue(
                                     .align(Alignment.Bottom),
                                 data = item[0],
                                 addToCart = addToCart,
-                                addToWishlist = { if (!item[0].favourited) { addToWishlist(item[0]) } },
+                                addToWishlist = addToWishlist,
+                                removeFromWishlist = removeFromWishlist,
                                 navigateToDetail = navigateToDetail
                             )
                         }
@@ -193,7 +201,8 @@ fun Catalogue(
                             .fillMaxHeight(0.5f),
                         data = item[0],
                         addToCart = addToCart,
-                        addToWishlist = { if (!item[0].favourited) { addToWishlist(item[0]) } },
+                        addToWishlist = addToWishlist,
+                        removeFromWishlist = removeFromWishlist,
                         navigateToDetail = navigateToDetail
                     )
                 }
