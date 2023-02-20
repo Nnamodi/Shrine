@@ -31,6 +31,7 @@ import com.roland.android.shrine.data.getVendorResId
 import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
+import com.roland.android.shrine.utils.ShowDialog
 import com.roland.android.shrine.utils.SnackbarMessage
 import com.roland.android.shrine.utils.onFavoriteClicked
 import kotlinx.coroutines.launch
@@ -53,9 +54,6 @@ fun ItemDetail(
     var imageSize by remember { mutableStateOf(IntSize.Zero) }
     var position by remember { mutableStateOf(Offset.Zero) }
     var favourite by remember { mutableStateOf(false) }
-    var favourited by remember { mutableStateOf(Icons.Outlined.FavoriteBorder) }
-    val favouriteIcon = if (favourited == Icons.Outlined.Favorite || item.favourited) {
-        Icons.Outlined.Favorite } else { Icons.Outlined.FavoriteBorder }
 
     Scaffold(
         snackbarHost = {
@@ -100,69 +98,20 @@ fun ItemDetail(
                     .padding(20.dp)
                     .align(Alignment.CenterHorizontally)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painterResource(id = getVendorResId(item.vendor)),
-                            contentDescription = "Logo of ${item.vendor}",
-                            modifier = Modifier.padding(end = 20.dp),
-                            contentScale = ContentScale.Crop
-                        )
-                        Text(
-                            text = item.vendor.name.uppercase(),
-                            style = MaterialTheme.typography.subtitle1
-                        )
-                    }
-                    Text(
-                        text = "$${item.price}",
-                        style = MaterialTheme.typography.h5
-                    )
-                }
-                Column(
-                    modifier = Modifier.padding(top = 24.dp, bottom = 24.dp)
-                ) {
-                    Text(
-                        text = item.title,
-                        style = MaterialTheme.typography.h3
-                    )
-                    Spacer(Modifier.height(24.dp))
-                    Text("Handmade item, carved from the trunk of an African Iroko tree to soothe your desire. Is very suitable for many, if not all, purposes.")
-                }
-                Divider(color = MaterialTheme.colors.onSurface.copy(alpha =  0.3f))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Button(
-                        modifier = Modifier
-                            .padding(vertical = 16.dp)
-                            .weight(1f),
-                        onClick = { addToCart(FirstCartItemData(item, imageSize, position)) }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.AddShoppingCart,
-                            contentDescription = null,
-                            modifier = Modifier.padding(end = 16.dp)
-                        )
-                        Text("Add to cart".uppercase())
-                    }
-                    IconButton(onClick = {
-                        onFavoriteClicked(item, addToWishlist, removeFromWishlist) { favourited = it }
-                        favourite = item.favourited
+                Description(
+                    item = item,
+                    imageSize = imageSize,
+                    position = position,
+                    addToCart = addToCart,
+                    addToWishlist = {
+                        addToWishlist(item); favourite = true
                         scope.launch { snackbarHostState.showSnackbar("") }
-                    }) {
-                        Icon(
-                            imageVector = favouriteIcon,
-                            contentDescription = "Add to wishlist"
-                        )
+                    },
+                    removeFromWishlist = {
+                        removeFromWishlist(item); favourite = false
+                        scope.launch { snackbarHostState.showSnackbar("") }
                     }
-                }
-                Divider(color = MaterialTheme.colors.onSurface.copy(alpha =  0.3f))
+                )
             }
             OtherItems(
                 header = "More from ${item.vendor.name}",
@@ -195,6 +144,92 @@ fun ItemDetail(
                 navigateToDetail = navigateToDetail
             )
         }
+    }
+}
+
+@Composable
+private fun Description(
+    item: ItemData,
+    imageSize: IntSize,
+    position: Offset,
+    addToCart: (FirstCartItemData) -> Unit,
+    addToWishlist: (ItemData) -> Unit,
+    removeFromWishlist: (ItemData) -> Unit
+) {
+    val openDialog = remember { mutableStateOf(false) }
+    var favourited by remember { mutableStateOf(Icons.Outlined.FavoriteBorder) }
+    val favouriteIcon = if (favourited == Icons.Outlined.Favorite || item.favourited) {
+        Icons.Outlined.Favorite } else { Icons.Outlined.FavoriteBorder }
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painterResource(id = getVendorResId(item.vendor)),
+                contentDescription = "Logo of ${item.vendor}",
+                modifier = Modifier.padding(end = 20.dp),
+                contentScale = ContentScale.Crop
+            )
+            Text(
+                text = item.vendor.name.uppercase(),
+                style = MaterialTheme.typography.subtitle1
+            )
+        }
+        Text(
+            text = "$${item.price}",
+            style = MaterialTheme.typography.h5
+        )
+    }
+    Column(
+        modifier = Modifier.padding(top = 24.dp, bottom = 24.dp)
+    ) {
+        Text(
+            text = item.title,
+            style = MaterialTheme.typography.h3
+        )
+        Spacer(Modifier.height(24.dp))
+        Text("Handmade item, carved from the trunk of an African Iroko tree to soothe your desire. Is very suitable for many, if not all, purposes.")
+    }
+    Divider(color = MaterialTheme.colors.onSurface.copy(alpha = 0.3f))
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            modifier = Modifier
+                .padding(vertical = 16.dp)
+                .weight(1f),
+            onClick = { addToCart(FirstCartItemData(item, imageSize, position)) }
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.AddShoppingCart,
+                contentDescription = null,
+                modifier = Modifier.padding(end = 16.dp)
+            )
+            Text("Add to cart".uppercase())
+        }
+        IconButton(onClick = {
+            onFavoriteClicked(item, addToWishlist, { openDialog.value = it }) { favourited = it }
+        }) {
+            Icon(
+                imageVector = favouriteIcon,
+                contentDescription = "Add to wishlist"
+            )
+        }
+    }
+    Divider(color = MaterialTheme.colors.onSurface.copy(alpha = 0.3f))
+
+    if (openDialog.value) {
+        ShowDialog(
+            item = item,
+            removeFromWishlist = removeFromWishlist,
+            openDialog = { openDialog.value = it },
+            favoriteIcon = { favourited = it }
+        )
     }
 }
 

@@ -28,6 +28,7 @@ import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.getVendorResId
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
+import com.roland.android.shrine.utils.ShowDialog
 import com.roland.android.shrine.utils.onFavoriteClicked
 
 @Composable
@@ -40,6 +41,7 @@ fun CatalogueCard(
     navigateToDetail: (ItemData) -> Unit = {},
     shownInWishlist: Boolean = false
 ) {
+    val openDialog = remember { mutableStateOf(false) }
     var imageSize by remember { mutableStateOf(IntSize.Zero) }
     var position by remember { mutableStateOf(Offset.Zero) }
     var favourited by remember { mutableStateOf(Icons.Outlined.FavoriteBorder) }
@@ -71,7 +73,7 @@ fun CatalogueCard(
                         )
                     }
                     IconButton(onClick = {
-                        onFavoriteClicked(data, addToWishlist, removeFromWishlist) { favourited = it }
+                        onFavoriteClicked(data, addToWishlist, { openDialog.value = it }) { favourited = it }
                     }) {
                         Icon(
                             imageVector = favouriteIcon,
@@ -97,6 +99,15 @@ fun CatalogueCard(
             modifier = Modifier.padding(top = 8.dp, bottom = 20.dp),
             text = "$${data.price}",
             style = MaterialTheme.typography.body2
+        )
+    }
+
+    if (openDialog.value) {
+        ShowDialog(
+            item = data,
+            removeFromWishlist = removeFromWishlist,
+            openDialog = { openDialog.value = it },
+            favoriteIcon = { favourited = it }
         )
     }
 }
