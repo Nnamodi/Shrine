@@ -24,11 +24,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.roland.android.shrine.R
 import com.roland.android.shrine.data.ExpandedCartItem
 import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
@@ -73,8 +75,16 @@ fun ExpandedCart(
                 }
             }
             item {
+                if (expandedCartItems.isNotEmpty()) {
+                    CartSummedValue(
+                        modifier = Modifier.padding(start = 54.dp),
+                        items = expandedCartItems
+                    )
+                }
+            }
+            item {
                 OtherItems(
-                    header = "Wishlist",
+                    header = stringResource(R.string.wishlist),
                     modifier = Modifier
                         .background(color = MaterialTheme.colors.surface)
                         .padding(vertical = 24.dp),
@@ -116,7 +126,7 @@ fun CollapsedCart(
         ) {
             Icon(
                 imageVector = Icons.Default.ShoppingCart,
-                contentDescription = "Shopping cart icon"
+                contentDescription = stringResource(R.string.shopping_icon_desc)
             )
         }
         items.take(3).forEach { item ->
@@ -311,10 +321,10 @@ private fun CheckoutButton() {
     ) {
         Icon(
             imageVector = Icons.Outlined.ShoppingCart,
-            contentDescription = "Shopping cart icon"
+            contentDescription = stringResource(R.string.shopping_icon_desc)
         )
         Spacer(Modifier.width(16.dp))
-        Text(text = "Proceed to checkout".uppercase())
+        Text(text = stringResource(R.string.checkout_button_text).uppercase())
     }
 }
 
@@ -334,18 +344,18 @@ private fun CartHeader(
                 IconButton(onClick = { onCollapse() }) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Collapse cart icon"
+                        contentDescription = stringResource(R.string.collapse_cart_desc)
                     )
                 }
                 Spacer(Modifier.width(4.dp))
                 Text(
-                    text = "Cart".uppercase(),
+                    text = stringResource(R.string.cart).uppercase(),
                     style = MaterialTheme.typography.subtitle1
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    if (itemSize != 1) { "$itemSize items" }
-                    else { "$itemSize item" }.uppercase()
+                    if (itemSize != 1) { stringResource(R.string.cart_sizes, itemSize) }
+                    else { stringResource(R.string.cart_size) }.uppercase()
                 )
             }
             Divider(color = MaterialTheme.colors.onSecondary.copy(alpha = 0.3f))
@@ -375,7 +385,7 @@ private fun CartItem(
             ) {
                 Icon(
                     imageVector = Icons.Default.RemoveCircleOutline,
-                    contentDescription = "Remove item icon"
+                    contentDescription = stringResource(R.string.remove_desc)
                 )
             }
             Column(
@@ -423,6 +433,51 @@ private fun CartItem(
     }
 }
 
+@Composable
+fun CartSummedValue(
+    modifier: Modifier = Modifier,
+    items: List<ExpandedCartItem>
+) {
+    val subtotal = items.sumOf { it.data.price }
+    val tax = ((7 / 100.0) * subtotal).toFloat()
+    val total = subtotal + tax
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colors.surface)
+            .then(modifier)
+    ) {
+        Divider(color = MaterialTheme.colors.onSecondary.copy(alpha = 0.3f))
+        Row(
+            modifier = Modifier.padding(top = 15.dp, end = 16.dp, bottom = 15.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(stringResource(R.string.total).uppercase())
+            Spacer(Modifier.weight(1f))
+            Text(
+                text = "$$total",
+                style = MaterialTheme.typography.h5
+            )
+        }
+        Row(Modifier.padding(end = 16.dp)) {
+            Text(stringResource(R.string.subtotal))
+            Spacer(Modifier.weight(1f))
+            Text("$$subtotal")
+        }
+        Row(Modifier.padding(end = 16.dp)) {
+            Text(stringResource(R.string.shipping))
+            Spacer(Modifier.weight(1f))
+            Text("---")
+        }
+        Row(Modifier.padding(end = 16.dp)) {
+            Text(stringResource(R.string.tax))
+            Spacer(Modifier.weight(1f))
+            Text("$$tax")
+        }
+    }
+}
+
 @RequiresApi(Build.VERSION_CODES.N)
 @ExperimentalAnimationApi
 @Preview
@@ -432,8 +487,8 @@ fun CartBottomSheetPreview() {
         BoxWithConstraints(
             Modifier.fillMaxSize()
         ) {
-            var sheetState by remember { mutableStateOf(CartBottomSheetState.Collapsed) }
-            val cartItems = remember { mutableStateListOf(*SampleItemsData.take(10).toTypedArray()) }
+            var sheetState by remember { mutableStateOf(CartBottomSheetState.Expanded) }
+            val cartItems = remember { mutableStateListOf(*SampleItemsData.takeLast(4).toTypedArray()) }
             val wishlist = remember { SampleItemsData.takeLast(10) }
 
             CartBottomSheet(

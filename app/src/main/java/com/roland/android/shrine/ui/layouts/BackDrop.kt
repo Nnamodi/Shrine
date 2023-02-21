@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -122,7 +123,7 @@ fun BackDrop(
                     action = {
                         if (favourite) {
                             TextButton(onClick = { onViewWishlist(CartBottomSheetState.Expanded) }) {
-                                Text("View")
+                                Text(stringResource(R.string.snack_action_text))
                             }
                         }
                     }
@@ -166,7 +167,7 @@ private fun TopAppBar(
                 ) {
                     Icon(
                         painterResource(id = R.drawable.menu),
-                        contentDescription = "Menu navigation icon"
+                        contentDescription = stringResource(R.string.menu_icon_desc)
                     )
                 }
 
@@ -185,7 +186,7 @@ private fun TopAppBar(
                 }
                 Icon(
                     painterResource(id = R.drawable.logo),
-                    contentDescription = "Shrine logo",
+                    contentDescription = stringResource(R.string.app_logo_desc),
                     modifier = Modifier.offset(x = logoOffset.value)
                 )
             }
@@ -219,7 +220,7 @@ private fun TopAppBar(
         actions = {
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = "Search icon",
+                contentDescription = stringResource(R.string.search_icon_desc),
                 tint = LocalContentColor.current.copy(alpha = ContentAlpha.high),
                 modifier = Modifier.padding(end = 12.dp)
             )
@@ -237,7 +238,7 @@ private fun TopAppBar(
 @Composable
 private fun TopAppBarText(
     modifier: Modifier = Modifier,
-    text: String = "Shrine"
+    text: String = stringResource(R.string.app_name)
 ) {
     Text(
         text.uppercase(),
@@ -272,7 +273,7 @@ fun MenuSearchField() {
         if (searchText.isEmpty()) {
             TopAppBarText(
                 modifier = Modifier.alpha(ContentAlpha.disabled),
-                text = "Search Shrine"
+                text = stringResource(R.string.search_text)
             )
         }
         Divider(
@@ -319,7 +320,7 @@ private fun BackdropMenuItem(
                                 if (menu == activeMenuItem) {
                                     Image(
                                         painterResource(id = R.drawable.tab_indicator),
-                                        contentDescription = "Active category icon"
+                                        contentDescription = stringResource(R.string.active_icon_desc)
                                     )
                                 }
                             }

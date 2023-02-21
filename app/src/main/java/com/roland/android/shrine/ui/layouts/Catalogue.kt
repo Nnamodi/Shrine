@@ -19,9 +19,11 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.roland.android.shrine.R
 import com.roland.android.shrine.data.Category
 import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
@@ -57,7 +59,7 @@ fun CatalogueCard(
         Box(Modifier.weight(1f)) {
             Image(
                 painter = painterResource(id = data.photoResId),
-                contentDescription = "Photo of ${data.title}",
+                contentDescription = stringResource(R.string.item_pic_desc, data.title),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -69,7 +71,7 @@ fun CatalogueCard(
                     IconButton(onClick = { addToCart(FirstCartItemData(data, imageSize, position)) }) {
                         Icon(
                             imageVector = Icons.Outlined.AddShoppingCart,
-                            contentDescription = "Add to cart"
+                            contentDescription = stringResource(R.string.add_to_cart)
                         )
                     }
                     IconButton(onClick = {
@@ -77,14 +79,14 @@ fun CatalogueCard(
                     }) {
                         Icon(
                             imageVector = favouriteIcon,
-                            contentDescription = "Add to wishlist"
+                            contentDescription = stringResource(R.string.add_to_wishlist)
                         )
                     }
                 }
             }
             Image(
                 painter = painterResource(id = getVendorResId(data.vendor)),
-                contentDescription = "Logo of ${data.vendor}",
+                contentDescription = stringResource(R.string.vendor_logo_desc, data.vendor),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .offset(y = 12.dp)

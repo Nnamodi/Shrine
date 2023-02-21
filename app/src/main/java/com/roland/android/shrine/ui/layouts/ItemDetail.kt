@@ -21,10 +21,12 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.roland.android.shrine.R
 import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.getVendorResId
@@ -63,7 +65,7 @@ fun ItemDetail(
                     action = {
                         if (favourite) {
                             TextButton(onClick = { onViewWishlist(CartBottomSheetState.Expanded) }) {
-                                Text("View")
+                                Text(stringResource(R.string.snack_action_text))
                             }
                         }
                     }
@@ -90,7 +92,7 @@ fun ItemDetail(
                     contentScale = ContentScale.Crop
                 )
                 IconButton(onClick = { onNavigateUp() }) {
-                    Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+                    Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(R.string.close_icon_desc))
                 }
             }
             Column(
@@ -114,7 +116,7 @@ fun ItemDetail(
                 )
             }
             OtherItems(
-                header = "More from ${item.vendor.name}",
+                header = stringResource(R.string.items_from_vendor, item.vendor.name),
                 bottomPadding = 20.dp,
                 otherItems = SampleItemsData.filter { it.vendor == item.vendor && it != item },
                 addToCart = addToCart,
@@ -129,7 +131,7 @@ fun ItemDetail(
                 navigateToDetail = navigateToDetail
             )
             OtherItems(
-                header = "You might also like",
+                header = stringResource(R.string.might_like),
                 bottomPadding = 60.dp,
                 otherItems = SampleItemsData.filter { it.category == item.category && it != item },
                 addToCart = addToCart,
@@ -171,7 +173,7 @@ private fun Description(
         ) {
             Image(
                 painterResource(id = getVendorResId(item.vendor)),
-                contentDescription = "Logo of ${item.vendor}",
+                contentDescription = stringResource(R.string.vendor_logo_desc, item.vendor),
                 modifier = Modifier.padding(end = 20.dp),
                 contentScale = ContentScale.Crop
             )
@@ -210,14 +212,14 @@ private fun Description(
                 contentDescription = null,
                 modifier = Modifier.padding(end = 16.dp)
             )
-            Text("Add to cart".uppercase())
+            Text(stringResource(R.string.add_to_cart).uppercase())
         }
         IconButton(onClick = {
             onFavoriteClicked(item, addToWishlist, { openDialog.value = it }) { favourited = it }
         }) {
             Icon(
                 imageVector = favouriteIcon,
-                contentDescription = "Add to wishlist"
+                contentDescription = stringResource(R.string.add_to_wishlist)
             )
         }
     }
@@ -247,6 +249,9 @@ fun OtherItems(
 ) {
     if (otherItems.isNotEmpty()) {
         Column(modifier) {
+            if (shownInWishlist) {
+                Divider(color = MaterialTheme.colors.onSecondary.copy(alpha = 0.3f))
+            }
             Row {
                 Text(
                     text = header.uppercase(),

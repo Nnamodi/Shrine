@@ -9,6 +9,8 @@ import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import com.roland.android.shrine.R
 import com.roland.android.shrine.data.ItemData
 
 fun onFavoriteClicked(
@@ -28,9 +30,9 @@ fun onFavoriteClicked(
 @Composable
 fun SnackbarMessage(favourite: Boolean) {
     return if (favourite) {
-        Text("Item added to wishlist")
+        Text(stringResource(R.string.favorite_text))
     } else {
-        Text("Item removed from wishlist")
+        Text(stringResource(R.string.unfavorite_text))
     }
 }
 
@@ -43,8 +45,8 @@ fun ShowDialog(
 ) {
     AlertDialog(
         onDismissRequest = { openDialog(false) },
-        title = { Text("Wishlist") },
-        text = { Text("Remove '${item.title}' from your wishlist?") },
+        title = { Text(stringResource(R.string.wishlist)) },
+        text = { Text(stringResource(R.string.snack_text, item.title)) },
         confirmButton = {
             TextButton(onClick = {
                 openDialog(false)
@@ -52,7 +54,7 @@ fun ShowDialog(
                 favoriteIcon(Icons.Outlined.FavoriteBorder)
             }) {
                 Text(
-                    text = "Remove",
+                    text = stringResource(R.string.remove),
                     color = MaterialTheme.colors.onSecondary
                 )
             }
@@ -60,7 +62,7 @@ fun ShowDialog(
         dismissButton = {
             TextButton(onClick = { openDialog(false) }) {
                 Text(
-                    text = "Cancel",
+                    text = stringResource(R.string.cancel),
                     color = MaterialTheme.colors.onSecondary
                 )
             }

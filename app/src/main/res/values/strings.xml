@@ -1,3 +1,33 @@
 <resources>
     <string name="app_name">Shrine</string>
+    <string name="app_logo_desc">Shrine logo</string>
+    <string name="checkout_button_text">Proceed to checkout</string>
+    <string name="shopping_icon_desc">Shopping cart icon</string>
+    <string name="collapse_cart_desc">Collapse cart icon</string>
+    <string name="cart">Cart</string>
+    <string name="cart_size">1 item</string>
+    <string name="cart_sizes">%d items</string>
+    <string name="remove_desc">Remove item icon</string>
+    <string name="total">Total</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="shipping">Shipping</string>
+    <string name="tax">Tax</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="active_icon_desc">Active category icon</string>
+    <string name="search_text">Search Shrine</string>
+    <string name="search_icon_desc">Search icon</string>
+    <string name="menu_icon_desc">Menu navigation icon</string>
+    <string name="snack_action_text">View</string>
+    <string name="favorite_text">Item added to wishlist</string>
+    <string name="unfavorite_text">Item removed from wishlist</string>
+    <string name="snack_text">Remove \'%s\' from your wishlist?</string>
+    <string name="remove">Remove</string>
+    <string name="cancel">Cancel</string>
+    <string name="item_pic_desc">Photo of %s</string>
+    <string name="add_to_cart">Add to cart</string>
+    <string name="add_to_wishlist">Add to wishlist</string>
+    <string name="vendor_logo_desc">Logo of %s</string>
+    <string name="close_icon_desc">Close</string>
+    <string name="items_from_vendor">More from %s</string>
+    <string name="might_like">You might also like</string>
 </resources>
