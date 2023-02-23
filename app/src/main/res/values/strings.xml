@@ -30,4 +30,7 @@
     <string name="close_icon_desc">Close</string>
     <string name="items_from_vendor">More from %s</string>
     <string name="might_like">You might also like</string>
+    <string name="empty_cart_desc">Empty cart</string>
+    <string name="empty_cart_info">Your cart is empty.</string>
+    <string name="shop_button_text">Continue shopping</string>
 </resources>

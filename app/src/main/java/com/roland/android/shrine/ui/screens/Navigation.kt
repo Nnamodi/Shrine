@@ -34,6 +34,12 @@ fun Navigation(
             DetailScreen(
                 navigateToDetail = { navController.navigate(Destination.DetailScreen.route) },
                 sharedViewModel = sharedViewModel,
+                moveToCatalogue = {
+                    navController.navigate(
+                        route = Destination.StartScreen.route,
+                        builder = { popUpToRoute }
+                    )
+                },
                 onNavigateUp = { navController.navigateUp() }
             )
         }

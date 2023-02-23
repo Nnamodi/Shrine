@@ -73,10 +73,8 @@ fun StartScreen(
             },
             onRemoveFromCart = {
                 sharedViewModel.removeFromCart(it)
-                if (cartItems.isEmpty()) {
-                    sheetState = CartBottomSheetState.Collapsed
-                }
-            }
+            },
+            moveToCatalogue = { sheetState = CartBottomSheetState.Collapsed }
         )
         if (firstCartItem != null) {
             FirstCartItem(data = firstCartItem!!) {
