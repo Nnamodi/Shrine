@@ -33,4 +33,5 @@
     <string name="empty_cart_desc">Empty cart</string>
     <string name="empty_cart_info">Your cart is empty.</string>
     <string name="shop_button_text">Continue shopping</string>
+    <string name="filter_icon_desc">Filter catalogue</string>
 </resources>

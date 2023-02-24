@@ -1,6 +1,7 @@
 package com.roland.android.shrine.ui.layouts
 
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
@@ -19,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,6 +58,7 @@ fun BackDrop(
     onViewWishlist: (CartBottomSheetState) -> Unit = {},
     logout: () -> Unit = {}
 ) {
+    val context = LocalContext.current.applicationContext
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var favourite by remember { mutableStateOf(false) }
@@ -96,22 +100,35 @@ fun BackDrop(
             )
         },
         frontLayerContent = {
-            Catalogue(
+            Box(
                 modifier = Modifier.fillMaxSize(),
-                items = SampleItemsData.filter {
-                    menuSelection == Category.All || it.category == menuSelection
-                },
-                addToCart = addToCart,
-                addToWishlist = {
-                    addToWishlist(it); favourite = true
-                    scope.launch { snackbarHostState.showSnackbar("") }
-                },
-                removeFromWishlist = {
-                    removeFromWishlist(it); favourite = false
-                    scope.launch { snackbarHostState.showSnackbar("") }
-                },
-                navigateToDetail = navigateToDetail
-            )
+                contentAlignment = Alignment.TopEnd
+            ) {
+                Catalogue(
+                    modifier = Modifier.fillMaxSize(),
+                    items = SampleItemsData.filter {
+                        menuSelection == Category.All || it.category == menuSelection
+                    },
+                    addToCart = addToCart,
+                    addToWishlist = {
+                        addToWishlist(it); favourite = true
+                        scope.launch { snackbarHostState.showSnackbar("") }
+                    },
+                    removeFromWishlist = {
+                        removeFromWishlist(it); favourite = false
+                        scope.launch { snackbarHostState.showSnackbar("") }
+                    },
+                    navigateToDetail = navigateToDetail
+                )
+                IconButton(onClick = {
+                    Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show()
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Tune,
+                        contentDescription = stringResource(R.string.filter_icon_desc)
+                    )
+                }
+            }
         },
         frontLayerShape = MaterialTheme.shapes.large,
         gesturesEnabled = false,

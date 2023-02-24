@@ -46,27 +46,27 @@ enum class Category {
 val SampleItemsData = listOf(
     ItemData(
         id = 0,
-        title = "Vagabond sack",
-        price = 120,
-        vendor = Vendor.Squiggle,
-        category = Category.Accessories,
-        photoResId = R.drawable.photo_0
+        title = "Kitchen quattro",
+        price = 129,
+        vendor = Vendor.Alphi,
+        category = Category.Home,
+        photoResId = R.drawable.photo_18
     ),
     ItemData(
         id = 1,
-        title = "Stella sunglasses",
-        price = 50,
-        vendor = Vendor.Mal,
-        category = Category.Accessories,
-        photoResId = R.drawable.photo_1
+        title = "Copper wire rack",
+        price = 18,
+        vendor = Vendor.Alphi,
+        category = Category.Home,
+        photoResId = R.drawable.photo_10
     ),
     ItemData(
         id = 2,
-        title = "Whitney belt",
-        price = 35,
+        title = "Sea tunic",
+        price = 48,
         vendor = Vendor.Labrjk,
-        category = Category.Accessories,
-        photoResId = R.drawable.photo_2
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_20
     ),
     ItemData(
         id = 3,
@@ -78,11 +78,11 @@ val SampleItemsData = listOf(
     ),
     ItemData(
         id = 4,
-        title = "Strut earrings",
-        price = 34,
-        vendor = Vendor.Six,
-        category = Category.Accessories,
-        photoResId = R.drawable.photo_4
+        title = "Succulent planters",
+        price = 16,
+        vendor = Vendor.Alphi,
+        category = Category.Home,
+        photoResId = R.drawable.photo_16
     ),
     ItemData(
         id = 5,
@@ -102,11 +102,11 @@ val SampleItemsData = listOf(
     ),
     ItemData(
         id = 7,
-        title = "Gatsby hat",
-        price = 40,
+        title = "Navy trousers",
+        price = 74,
         vendor = Vendor.Six,
-        category = Category.Accessories,
-        photoResId = R.drawable.photo_7
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_26
     ),
     ItemData(
         id = 8,
@@ -118,27 +118,27 @@ val SampleItemsData = listOf(
     ),
     ItemData(
         id = 9,
-        title = "Gilt desk trio",
-        price = 58,
-        vendor = Vendor.Alphi,
-        category = Category.Home,
-        photoResId = R.drawable.photo_9
+        title = "Chambray shirt",
+        price = 38,
+        vendor = Vendor.Mal,
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_31
     ),
     ItemData(
         id = 10,
-        title = "Copper wire rack",
-        price = 18,
-        vendor = Vendor.Alphi,
+        title = "Rainwater tray",
+        price = 27,
+        vendor = Vendor.Six,
         category = Category.Home,
-        photoResId = R.drawable.photo_10
+        photoResId = R.drawable.photo_14
     ),
     ItemData(
         id = 11,
-        title = "Soothe ceramic set",
-        price = 28,
-        vendor = Vendor.Mal,
-        category = Category.Home,
-        photoResId = R.drawable.photo_11
+        title = "White pinstripe shirt",
+        price = 70,
+        vendor = Vendor.Labrjk,
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_22
     ),
     ItemData(
         id = 12,
@@ -158,11 +158,11 @@ val SampleItemsData = listOf(
     ),
     ItemData(
         id = 14,
-        title = "Rainwater tray",
-        price = 27,
+        title = "Seabreeze sweater",
+        price = 60,
         vendor = Vendor.Six,
-        category = Category.Home,
-        photoResId = R.drawable.photo_14
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_24
     ),
     ItemData(
         id = 15,
@@ -174,27 +174,27 @@ val SampleItemsData = listOf(
     ),
     ItemData(
         id = 16,
-        title = "Succulent planters",
-        price = 16,
+        title = "Ginger scarf",
+        price = 98,
         vendor = Vendor.Alphi,
-        category = Category.Home,
-        photoResId = R.drawable.photo_16
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_29
     ),
     ItemData(
         id = 17,
-        title = "Quartet table",
-        price = 175,
-        vendor = Vendor.Squiggle,
-        category = Category.Home,
-        photoResId = R.drawable.photo_17
+        title = "Shoulder rolls tee",
+        price = 27,
+        vendor = Vendor.Six,
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_34
     ),
     ItemData(
         id = 18,
-        title = "Kitchen quattro",
-        price = 129,
-        vendor = Vendor.Alphi,
-        category = Category.Home,
-        photoResId = R.drawable.photo_18
+        title = "Vagabond sack",
+        price = 120,
+        vendor = Vendor.Squiggle,
+        category = Category.Accessories,
+        photoResId = R.drawable.photo_0
     ),
     ItemData(
         id = 19,
@@ -203,5 +203,149 @@ val SampleItemsData = listOf(
         vendor = Vendor.Labrjk,
         category = Category.Clothing,
         photoResId = R.drawable.photo_19
+    ),
+    ItemData(
+        id = 20,
+        title = "Whitney belt",
+        price = 35,
+        vendor = Vendor.Labrjk,
+        category = Category.Accessories,
+        photoResId = R.drawable.photo_2
+    ),
+    ItemData(
+        id = 21,
+        title = "Plastic tunic",
+        price = 38,
+        vendor = Vendor.Labrjk,
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_21
+    ),
+    ItemData(
+        id = 22,
+        title = "Soothe ceramic set",
+        price = 28,
+        vendor = Vendor.Mal,
+        category = Category.Home,
+        photoResId = R.drawable.photo_11
+    ),
+    ItemData(
+        id = 23,
+        title = "Quartet table",
+        price = 175,
+        vendor = Vendor.Squiggle,
+        category = Category.Home,
+        photoResId = R.drawable.photo_17
+    ),
+    ItemData(
+        id = 24,
+        title = "Stella sunglasses",
+        price = 50,
+        vendor = Vendor.Mal,
+        category = Category.Accessories,
+        photoResId = R.drawable.photo_1
+    ),
+    ItemData(
+        id = 25,
+        title = "Sunshine dress",
+        price = 58,
+        vendor = Vendor.Alphi,
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_36
+    ),
+    ItemData(
+        id = 26,
+        title = "Gatsby hat",
+        price = 40,
+        vendor = Vendor.Six,
+        category = Category.Accessories,
+        photoResId = R.drawable.photo_7
+    ),
+    ItemData(
+        id = 27,
+        title = "Walter henley white",
+        price = 38,
+        vendor = Vendor.Six,
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_27
+    ),
+    ItemData(
+        id = 28,
+        title = "Surf and perf shirt",
+        price = 48,
+        vendor = Vendor.Squiggle,
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_28
+    ),
+    ItemData(
+        id = 29,
+        title = "Strut earrings",
+        price = 34,
+        vendor = Vendor.Six,
+        category = Category.Accessories,
+        photoResId = R.drawable.photo_4
+    ),
+    ItemData(
+        id = 30,
+        title = "Ramona crossover",
+        price = 68,
+        vendor = Vendor.Alphi,
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_30
+    ),
+    ItemData(
+        id = 31,
+        title = "Gilt desk trio",
+        price = 58,
+        vendor = Vendor.Alphi,
+        category = Category.Home,
+        photoResId = R.drawable.photo_9
+    ),
+//    ItemData(
+//        id = 32,
+//        title = "Class white collar",
+//        price = 58,
+//        vendor = Vendor.Labrjk,
+//        category = Category.Clothing,
+//        photoResId = R.drawable.photo_32
+//    ),
+    ItemData(
+        id = 33,
+        title = "Cerise scallop tee",
+        price = 42,
+        vendor = Vendor.Mal,
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_33
+    ),
+    ItemData(
+        id = 34,
+        title = "Chambray shirt",
+        price = 70,
+        vendor = Vendor.Alphi,
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_23
+    ),
+    ItemData(
+        id = 35,
+        title = "Grey slouch tank",
+        price = 24,
+        vendor = Vendor.Six,
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_35
+    ),
+    ItemData(
+        id = 36,
+        title = "Gentry jacket",
+        price = 178,
+        vendor = Vendor.Labrjk,
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_25
+    ),
+    ItemData(
+        id = 37,
+        title = "Fine lines tee",
+        price = 58,
+        vendor = Vendor.Squiggle,
+        category = Category.Clothing,
+        photoResId = R.drawable.photo_37
     )
 )

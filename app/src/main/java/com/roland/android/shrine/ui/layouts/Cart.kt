@@ -338,7 +338,7 @@ fun CartSummedValue(
     items: List<ExpandedCartItem>
 ) {
     val subtotal = items.sumOf { it.data.price }
-    val tax = ((7 / 100.0) * subtotal).toFloat()
+    val tax = ((3 / 100.0) * subtotal).toFloat()
     val total = subtotal + tax
 
     Column(

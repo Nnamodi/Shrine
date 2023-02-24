@@ -179,7 +179,7 @@ fun CartBottomSheetPreview() {
             Modifier.fillMaxSize()
         ) {
             var sheetState by remember { mutableStateOf(CartBottomSheetState.Expanded) }
-            val cartItems = remember { mutableStateListOf(*SampleItemsData.takeLast(0).toTypedArray()) }
+            val cartItems = remember { mutableStateListOf(*SampleItemsData.takeLast(4).toTypedArray()) }
             val wishlist = remember { SampleItemsData.takeLast(10) }
 
             CartBottomSheet(
