@@ -27,6 +27,7 @@ fun Navigation(
             StartScreen(
                 navigateToDetail = { navController.navigate(Destination.DetailScreen.route) },
                 sharedViewModel = sharedViewModel,
+                proceedToCheckout = { navController.navigate(Destination.CheckoutScreen.route) },
                 logout = logout
             )
         }
@@ -40,6 +41,13 @@ fun Navigation(
                         builder = { popUpToRoute }
                     )
                 },
+                proceedToCheckout = { navController.navigate(Destination.CheckoutScreen.route) },
+                onNavigateUp = { navController.navigateUp() }
+            )
+        }
+        composable(Destination.CheckoutScreen.route) {
+            CheckoutScreen(
+                sharedViewModel = sharedViewModel,
                 onNavigateUp = { navController.navigateUp() }
             )
         }
@@ -49,4 +57,5 @@ fun Navigation(
 sealed class Destination(val route: String) {
     object StartScreen: Destination("start_screen")
     object DetailScreen: Destination("detail_screen")
+    object CheckoutScreen: Destination("checkout_screen")
 }

@@ -25,7 +25,8 @@ import com.roland.android.shrine.viewmodel.SharedViewModel
 fun DetailScreen(
     navigateToDetail: (ItemData) -> Unit,
     sharedViewModel: SharedViewModel,
-    moveToCatalogue: () -> Unit = {},
+    moveToCatalogue: () -> Unit,
+    proceedToCheckout: () -> Unit,
     onNavigateUp: () -> Unit
 ) {
     var sheetState by rememberSaveable { mutableStateOf(CartBottomSheetState.Collapsed) }
@@ -76,7 +77,8 @@ fun DetailScreen(
                 onRemoveFromCart = {
                     sharedViewModel.removeFromCart(it)
                 },
-                moveToCatalogue = moveToCatalogue
+                moveToCatalogue = moveToCatalogue,
+                proceedToCheckout = proceedToCheckout
             )
             if (firstCartItem != null) {
                 FirstCartItem(data = firstCartItem!!) {
@@ -105,6 +107,8 @@ fun DetailScreenPreview() {
         DetailScreen(
             navigateToDetail = {},
             sharedViewModel = SharedViewModel(),
+            moveToCatalogue = {},
+            proceedToCheckout = {},
             onNavigateUp = {}
         )
     }

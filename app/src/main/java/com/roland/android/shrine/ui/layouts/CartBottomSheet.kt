@@ -35,6 +35,7 @@ fun CartBottomSheet(
     onRemoveFromCart: (Int) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit = {},
     moveToCatalogue: () -> Unit = {},
+    proceedToCheckout: () -> Unit = {},
     onSheetStateChanged: (CartBottomSheetState) -> Unit = {}
 ) {
     val expandedCartItems by remember(items) {
@@ -163,7 +164,7 @@ fun CartBottomSheet(
                 exit = fadeOut(animationSpec = tween(durationMillis = 117, easing = LinearEasing)) +
                         shrinkOut(animationSpec = tween(durationMillis = 100, easing = FastOutLinearInEasing), targetSize = { IntSize.Zero })
             ) {
-                if (items.isNotEmpty()) { CheckoutButton() }
+                if (items.isNotEmpty()) { CheckoutButton(proceedToCheckout) }
             }
         }
     }

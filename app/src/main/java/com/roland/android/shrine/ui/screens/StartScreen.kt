@@ -27,6 +27,7 @@ import com.roland.android.shrine.viewmodel.SharedViewModel
 fun StartScreen(
     navigateToDetail: (ItemData) -> Unit,
     sharedViewModel: SharedViewModel,
+    proceedToCheckout: () -> Unit,
     logout: () -> Unit = {}
 ) {
     var sheetState by rememberSaveable { mutableStateOf(CartBottomSheetState.Collapsed) }
@@ -74,7 +75,8 @@ fun StartScreen(
             onRemoveFromCart = {
                 sharedViewModel.removeFromCart(it)
             },
-            moveToCatalogue = { sheetState = CartBottomSheetState.Collapsed }
+            moveToCatalogue = { sheetState = CartBottomSheetState.Collapsed },
+            proceedToCheckout = proceedToCheckout
         )
         if (firstCartItem != null) {
             FirstCartItem(data = firstCartItem!!) {
@@ -106,6 +108,10 @@ enum class CartBottomSheetState {
 @Composable
 fun StartScreenPreview() {
     ShrineTheme {
-        StartScreen(navigateToDetail = {}, sharedViewModel = SharedViewModel())
+        StartScreen(
+            navigateToDetail = {},
+            sharedViewModel = SharedViewModel(),
+            proceedToCheckout = {}
+        )
     }
 }

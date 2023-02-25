@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -171,12 +172,12 @@ private fun CollapsedCartItem(
 }
 
 @Composable
-fun CheckoutButton() {
+fun CheckoutButton(proceedToCheckout: () -> Unit) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        onClick = {}
+        onClick = { proceedToCheckout() }
     ) {
         Icon(
             imageVector = Icons.Outlined.ShoppingCart,
@@ -335,16 +336,18 @@ fun EmptyCartInfoPreview() {
 @Composable
 fun CartSummedValue(
     modifier: Modifier = Modifier,
-    items: List<ExpandedCartItem>
+    items: List<ExpandedCartItem>,
+    shippingFee: Int = 0,
+    backgroundColor: Color = MaterialTheme.colors.surface
 ) {
     val subtotal = items.sumOf { it.data.price }
     val tax = ((3 / 100.0) * subtotal).toFloat()
-    val total = subtotal + tax
+    val total = subtotal + shippingFee + tax
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colors.surface)
+            .background(color = backgroundColor)
             .padding(bottom = 24.dp)
             .then(modifier)
     ) {
@@ -368,7 +371,7 @@ fun CartSummedValue(
         Row(Modifier.padding(end = 16.dp)) {
             Text(stringResource(R.string.shipping))
             Spacer(Modifier.weight(1f))
-            Text("---")
+            Text(if (shippingFee == 0) "---" else "$$shippingFee")
         }
         Row(Modifier.padding(end = 16.dp)) {
             Text(stringResource(R.string.tax))
