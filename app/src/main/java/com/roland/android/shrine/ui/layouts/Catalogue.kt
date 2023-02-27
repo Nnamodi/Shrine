@@ -30,7 +30,6 @@ import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.getVendorResId
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
-import com.roland.android.shrine.utils.ShowDialog
 import com.roland.android.shrine.utils.onFavoriteClicked
 
 @Composable
@@ -105,7 +104,7 @@ fun CatalogueCard(
     }
 
     if (openDialog.value) {
-        ShowDialog(
+        WishlistDialog(
             item = data,
             removeFromWishlist = removeFromWishlist,
             openDialog = { openDialog.value = it },

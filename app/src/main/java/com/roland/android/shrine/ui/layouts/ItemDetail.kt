@@ -33,7 +33,6 @@ import com.roland.android.shrine.data.getVendorResId
 import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
-import com.roland.android.shrine.utils.ShowDialog
 import com.roland.android.shrine.utils.SnackbarMessage
 import com.roland.android.shrine.utils.onFavoriteClicked
 import kotlinx.coroutines.launch
@@ -226,7 +225,7 @@ private fun Description(
     Divider(color = MaterialTheme.colors.onSurface.copy(alpha = 0.3f))
 
     if (openDialog.value) {
-        ShowDialog(
+        WishlistDialog(
             item = item,
             removeFromWishlist = removeFromWishlist,
             openDialog = { openDialog.value = it },

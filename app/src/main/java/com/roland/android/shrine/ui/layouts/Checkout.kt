@@ -1,7 +1,9 @@
 package com.roland.android.shrine.ui.layouts
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -13,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.roland.android.shrine.data.ExpandedCartItem
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.ui.theme.ShrineTheme
+import com.roland.android.shrine.utils.cardType
 
 @Composable
 fun Checkout(
@@ -33,10 +36,20 @@ fun Checkout(
         },
         backgroundColor = MaterialTheme.colors.secondary
     ) {
+        val openAddressDialog = rememberSaveable { mutableStateOf(false) }
+        val openPaymentDialog = rememberSaveable { mutableStateOf(false) }
         var promoCode by rememberSaveable { mutableStateOf("") }
+        var streetAddress by rememberSaveable { mutableStateOf("345 Main St, 4th Floor") }
+        var vicinity by rememberSaveable { mutableStateOf("San Francisco, CA 94109") }
+        var cardNumber by rememberSaveable { mutableStateOf("") }
+        var expiryMonth by rememberSaveable { mutableStateOf("") }
+        var expiryYear by rememberSaveable { mutableStateOf("") }
+        var securityCode by rememberSaveable { mutableStateOf("") }
 
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth()
@@ -49,18 +62,18 @@ fun Checkout(
                 Column(Modifier.padding(vertical = 24.dp)) {
                     Text("Shipping".uppercase())
                     Text(
-                        text = "345 Main St, 4th Floor",
+                        text = streetAddress,
                         style = MaterialTheme.typography.subtitle1
                     )
                     Text(
-                        text = "San Francisco, CA 94109",
+                        text = vicinity,
                         style = MaterialTheme.typography.subtitle1
                     )
                 }
                 Spacer(Modifier.weight(1f))
                 IconButton(
                     modifier = Modifier.padding(vertical = 24.dp),
-                    onClick = {}
+                    onClick = { openAddressDialog.value = true }
                 ) {
                     Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit address")
                 }
@@ -80,20 +93,20 @@ fun Checkout(
                 Column(Modifier.padding(vertical = 24.dp)) {
                     Text("Payment".uppercase())
                     Text(
-                        text = "Visa",
+                        text = cardType(cardNumber),
                         style = MaterialTheme.typography.subtitle1
                     )
                     Text(
-                        text = "· · · ·  · · · ·  1234",
+                        text = "· · · ·  · · · ·  ${cardNumber.takeLast(4).ifEmpty { "1234" }}",
                         style = MaterialTheme.typography.subtitle1
                     )
                 }
                 Spacer(Modifier.weight(1f))
                 IconButton(
                     modifier = Modifier.padding(vertical = 24.dp),
-                    onClick = {}
+                    onClick = { openPaymentDialog.value = true }
                 ) {
-                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit address")
+                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit card details")
                 }
             }
             Divider(
@@ -131,7 +144,36 @@ fun Checkout(
                 shippingFee = 2,
                 backgroundColor = MaterialTheme.colors.secondary
             )
-            Divider(color = MaterialTheme.colors.onSecondary.copy(alpha = 0.3f))
+            Divider(
+                modifier = Modifier.padding(bottom = 72.dp),
+                color = MaterialTheme.colors.onSecondary.copy(alpha = 0.3f)
+            )
+        }
+
+        if (openAddressDialog.value) {
+            AddressDialog(
+                initialAddress = streetAddress,
+                initialVicinity = vicinity,
+                setStreetAddress = { streetAddress = it },
+                setVicinity = { vicinity = it },
+                openDialog = { openAddressDialog.value = it }
+            )
+        }
+
+        if (openPaymentDialog.value) {
+            PaymentDialog(
+                initialCardNumber = cardNumber,
+                initialMonth = expiryMonth,
+                initialYear = expiryYear,
+                initialCode = securityCode,
+                setCardDetails = { cardNo, month, year, code ->
+                    cardNumber = cardNo
+                    expiryMonth = month
+                    expiryYear = year
+                    securityCode = code
+                },
+                openDialog = { openPaymentDialog.value = it }
+            )
         }
     }
 }
