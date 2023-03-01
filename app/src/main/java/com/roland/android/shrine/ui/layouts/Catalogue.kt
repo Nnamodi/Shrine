@@ -28,6 +28,7 @@ import com.roland.android.shrine.data.Category
 import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.getVendorResId
+import com.roland.android.shrine.ui.layouts.dialogs.WishlistDialog
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
 import com.roland.android.shrine.utils.onFavoriteClicked
