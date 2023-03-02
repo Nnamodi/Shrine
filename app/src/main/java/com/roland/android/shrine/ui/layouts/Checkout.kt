@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.ExpandedCartItem
 import com.roland.android.shrine.data.SampleItemsData
@@ -20,21 +21,17 @@ import com.roland.android.shrine.ui.layouts.dialogs.AddressDialog
 import com.roland.android.shrine.ui.layouts.dialogs.PaymentDialog
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.cardType
+import com.roland.android.shrine.viewmodel.CheckoutViewModel
 
 @Composable
 fun Checkout(
+    viewModel: CheckoutViewModel = viewModel(),
     cartItems: List<ExpandedCartItem>,
     onNavigateUp: () -> Unit = {}
 ) {
     val openAddressDialog = rememberSaveable { mutableStateOf(false) }
     val openPaymentDialog = rememberSaveable { mutableStateOf(false) }
     var promoCode by rememberSaveable { mutableStateOf("") }
-    var streetAddress by rememberSaveable { mutableStateOf("345 Main St, 4th Floor") }
-    var vicinity by rememberSaveable { mutableStateOf("San Francisco, CA 94109") }
-    var cardNumber by rememberSaveable { mutableStateOf("") }
-    var expiryMonth by rememberSaveable { mutableStateOf("") }
-    var expiryYear by rememberSaveable { mutableStateOf("") }
-    var securityCode by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -66,11 +63,11 @@ fun Checkout(
                 Column(Modifier.padding(vertical = 24.dp)) {
                     Text(stringResource(R.string.shipping).uppercase())
                     Text(
-                        text = streetAddress,
+                        text = viewModel.address.street,
                         style = MaterialTheme.typography.subtitle1
                     )
                     Text(
-                        text = vicinity,
+                        text = viewModel.address.vicinity.ifEmpty { stringResource(R.string.no_address_text) },
                         style = MaterialTheme.typography.subtitle1
                     )
                 }
@@ -95,13 +92,16 @@ fun Checkout(
                     contentDescription = stringResource(R.string.payment_icon_desc)
                 )
                 Column(Modifier.padding(vertical = 24.dp)) {
+                    val cardNumber = viewModel.cardDetails.cardNumber
+
                     Text(stringResource(R.string.payment).uppercase())
                     Text(
                         text = cardType(cardNumber),
                         style = MaterialTheme.typography.subtitle1
                     )
                     Text(
-                        text = "· · · ·  · · · ·  ${cardNumber.takeLast(4).ifEmpty { "1234" }}",
+                        text = if (cardNumber.isEmpty()) { stringResource(R.string.no_card_text) }
+                                else { "· · · ·  · · · ·  ${cardNumber.takeLast(4)}"},
                         style = MaterialTheme.typography.subtitle1
                     )
                 }
@@ -152,31 +152,11 @@ fun Checkout(
         }
 
         if (openAddressDialog.value) {
-            AddressDialog(
-                initialAddress = streetAddress,
-                initialVicinity = vicinity,
-                setAddress = { street, state ->
-                    streetAddress = street
-                    vicinity = state
-                },
-                openDialog = { openAddressDialog.value = it }
-            )
+            AddressDialog { openAddressDialog.value = it }
         }
 
         if (openPaymentDialog.value) {
-            PaymentDialog(
-                initialCardNumber = cardNumber,
-                initialMonth = expiryMonth,
-                initialYear = expiryYear,
-                initialCode = securityCode,
-                setCardDetails = { cardNo, month, year, code ->
-                    cardNumber = cardNo
-                    expiryMonth = month
-                    expiryYear = year
-                    securityCode = code
-                },
-                openDialog = { openPaymentDialog.value = it }
-            )
+            PaymentDialog { openPaymentDialog.value = it }
         }
     }
 }

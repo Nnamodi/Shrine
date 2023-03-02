@@ -7,19 +7,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.R
+import com.roland.android.shrine.data.Address
 import com.roland.android.shrine.utils.AddressCheck
 import com.roland.android.shrine.utils.checkAddress
+import com.roland.android.shrine.viewmodel.CheckoutViewModel
 
 @Composable
 fun AddressDialog(
-    initialAddress: String,
-    initialVicinity: String,
-    setAddress: (String, String) -> Unit,
+    viewModel: CheckoutViewModel = viewModel(),
     openDialog: (Boolean) -> Unit
 ) {
-    var streetAddress by remember { mutableStateOf(initialAddress) }
-    var vicinity by remember { mutableStateOf(initialVicinity) }
+    var streetAddress by remember { mutableStateOf(viewModel.address.street) }
+    var vicinity by remember { mutableStateOf(viewModel.address.vicinity) }
 
     var streetError by remember { mutableStateOf(false) }
     var vicinityError by remember { mutableStateOf(false) }
@@ -43,9 +44,8 @@ fun AddressDialog(
                         isError = streetError,
                         singleLine = true,
                         shape = CutCornerShape(12.dp),
-                        label = {
-                            Text(stringResource(R.string.street))
-                        }
+                        label = { Text(stringResource(R.string.street)) },
+                        placeholder = { Text(stringResource(R.string.street_example)) }
                     )
                     OutlinedTextField(
                         modifier = Modifier
@@ -56,9 +56,8 @@ fun AddressDialog(
                         isError = vicinityError,
                         singleLine = true,
                         shape = CutCornerShape(12.dp),
-                        label = {
-                            Text(stringResource(R.string.vicinity))
-                        }
+                        label = { Text(stringResource(R.string.vicinity)) },
+                        placeholder = { Text(stringResource(R.string.vicinity_example)) }
                     )
                 }
             }
@@ -69,7 +68,8 @@ fun AddressDialog(
                     AddressCheck.NoStreetSet -> streetError = true
                     AddressCheck.NoVicinitySet -> vicinityError = true
                     AddressCheck.AllSet -> {
-                        setAddress(streetAddress, vicinity)
+                        val address = Address(streetAddress, vicinity)
+                        viewModel.saveAddress(address)
                         openDialog(false)
                     }
                 }

@@ -14,33 +14,41 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.core.text.isDigitsOnly
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.R
-import com.roland.android.shrine.utils.CardCheck
+import com.roland.android.shrine.data.CardDetails
+import com.roland.android.shrine.utils.CardCheck.*
+import com.roland.android.shrine.utils.CardNumbers.CARD_EXPIRED
+import com.roland.android.shrine.utils.CardNumbers.EXPIRY_DATE
+import com.roland.android.shrine.utils.CardNumbers.INVALID_DATE
+import com.roland.android.shrine.utils.CardNumbers.SECURITY_CODE
 import com.roland.android.shrine.utils.checkCardDetails
+import com.roland.android.shrine.viewmodel.CheckoutViewModel
 
 @Composable
 fun PaymentDialog(
-    initialCardNumber: String,
-    initialMonth: String,
-    initialYear: String,
-    initialCode: String,
-    setCardDetails: (String, String, String, String) -> Unit,
+    viewModel: CheckoutViewModel = viewModel(),
     openDialog: (Boolean) -> Unit
 ) {
-    var cardNumber by remember { mutableStateOf(initialCardNumber) }
-    var expiryMonth by remember { mutableStateOf(initialMonth) }
-    var expiryYear by remember { mutableStateOf(initialYear) }
-    var securityCode by remember { mutableStateOf(initialCode) }
+    var cardNumber by remember { mutableStateOf(viewModel.cardDetails.cardNumber) }
+    var expiryMonth by remember { mutableStateOf(viewModel.cardDetails.expiryMonth) }
+    var expiryYear by remember { mutableStateOf(viewModel.cardDetails.expiryYear) }
+    var securityCode by remember { mutableStateOf(viewModel.cardDetails.securityCode) }
 
     var cardNumberError by rememberSaveable { mutableStateOf(false) }
     var expiryMonthError by rememberSaveable { mutableStateOf(false) }
     var expiryYearError by rememberSaveable { mutableStateOf(false) }
     var securityCodeError by rememberSaveable { mutableStateOf(false) }
 
-    var dateInfoShown by rememberSaveable { mutableStateOf(false) }
-    var codeInfoShown by rememberSaveable { mutableStateOf(false) }
-    val info = if (dateInfoShown) { stringResource(R.string.expiry_date_info) }
-                else { stringResource(R.string.security_code_info) }
+    var infoToShow by rememberSaveable { mutableStateOf("") }
+    val info = when (infoToShow) {
+        CARD_EXPIRED -> stringResource(R.string.card_expired_notice)
+        INVALID_DATE -> stringResource(R.string.invalid_date_notice)
+        EXPIRY_DATE -> stringResource(R.string.expiry_date_info)
+        SECURITY_CODE -> stringResource(R.string.security_code_info)
+        else -> ""
+    }
 
     AlertDialog(
         onDismissRequest = {},
@@ -57,9 +65,13 @@ fun PaymentDialog(
                             .fillMaxWidth()
                             .padding(top = 12.dp),
                         value = cardNumber,
-                        onValueChange = { if (it.length <= 19) cardNumber = it; cardNumberError = false },
+                        onValueChange = {
+                            if (it.length <= 19 && it.isDigitsOnly()) {
+                                cardNumber = it; cardNumberError = false
+                            }
+                        },
                         isError = cardNumberError,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                         singleLine = true,
                         shape = CutCornerShape(12.dp),
                         label = { Text(stringResource(R.string.enter_card_number)) },
@@ -76,7 +88,7 @@ fun PaymentDialog(
                         ) {
                             ColumnDescription(
                                 description = R.string.expiry_date,
-                                infoShown = { dateInfoShown = !dateInfoShown; codeInfoShown = false }
+                                infoShown = { infoToShow = if (infoToShow == EXPIRY_DATE) "" else EXPIRY_DATE }
                             )
                             Row(Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)) {
                                 OutlinedTextField(
@@ -84,10 +96,15 @@ fun PaymentDialog(
                                         .weight(1f)
                                         .padding(end = 8.dp),
                                     value = expiryMonth,
-                                    onValueChange = { if (it.length <= 2) expiryMonth = it; expiryMonthError = false },
+                                    onValueChange = {
+                                        if (it.length <= 2 && it.isDigitsOnly()) {
+                                            expiryMonth = it; infoToShow = ""
+                                            expiryMonthError = false
+                                        }
+                                    },
                                     isError = expiryMonthError,
                                     keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Number,
+                                        keyboardType = KeyboardType.NumberPassword,
                                         imeAction = ImeAction.Next
                                     ),
                                     singleLine = true,
@@ -98,10 +115,15 @@ fun PaymentDialog(
                                     modifier = Modifier
                                         .weight(1f),
                                     value = expiryYear,
-                                    onValueChange = { if (it.length <= 2) expiryYear = it; expiryYearError = false },
+                                    onValueChange = {
+                                        if (it.length <= 2 && it.isDigitsOnly()) {
+                                            expiryYear = it; infoToShow = ""
+                                            expiryYearError = false
+                                        }
+                                    },
                                     isError = expiryYearError,
                                     keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Number,
+                                        keyboardType = KeyboardType.NumberPassword,
                                         imeAction = ImeAction.Next
                                     ),
                                     singleLine = true,
@@ -122,17 +144,21 @@ fun PaymentDialog(
                         ) {
                             ColumnDescription(
                                 description = R.string.security_code,
-                                infoShown = { codeInfoShown = !codeInfoShown; dateInfoShown = false }
+                                infoShown = { infoToShow = if (infoToShow == SECURITY_CODE) "" else SECURITY_CODE }
                             )
                             Row(Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)) {
                                 OutlinedTextField(
                                     modifier = Modifier
                                         .weight(1f),
                                     value = securityCode,
-                                    onValueChange = { if (it.length <= 3) securityCode = it; securityCodeError = false },
+                                    onValueChange = {
+                                        if (it.length <= 3 && it.isDigitsOnly()) {
+                                            securityCode = it; securityCodeError = false
+                                        }
+                                    },
                                     isError = securityCodeError,
                                     keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Number,
+                                        keyboardType = KeyboardType.NumberPassword,
                                         imeAction = ImeAction.Done
                                     ),
                                     singleLine = true,
@@ -143,25 +169,28 @@ fun PaymentDialog(
                         }
                     }
 
-                    if (dateInfoShown || codeInfoShown) {
+                    if (infoToShow.isNotEmpty()) {
                         Text(
                             modifier = Modifier.padding(vertical = 12.dp),
                             text = info,
                             style = MaterialTheme.typography.body2
                         )
-                    } else { Spacer(Modifier.height(52.dp)) }
+                    } else { Spacer(Modifier.height(52.dp)); infoToShow = "" }
                 }
             }
         },
         confirmButton = {
             TextButton(onClick = {
                 when (checkCardDetails(cardNumber, expiryMonth, expiryYear, securityCode)) {
-                    CardCheck.IncorrectCardNumber -> cardNumberError = true
-                    CardCheck.IncorrectMonth -> expiryMonthError = true
-                    CardCheck.IncorrectYear -> expiryYearError = true
-                    CardCheck.IncompleteCode -> securityCodeError = true
-                    CardCheck.GoodToGo -> {
-                        setCardDetails(cardNumber, expiryMonth, expiryYear, securityCode)
+                    IncorrectCardNumber -> cardNumberError = true
+                    IncorrectMonth -> expiryMonthError = true
+                    IncorrectYear -> expiryYearError = true
+                    IncompleteCode -> securityCodeError = true
+                    InvalidDate -> infoToShow = INVALID_DATE
+                    CardExpired -> infoToShow = CARD_EXPIRED
+                    GoodToGo -> {
+                        val cardDetails = CardDetails(cardNumber, expiryMonth, expiryYear, securityCode)
+                        viewModel.saveCardDetails(cardDetails)
                         openDialog(false)
                     }
                 }

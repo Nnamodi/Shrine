@@ -59,4 +59,10 @@
     <string name="card_no_placeholder">· · · ·  · · · ·  · · · ·</string>
     <string name="expiry_date_info">This expiry date is located on the front side of your card, right below the card number.</string>
     <string name="security_code_info">The security code is a 3-digit code located on the back side of your card</string>
+    <string name="card_expired_notice">This card is expired! Use a valid debit card</string>
+    <string name="invalid_date_notice">Invalid expiry date entered</string>
+    <string name="no_address_text">No delivery address set</string>
+    <string name="no_card_text">No card info set</string>
+    <string name="street_example">345 Main St, 4th Floor</string>
+    <string name="vicinity_example">San Francisco, CA 94109</string>
 </resources>
