@@ -70,11 +70,11 @@ val SampleItemsData = listOf(
     ),
     ItemData(
         id = 3,
-        title = "Garden stand",
-        price = 98,
-        vendor = Vendor.Alphi,
+        title = "Gatsby hat",
+        price = 40,
+        vendor = Vendor.Six,
         category = Category.Accessories,
-        photoResId = R.drawable.photo_3
+        photoResId = R.drawable.photo_7
     ),
     ItemData(
         id = 4,
@@ -254,11 +254,11 @@ val SampleItemsData = listOf(
     ),
     ItemData(
         id = 26,
-        title = "Gatsby hat",
-        price = 40,
-        vendor = Vendor.Six,
+        title = "Garden stand",
+        price = 98,
+        vendor = Vendor.Alphi,
         category = Category.Accessories,
-        photoResId = R.drawable.photo_7
+        photoResId = R.drawable.photo_3
     ),
     ItemData(
         id = 27,

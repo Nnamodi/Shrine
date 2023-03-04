@@ -31,6 +31,7 @@ fun Checkout(
 ) {
     val openAddressDialog = rememberSaveable { mutableStateOf(false) }
     val openPaymentDialog = rememberSaveable { mutableStateOf(false) }
+    var promoCodeApplied by rememberSaveable { mutableStateOf(false) }
     var promoCode by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
@@ -135,7 +136,14 @@ fun Checkout(
                         onValueChange = { if (it.length <= 8) promoCode = it },
                         singleLine = true,
                         shape = CutCornerShape(12.dp),
-                        label = { Text(stringResource(R.string.enter_voucher)) }
+                        label = { Text(stringResource(R.string.enter_voucher)) },
+                        trailingIcon = {
+                            if (promoCode.length > 4) {
+                                IconButton(onClick = { promoCodeApplied = true }) {
+                                    Icon(imageVector = Icons.Default.Send, contentDescription = stringResource(R.string.apply_icon_desc))
+                                }
+                            }
+                        }
                     )
                 }
             }
@@ -143,6 +151,7 @@ fun Checkout(
                 modifier = Modifier.padding(start = 72.dp),
                 items = cartItems,
                 shippingFee = 2,
+                promoCodeApplied = promoCodeApplied,
                 backgroundColor = MaterialTheme.colors.secondary
             )
             Divider(

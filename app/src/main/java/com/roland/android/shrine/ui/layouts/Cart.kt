@@ -338,11 +338,13 @@ fun CartSummedValue(
     modifier: Modifier = Modifier,
     items: List<ExpandedCartItem>,
     shippingFee: Int = 0,
+    promoCodeApplied: Boolean = false,
     backgroundColor: Color = MaterialTheme.colors.surface
 ) {
     val subtotal = items.sumOf { it.data.price }
-    val tax = ((3 / 100.0) * subtotal).toFloat()
-    val total = subtotal + shippingFee + tax
+    val tax = ((3 / 100.0) * subtotal)
+    val promoDiscount = if (promoCodeApplied) 5 else 0
+    val total = subtotal + shippingFee + tax - promoDiscount
 
     Column(
         modifier = Modifier
@@ -358,10 +360,7 @@ fun CartSummedValue(
         ) {
             Text(stringResource(R.string.total).uppercase())
             Spacer(Modifier.weight(1f))
-            Text(
-                text = "$$total",
-                style = MaterialTheme.typography.h5
-            )
+            Text(text = "$$total", style = MaterialTheme.typography.h5)
         }
         Row(Modifier.padding(end = 16.dp)) {
             Text(stringResource(R.string.subtotal))
@@ -373,10 +372,17 @@ fun CartSummedValue(
             Spacer(Modifier.weight(1f))
             Text(if (shippingFee == 0) "---" else "$$shippingFee")
         }
+        if (promoCodeApplied) {
+            Row(Modifier.padding(end = 16.dp)) {
+                Text(text = stringResource(R.string.promo_discount), color = Color.Green)
+                Spacer(Modifier.weight(1f))
+                Text(text = "-$$promoDiscount", color = Color.Green)
+            }
+        }
         Row(Modifier.padding(end = 16.dp)) {
             Text(stringResource(R.string.tax))
             Spacer(Modifier.weight(1f))
-            Text("$$tax")
+            Text("$${tax.toFloat()}")
         }
     }
 }

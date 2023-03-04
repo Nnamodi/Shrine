@@ -65,4 +65,6 @@
     <string name="no_card_text">No card info set</string>
     <string name="street_example">345 Main St, 4th Floor</string>
     <string name="vicinity_example">San Francisco, CA 94109</string>
+    <string name="apply_icon_desc">Apply promo code</string>
+    <string name="promo_discount">Promo discount</string>
 </resources>
