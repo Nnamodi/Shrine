@@ -12,20 +12,31 @@ import com.roland.android.shrine.data.AppDataStore.getCardDetails
 import com.roland.android.shrine.data.AppDataStore.saveCardDetails
 import com.roland.android.shrine.data.AppDataStore.saveDeliveryAddress
 import com.roland.android.shrine.data.CardDetails
+import com.roland.android.shrine.utils.CardNumbers.VALID_DATE
+import com.roland.android.shrine.utils.cardExpired
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class CheckoutViewModel(private val app: Application) : AndroidViewModel(app) {
-    var address by mutableStateOf(Address())
-    var cardDetails by mutableStateOf(CardDetails())
+    var address by mutableStateOf(Address()); private set
+    var cardDetails by mutableStateOf(CardDetails()); private set
+    var addressSet by mutableStateOf(false); private set
+    var cardDetailsSet by mutableStateOf(false); private set
 
     init {
         viewModelScope.launch {
-            app.getAddress().collectLatest { address = it }
+            app.getAddress().collect {
+                address = it
+                addressSet = it.street.isNotBlank()
+            }
         }
         viewModelScope.launch {
-            app.getCardDetails().collectLatest { cardDetails = it }
+            app.getCardDetails().collect {
+                cardDetails = it
+                cardDetailsSet = if (it.cardNumber.isNotBlank()) {
+                    cardExpired(it.expiryMonth, it.expiryYear) == VALID_DATE
+                } else false
+            }
         }
     }
 

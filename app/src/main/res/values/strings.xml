@@ -67,4 +67,6 @@
     <string name="vicinity_example">San Francisco, CA 94109</string>
     <string name="apply_icon_desc">Apply promo code</string>
     <string name="promo_discount">Promo discount</string>
+    <string name="set_delivery_address">Set a delivery address!</string>
+    <string name="set_card_detail">Enter a valid card detail for your purchase!</string>
 </resources>

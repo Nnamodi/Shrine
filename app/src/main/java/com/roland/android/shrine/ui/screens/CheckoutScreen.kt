@@ -1,5 +1,6 @@
 package com.roland.android.shrine.ui.screens
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
@@ -17,13 +18,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.ExpandedCartItem
 import com.roland.android.shrine.ui.layouts.Checkout
 import com.roland.android.shrine.ui.theme.ShrineTheme
+import com.roland.android.shrine.viewmodel.CheckoutViewModel
 import com.roland.android.shrine.viewmodel.SharedViewModel
 
 @ExperimentalAnimationApi
@@ -55,12 +59,21 @@ fun CheckoutScreen(
 }
 
 @Composable
-fun PlaceOrderButton() {
+fun PlaceOrderButton(viewModel: CheckoutViewModel = viewModel()) {
+    val context = LocalContext.current.applicationContext
+    val toastMessage = when {
+        !viewModel.addressSet -> stringResource(R.string.set_delivery_address)
+        !viewModel.cardDetailsSet -> stringResource(R.string.set_card_detail)
+        else -> "You'll be able to place orders soon."
+    }
+
     Button(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        onClick = {}
+        onClick = {
+            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+        }
     ) {
         Text(
             text = stringResource(R.string.place_order_text).uppercase(),
