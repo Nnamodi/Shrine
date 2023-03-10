@@ -2,16 +2,7 @@ package com.roland.android.shrine.data
 
 import androidx.compose.animation.core.MutableTransitionState
 import com.roland.android.shrine.R
-
-data class ItemData(
-    val id: Int,
-    val title: String,
-    val price: Int,
-    var favourited: Boolean = false,
-    val vendor: Vendor,
-    val category: Category,
-    val photoResId: Int,
-)
+import com.roland.android.shrine.data.model.ItemData
 
 data class ExpandedCartItem(
     val index: Int,

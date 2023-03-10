@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
+import com.roland.android.shrine.data.model.ItemData
 
 class SharedViewModel : ViewModel() {
     private val openedDetailScreens = mutableStateListOf<ItemData>()

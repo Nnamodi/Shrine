@@ -37,8 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.Category
-import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
+import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
@@ -235,12 +235,13 @@ private fun TopAppBar(
             }
         },
         actions = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = stringResource(R.string.search_icon_desc),
-                tint = LocalContentColor.current.copy(alpha = ContentAlpha.high),
-                modifier = Modifier.padding(end = 12.dp)
-            )
+            IconButton(onClick = { if (!backdropRevealed) { onBackdropReveal(true) } }) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = stringResource(R.string.search_icon_desc),
+                    tint = LocalContentColor.current.copy(alpha = ContentAlpha.high)
+                )
+            }
         },
         elevation = 0.dp
     )

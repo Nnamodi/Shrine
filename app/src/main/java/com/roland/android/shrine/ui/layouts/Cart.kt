@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.ExpandedCartItem
-import com.roland.android.shrine.data.ItemData
+import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.theme.ShrineTheme
 
 @ExperimentalAnimationApi
