@@ -5,10 +5,15 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.roland.android.shrine.ShrineApp
 import com.roland.android.shrine.data.SampleItemsData
+import com.roland.android.shrine.data.database.ItemDao
 import com.roland.android.shrine.data.model.ItemData
 
-class SharedViewModel : ViewModel() {
+class SharedViewModel(
+    private val itemDao: ItemDao
+) : ViewModel() {
     private val openedDetailScreens = mutableStateListOf<ItemData>()
 
     var data by mutableStateOf<ItemData?>(null)
@@ -49,5 +54,11 @@ class SharedViewModel : ViewModel() {
         if (openedDetailScreens.isNotEmpty()) {
             data = openedDetailScreens.last()
         }
+    }
+}
+
+class SharedViewModelFactory : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return SharedViewModel(ShrineApp.itemDao) as T
     }
 }
