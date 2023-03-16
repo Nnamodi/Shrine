@@ -9,8 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ItemDao {
-
-	@Query("SELECT * FROM item_data ORDER BY id")
+	@Query("SELECT * FROM item_data")
 	fun getItems(): Flow<List<ItemData>>
 
 	@Insert

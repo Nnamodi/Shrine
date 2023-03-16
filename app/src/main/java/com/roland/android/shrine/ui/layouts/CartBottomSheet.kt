@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.roland.android.shrine.data.ExpandedCartItem
-import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
+import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
 
@@ -32,7 +32,7 @@ fun CartBottomSheet(
     maxWidth: Dp,
     sheetState: CartBottomSheetState,
     isFirstItem: Boolean = false,
-    onRemoveFromCart: (Int) -> Unit = {},
+    onRemoveFromCart: (ItemData) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit = {},
     moveToCatalogue: () -> Unit = {},
     proceedToCheckout: () -> Unit = {},
@@ -50,7 +50,7 @@ fun CartBottomSheet(
                 it.visible.isIdle && !it.visible.targetState
             }
         }.collect {
-            if (it != null) { onRemoveFromCart(it.index) }
+            if (it != null) { onRemoveFromCart(it.data) }
         }
     }
 
@@ -190,7 +190,7 @@ fun CartBottomSheetPreview() {
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
                 sheetState = sheetState,
-                onRemoveFromCart = { cartItems.removeAt(it) },
+                onRemoveFromCart = { cartItems.remove(it) },
                 onSheetStateChanged = { sheetState = it }
             )
         }

@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.roland.android.shrine.R
-import com.roland.android.shrine.data.ItemData
+import com.roland.android.shrine.data.model.ItemData
 
 @Composable
 fun WishlistDialog(

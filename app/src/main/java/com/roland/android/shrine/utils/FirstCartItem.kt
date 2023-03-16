@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import com.roland.android.shrine.data.ItemData
+import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.theme.ShrinePink200
 
 @Composable

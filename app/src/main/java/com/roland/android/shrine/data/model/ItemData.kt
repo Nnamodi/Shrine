@@ -8,6 +8,7 @@ import com.roland.android.shrine.data.Vendor
 @Entity(tableName = "item_data")
 data class ItemData(
 	@PrimaryKey(autoGenerate = true)
+	val generatedId: Int = 0,
 	val id: Int,
 	val title: String,
 	val price: Int,

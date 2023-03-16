@@ -6,29 +6,40 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.roland.android.shrine.ShrineApp
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.database.ItemDao
 import com.roland.android.shrine.data.model.ItemData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SharedViewModel(
     private val itemDao: ItemDao
 ) : ViewModel() {
     private val openedDetailScreens = mutableStateListOf<ItemData>()
-
-    var data by mutableStateOf<ItemData?>(null)
-        private set
-
-    val cartItems = mutableStateListOf(*SampleItemsData.take(0).toTypedArray())
-
+    var data by mutableStateOf<ItemData?>(null); private set
+    var cartItems by mutableStateOf<List<ItemData>>(emptyList()); private set
     val wishlist = mutableStateListOf(*SampleItemsData.take(0).toTypedArray())
 
-    fun addToCart(item: ItemData) {
-        cartItems.add(item)
+    init {
+        viewModelScope.launch {
+            itemDao.getItems().collect {
+                cartItems = it
+            }
+        }
     }
 
-    fun removeFromCart(index: Int) {
-        cartItems.removeAt(index)
+    fun addToCart(item: ItemData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            itemDao.addItem(item)
+        }
+    }
+
+    fun removeFromCart(item: ItemData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            itemDao.removeItem(item)
+        }
     }
 
     fun addToWishlist(item: ItemData) {
@@ -57,6 +68,7 @@ class SharedViewModel(
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 class SharedViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return SharedViewModel(ShrineApp.itemDao) as T

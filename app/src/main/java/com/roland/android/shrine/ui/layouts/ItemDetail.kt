@@ -1,5 +1,6 @@
 package com.roland.android.shrine.ui.layouts
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -27,9 +28,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.roland.android.shrine.R
-import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.getVendorResId
+import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.layouts.dialogs.WishlistDialog
 import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
@@ -39,6 +40,7 @@ import com.roland.android.shrine.utils.onFavoriteClicked
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ItemDetail(
     item: ItemData,

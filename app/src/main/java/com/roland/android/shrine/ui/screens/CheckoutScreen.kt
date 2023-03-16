@@ -29,6 +29,7 @@ import com.roland.android.shrine.ui.layouts.Checkout
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.viewmodel.CheckoutViewModel
 import com.roland.android.shrine.viewmodel.SharedViewModel
+import com.roland.android.shrine.viewmodel.SharedViewModelFactory
 
 @ExperimentalAnimationApi
 @Composable
@@ -88,7 +89,7 @@ fun PlaceOrderButton(viewModel: CheckoutViewModel = viewModel()) {
 fun CheckoutScreenPreview() {
     ShrineTheme {
         CheckoutScreen(
-            sharedViewModel = SharedViewModel(),
+            sharedViewModel = viewModel(factory = SharedViewModelFactory()),
             onNavigateUp = {}
         )
     }

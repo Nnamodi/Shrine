@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.Category
-import com.roland.android.shrine.data.ItemData
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.getVendorResId
+import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.layouts.dialogs.WishlistDialog
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData

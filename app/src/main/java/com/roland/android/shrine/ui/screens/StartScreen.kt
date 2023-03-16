@@ -12,13 +12,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.roland.android.shrine.data.ItemData
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.layouts.BackDrop
 import com.roland.android.shrine.ui.layouts.CartBottomSheet
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItem
 import com.roland.android.shrine.utils.FirstCartItemData
 import com.roland.android.shrine.viewmodel.SharedViewModel
+import com.roland.android.shrine.viewmodel.SharedViewModelFactory
 
 @RequiresApi(Build.VERSION_CODES.N)
 @ExperimentalAnimationApi
@@ -110,7 +112,7 @@ fun StartScreenPreview() {
     ShrineTheme {
         StartScreen(
             navigateToDetail = {},
-            sharedViewModel = SharedViewModel(),
+            sharedViewModel = viewModel(factory = SharedViewModelFactory()),
             proceedToCheckout = {}
         )
     }
