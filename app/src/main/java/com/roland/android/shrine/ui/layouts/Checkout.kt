@@ -1,5 +1,6 @@
 package com.roland.android.shrine.ui.layouts
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CutCornerShape
@@ -22,10 +23,12 @@ import com.roland.android.shrine.ui.layouts.dialogs.PaymentDialog
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.cardType
 import com.roland.android.shrine.viewmodel.CheckoutViewModel
+import com.roland.android.shrine.viewmodel.CheckoutViewModelFactory
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun Checkout(
-    viewModel: CheckoutViewModel = viewModel(),
+    viewModel: CheckoutViewModel,
     cartItems: List<ExpandedCartItem>,
     onNavigateUp: () -> Unit = {}
 ) {
@@ -182,7 +185,8 @@ fun CheckoutPreview() {
         }
 
         Checkout(
-            cartItems = cartItems
+            cartItems = cartItems,
+            viewModel = viewModel(factory = CheckoutViewModelFactory())
         )
     }
 }

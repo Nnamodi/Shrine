@@ -1,23 +1,23 @@
 package com.roland.android.shrine.viewmodel
 
-import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.roland.android.shrine.ShrineApp
 import com.roland.android.shrine.data.Address
-import com.roland.android.shrine.data.AppDataStore.getAddress
-import com.roland.android.shrine.data.AppDataStore.getCardDetails
-import com.roland.android.shrine.data.AppDataStore.saveCardDetails
-import com.roland.android.shrine.data.AppDataStore.saveDeliveryAddress
+import com.roland.android.shrine.data.AppDataStore
 import com.roland.android.shrine.data.CardDetails
 import com.roland.android.shrine.utils.CardNumbers.VALID_DATE
 import com.roland.android.shrine.utils.cardExpired
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class CheckoutViewModel(private val app: Application) : AndroidViewModel(app) {
+class CheckoutViewModel(
+    private val appDataStore: AppDataStore
+) : ViewModel() {
     var address by mutableStateOf(Address()); private set
     var cardDetails by mutableStateOf(CardDetails()); private set
     var addressSet by mutableStateOf(false); private set
@@ -25,13 +25,13 @@ class CheckoutViewModel(private val app: Application) : AndroidViewModel(app) {
 
     init {
         viewModelScope.launch {
-            app.getAddress().collect {
+            appDataStore.getAddress().collect {
                 address = it
                 addressSet = it.street.isNotBlank()
             }
         }
         viewModelScope.launch {
-            app.getCardDetails().collect {
+            appDataStore.getCardDetails().collect {
                 cardDetails = it
                 cardDetailsSet = if (it.cardNumber.isNotBlank()) {
                     cardExpired(it.expiryMonth, it.expiryYear) == VALID_DATE
@@ -42,13 +42,20 @@ class CheckoutViewModel(private val app: Application) : AndroidViewModel(app) {
 
     fun saveAddress(address: Address) {
         viewModelScope.launch(Dispatchers.IO) {
-            app.saveDeliveryAddress(address)
+            appDataStore.saveDeliveryAddress(address)
         }
     }
 
     fun saveCardDetails(cardDetails: CardDetails) {
         viewModelScope.launch(Dispatchers.IO) {
-            app.saveCardDetails(cardDetails)
+            appDataStore.saveCardDetails(cardDetails)
         }
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+class CheckoutViewModelFactory : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return CheckoutViewModel(ShrineApp.appDataStore) as T
     }
 }

@@ -13,10 +13,11 @@ import com.roland.android.shrine.data.Address
 import com.roland.android.shrine.utils.AddressCheck
 import com.roland.android.shrine.utils.checkAddress
 import com.roland.android.shrine.viewmodel.CheckoutViewModel
+import com.roland.android.shrine.viewmodel.CheckoutViewModelFactory
 
 @Composable
 fun AddressDialog(
-    viewModel: CheckoutViewModel = viewModel(),
+    viewModel: CheckoutViewModel = viewModel(factory = CheckoutViewModelFactory()),
     openDialog: (Boolean) -> Unit
 ) {
     var streetAddress by remember { mutableStateOf(viewModel.address.street) }

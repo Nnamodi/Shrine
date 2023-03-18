@@ -28,6 +28,7 @@ import com.roland.android.shrine.data.ExpandedCartItem
 import com.roland.android.shrine.ui.layouts.Checkout
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.viewmodel.CheckoutViewModel
+import com.roland.android.shrine.viewmodel.CheckoutViewModelFactory
 import com.roland.android.shrine.viewmodel.SharedViewModel
 import com.roland.android.shrine.viewmodel.SharedViewModelFactory
 
@@ -46,6 +47,7 @@ fun CheckoutScreen(
         }
         Checkout(
             cartItems = cartItems,
+            viewModel = viewModel(factory = CheckoutViewModelFactory()),
             onNavigateUp = onNavigateUp
         )
         AnimatedVisibility(
