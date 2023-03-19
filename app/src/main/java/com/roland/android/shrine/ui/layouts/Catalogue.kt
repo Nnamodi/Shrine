@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.Category
 import com.roland.android.shrine.data.SampleItemsData
@@ -32,9 +33,12 @@ import com.roland.android.shrine.ui.layouts.dialogs.WishlistDialog
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
 import com.roland.android.shrine.utils.onFavoriteClicked
+import com.roland.android.shrine.viewmodel.SharedViewModel
+import com.roland.android.shrine.viewmodel.SharedViewModelFactory
 
 @Composable
 fun CatalogueCard(
+    viewModel: SharedViewModel,
     modifier: Modifier = Modifier,
     data: ItemData,
     addToCart: (FirstCartItemData) -> Unit = {},
@@ -46,8 +50,9 @@ fun CatalogueCard(
     val openDialog = remember { mutableStateOf(false) }
     var imageSize by remember { mutableStateOf(IntSize.Zero) }
     var position by remember { mutableStateOf(Offset.Zero) }
+    val isInWishlist = viewModel.wishlist.any { data.id == it.id }
     var favourited by remember { mutableStateOf(Icons.Outlined.FavoriteBorder) }
-    val favouriteIcon = if (favourited == Icons.Outlined.Favorite || data.favourited) {
+    val favouriteIcon = if (favourited == Icons.Outlined.Favorite || isInWishlist) {
         Icons.Outlined.Favorite } else { Icons.Outlined.FavoriteBorder }
 
     Column(
@@ -56,6 +61,8 @@ fun CatalogueCard(
             .onGloballyPositioned { position = it.positionInRoot() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        data.favourited = isInWishlist
+
         Box(Modifier.weight(1f)) {
             Image(
                 painter = painterResource(id = data.photoResId),
@@ -119,6 +126,7 @@ fun CatalogueCard(
 fun CatalogueCardPreview() {
     ShrineTheme {
         CatalogueCard(
+            viewModel = viewModel(factory = SharedViewModelFactory()),
             modifier = Modifier.height(380.dp),
             data = SampleItemsData[5]
         )
@@ -141,6 +149,7 @@ private fun <T> transformToWeavedList(items: List<T>): List<List<T>> {
 
 @Composable
 fun Catalogue(
+    viewModel: SharedViewModel,
     modifier: Modifier = Modifier,
     items: List<ItemData>,
     addToCart: (FirstCartItemData) -> Unit = {},
@@ -171,6 +180,7 @@ fun Catalogue(
                 if (even) {
                     if (item.getOrNull(1) != null) {
                         CatalogueCard(
+                            viewModel = viewModel,
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth(0.85f)
@@ -183,6 +193,7 @@ fun Catalogue(
                         )
                         Spacer(Modifier.height(40.dp))
                         CatalogueCard(
+                            viewModel = viewModel,
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth(0.85f),
@@ -195,6 +206,7 @@ fun Catalogue(
                     } else {
                         Row(Modifier.fillMaxHeight()) {
                             CatalogueCard(
+                                viewModel = viewModel,
                                 modifier = Modifier
                                     .fillMaxWidth(0.8f)
                                     .fillMaxHeight(0.5f)
@@ -209,6 +221,7 @@ fun Catalogue(
                     }
                 } else {
                     CatalogueCard(
+                        viewModel = viewModel,
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
                             .fillMaxHeight(0.5f),
@@ -233,6 +246,7 @@ fun CataloguePreview() {
                 Modifier.fillMaxSize()
             ) {
                 Catalogue(
+                    viewModel = viewModel(factory = SharedViewModelFactory()),
                     items = SampleItemsData.filter { it.category == Category.Home }
                 ) {}
             }

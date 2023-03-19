@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ItemDao {
-	@Query("SELECT * FROM item_data")
-	fun getItems(): Flow<List<ItemData>>
+	@Query("SELECT * FROM item_data WHERE isCartItem LIKE :isCartItem AND favourited LIKE :favourited")
+	fun getItems(isCartItem: Boolean, favourited: Boolean): Flow<List<ItemData>>
 
 	@Insert
 	fun addItem(item: ItemData)

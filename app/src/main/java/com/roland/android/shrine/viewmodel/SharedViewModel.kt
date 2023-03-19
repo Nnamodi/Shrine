@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.roland.android.shrine.ShrineApp
-import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.database.ItemDao
 import com.roland.android.shrine.data.model.ItemData
 import kotlinx.coroutines.Dispatchers
@@ -20,36 +19,56 @@ class SharedViewModel(
     private val openedDetailScreens = mutableStateListOf<ItemData>()
     var data by mutableStateOf<ItemData?>(null); private set
     var cartItems by mutableStateOf<List<ItemData>>(emptyList()); private set
-    val wishlist = mutableStateListOf(*SampleItemsData.take(0).toTypedArray())
+    var wishlist by mutableStateOf<List<ItemData>>(emptyList()); private set
+    var cartIsLoaded by mutableStateOf(false); private set
 
     init {
         viewModelScope.launch {
-            itemDao.getItems().collect {
+            itemDao.getItems(
+	            isCartItem = true,
+	            favourited = false
+            ).collect {
                 cartItems = it
+                cartIsLoaded = true
+            }
+        }
+        viewModelScope.launch {
+            itemDao.getItems(
+	            isCartItem = false,
+	            favourited = true
+            ).collect {
+                wishlist = it
             }
         }
     }
 
     fun addToCart(item: ItemData) {
+	    item.isCartItem = true
         viewModelScope.launch(Dispatchers.IO) {
             itemDao.addItem(item)
         }
     }
 
     fun removeFromCart(item: ItemData) {
+	    item.isCartItem = false
         viewModelScope.launch(Dispatchers.IO) {
             itemDao.removeItem(item)
         }
     }
 
     fun addToWishlist(item: ItemData) {
-        wishlist.add(item)
-        item.favourited = true
+	    item.favourited = true
+        viewModelScope.launch(Dispatchers.IO) {
+	        itemDao.addItem(item)
+        }
     }
 
     fun removeFromWishlist(item: ItemData) {
-        wishlist.remove(item)
-        item.favourited = false
+	    item.favourited = false
+        val data = wishlist.find { item.id == it.id }
+        viewModelScope.launch(Dispatchers.IO) {
+	        itemDao.removeItem(data!!)
+        }
     }
 
     fun addScreen(data: ItemData) {

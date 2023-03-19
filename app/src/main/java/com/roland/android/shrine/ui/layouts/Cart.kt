@@ -39,10 +39,12 @@ import com.roland.android.shrine.R
 import com.roland.android.shrine.data.ExpandedCartItem
 import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.theme.ShrineTheme
+import com.roland.android.shrine.viewmodel.SharedViewModel
 
 @ExperimentalAnimationApi
 @Composable
 fun ExpandedCart(
+    viewModel: SharedViewModel,
     expandedCartItems: List<ExpandedCartItem>,
     wishlist: List<ItemData>,
     onCollapse: () -> Unit = {},
@@ -92,8 +94,9 @@ fun ExpandedCart(
             }
             item {
                 OtherItems(
-                    header = stringResource(R.string.wishlist),
+                    viewModel = viewModel,
                     modifier = Modifier.background(color = MaterialTheme.colors.surface),
+                    header = stringResource(R.string.wishlist),
                     bottomPadding = 40.dp,
                     otherItems = wishlist,
                     addToCart = {},

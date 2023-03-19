@@ -12,6 +12,7 @@ data class ItemData(
 	val id: Int,
 	val title: String,
 	val price: Int,
+	var isCartItem: Boolean = false,
 	var favourited: Boolean = false,
 	val vendor: Vendor,
 	val category: Category,

@@ -15,17 +15,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.data.ExpandedCartItem
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
+import com.roland.android.shrine.viewmodel.SharedViewModel
+import com.roland.android.shrine.viewmodel.SharedViewModelFactory
 
 @RequiresApi(Build.VERSION_CODES.N)
 @ExperimentalAnimationApi
 @Composable
 fun CartBottomSheet(
     modifier: Modifier = Modifier,
+    viewModel: SharedViewModel,
     items: List<ItemData>,
     wishlist: List<ItemData>,
     maxHeight: Dp,
@@ -140,6 +144,7 @@ fun CartBottomSheet(
             ) { targetState ->
                 if (targetState == CartBottomSheetState.Expanded) {
                     ExpandedCart(
+                        viewModel = viewModel,
                         expandedCartItems = expandedCartItems,
                         wishlist = wishlist,
                         onCollapse = { onSheetStateChanged(CartBottomSheetState.Collapsed) },
@@ -185,6 +190,7 @@ fun CartBottomSheetPreview() {
 
             CartBottomSheet(
                 modifier = Modifier.align(Alignment.BottomEnd),
+                viewModel = viewModel(factory = SharedViewModelFactory()),
                 items = cartItems,
                 wishlist = wishlist,
                 maxHeight = maxHeight,

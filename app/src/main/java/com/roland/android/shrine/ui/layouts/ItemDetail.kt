@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.getVendorResId
@@ -37,6 +38,8 @@ import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
 import com.roland.android.shrine.utils.SnackbarMessage
 import com.roland.android.shrine.utils.onFavoriteClicked
+import com.roland.android.shrine.viewmodel.SharedViewModel
+import com.roland.android.shrine.viewmodel.SharedViewModelFactory
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
@@ -44,6 +47,7 @@ import kotlin.math.max
 @Composable
 fun ItemDetail(
     item: ItemData,
+    viewModel: SharedViewModel,
     addToCart:(FirstCartItemData) -> Unit = {},
     addToWishlist: (ItemData) -> Unit = {},
     removeFromWishlist: (ItemData) -> Unit = {},
@@ -118,6 +122,7 @@ fun ItemDetail(
                 )
             }
             OtherItems(
+                viewModel = viewModel,
                 header = stringResource(R.string.items_from_vendor, item.vendor.name),
                 bottomPadding = 20.dp,
                 otherItems = SampleItemsData.filter { it.vendor == item.vendor && it != item },
@@ -133,6 +138,7 @@ fun ItemDetail(
                 navigateToDetail = navigateToDetail
             )
             OtherItems(
+                viewModel = viewModel,
                 header = stringResource(R.string.might_like),
                 bottomPadding = 60.dp,
                 otherItems = SampleItemsData.filter { it.category == item.category && it != item },
@@ -239,6 +245,7 @@ private fun Description(
 
 @Composable
 fun OtherItems(
+    viewModel: SharedViewModel,
     modifier: Modifier = Modifier,
     header: String,
     bottomPadding: Dp,
@@ -278,10 +285,11 @@ fun OtherItems(
                     key = { _, item -> item.id }
                 ) { _, item ->
                     CatalogueCard(
-                        data = item,
+                        viewModel = viewModel,
                         modifier = Modifier
                             .size(200.dp)
                             .padding(end = 20.dp),
+                        data = item,
                         addToCart = addToCart,
                         addToWishlist = addToWishlist,
                         removeFromWishlist = removeFromWishlist,
@@ -298,6 +306,6 @@ fun OtherItems(
 @Composable
 fun ItemDetailPreview() {
     ShrineTheme {
-        ItemDetail(SampleItemsData[10])
+        ItemDetail(SampleItemsData[10], viewModel(factory = SharedViewModelFactory()))
     }
 }
