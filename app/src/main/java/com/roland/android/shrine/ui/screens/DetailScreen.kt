@@ -43,6 +43,7 @@ fun DetailScreen(
         ) {
             ItemDetail(
                 item = sharedViewModel.data!!,
+	            viewModel = sharedViewModel,
                 addToCart = {
                     if (cartItems.isEmpty()) firstCartItem = it
                     sharedViewModel.addToCart(it.data)
@@ -65,6 +66,7 @@ fun DetailScreen(
             )
             CartBottomSheet(
                 modifier = Modifier.align(Alignment.BottomEnd),
+                viewModel = sharedViewModel,
                 items = cartItems,
                 wishlist = wishlist,
                 maxHeight = maxHeight,

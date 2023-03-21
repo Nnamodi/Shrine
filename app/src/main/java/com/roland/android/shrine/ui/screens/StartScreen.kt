@@ -41,6 +41,7 @@ fun StartScreen(
         Modifier.fillMaxSize()
     ) {
         BackDrop(
+            viewModel = sharedViewModel,
             onReveal = { revealed ->
                 sheetState = if (revealed) CartBottomSheetState.Hidden else CartBottomSheetState.Collapsed
             },
@@ -63,6 +64,7 @@ fun StartScreen(
         )
         CartBottomSheet(
             modifier = Modifier.align(Alignment.BottomEnd),
+            viewModel = sharedViewModel,
             items = cartItems,
             wishlist = wishlist,
             maxHeight = maxHeight,

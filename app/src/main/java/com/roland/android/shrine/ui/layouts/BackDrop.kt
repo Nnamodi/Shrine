@@ -32,9 +32,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.Category
 import com.roland.android.shrine.data.SampleItemsData
@@ -43,6 +46,8 @@ import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
 import com.roland.android.shrine.utils.SnackbarMessage
+import com.roland.android.shrine.viewmodel.SharedViewModel
+import com.roland.android.shrine.viewmodel.SharedViewModelFactory
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -50,6 +55,7 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @Composable
 fun BackDrop(
+    viewModel: SharedViewModel,
     onReveal: (Boolean) -> Unit = {},
     addToCart: (FirstCartItemData) -> Unit = {},
     addToWishlist: (ItemData) -> Unit = {},
@@ -104,22 +110,33 @@ fun BackDrop(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.TopEnd
             ) {
-                Catalogue(
-                    modifier = Modifier.fillMaxSize(),
-                    items = SampleItemsData.filter {
-                        menuSelection == Category.All || it.category == menuSelection
-                    },
-                    addToCart = addToCart,
-                    addToWishlist = {
-                        addToWishlist(it); favourite = true
-                        scope.launch { snackbarHostState.showSnackbar("") }
-                    },
-                    removeFromWishlist = {
-                        removeFromWishlist(it); favourite = false
-                        scope.launch { snackbarHostState.showSnackbar("") }
-                    },
-                    navigateToDetail = navigateToDetail
-                )
+                if (viewModel.cartIsLoaded) {
+                    Catalogue(
+                        viewModel = viewModel,
+                        modifier = Modifier.fillMaxSize(),
+                        items = SampleItemsData.filter {
+                            menuSelection == Category.All || it.category == menuSelection
+                        },
+                        addToCart = addToCart,
+                        addToWishlist = {
+                            addToWishlist(it); favourite = true
+                            scope.launch { snackbarHostState.showSnackbar("") }
+                        },
+                        removeFromWishlist = {
+                            removeFromWishlist(it); favourite = false
+                            scope.launch { snackbarHostState.showSnackbar("") }
+                        },
+                        navigateToDetail = navigateToDetail
+                    )
+                } else {
+                    Text(
+                        modifier = Modifier.align(Alignment.Center),
+                        text = stringResource(R.string.fetching_catalogue),
+                        fontStyle = FontStyle.Italic,
+                        fontWeight = FontWeight.Light,
+                        style = MaterialTheme.typography.h5
+                    )
+                }
                 IconButton(onClick = {
                     Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show()
                 }) {
@@ -390,9 +407,13 @@ fun AnimatedVisibilityScope.MenuItem(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .animateEnterExit(
-                enter = fadeIn(animationSpec = tween(durationMillis = 240,
-                    delayMillis = index * 15 + 60,
-                    easing = LinearEasing)),
+                enter = fadeIn(
+                    animationSpec = tween(
+                        durationMillis = 240,
+                        delayMillis = index * 15 + 60,
+                        easing = LinearEasing
+                    )
+                ),
                 exit = fadeOut(animationSpec = tween(durationMillis = 90, easing = LinearEasing))
             )
             .fillMaxWidth(0.5f)
@@ -407,5 +428,7 @@ fun AnimatedVisibilityScope.MenuItem(
 @Preview
 @Composable
 fun BackDropPreview() {
-    ShrineTheme { BackDrop() }
+    ShrineTheme {
+        BackDrop(viewModel = viewModel(factory = SharedViewModelFactory()))
+    }
 }

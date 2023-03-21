@@ -69,4 +69,5 @@
     <string name="promo_discount">Promo discount</string>
     <string name="set_delivery_address">Set a delivery address!</string>
     <string name="set_card_detail">Enter a valid card detail for your purchase!</string>
+    <string name="fetching_catalogue">Fetching catalogue…</string>
 </resources>
