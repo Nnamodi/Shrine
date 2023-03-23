@@ -1,7 +1,6 @@
 package com.roland.android.shrine.viewmodel
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -16,8 +15,6 @@ import kotlinx.coroutines.launch
 class SharedViewModel(
     private val itemDao: ItemDao
 ) : ViewModel() {
-    private val openedDetailScreens = mutableStateListOf<ItemData>()
-    var data by mutableStateOf<ItemData?>(null); private set
     var cartItems by mutableStateOf<List<ItemData>>(emptyList()); private set
     var wishlist by mutableStateOf<List<ItemData>>(emptyList()); private set
     var cartIsLoaded by mutableStateOf(false); private set
@@ -29,7 +26,6 @@ class SharedViewModel(
 	            favourited = false
             ).collect {
                 cartItems = it
-                cartIsLoaded = true
             }
         }
         viewModelScope.launch {
@@ -38,6 +34,7 @@ class SharedViewModel(
 	            favourited = true
             ).collect {
                 wishlist = it
+                cartIsLoaded = true
             }
         }
     }
@@ -68,21 +65,6 @@ class SharedViewModel(
         val data = wishlist.find { item.id == it.id }
         viewModelScope.launch(Dispatchers.IO) {
 	        itemDao.removeItem(data!!)
-        }
-    }
-
-    fun addScreen(data: ItemData) {
-        openedDetailScreens.add(data)
-        this.data = data
-    }
-
-    fun removeLastScreen() {
-        if (openedDetailScreens.isNotEmpty()) {
-            val lastScreen = openedDetailScreens.last()
-            openedDetailScreens.remove(lastScreen)
-        }
-        if (openedDetailScreens.isNotEmpty()) {
-            data = openedDetailScreens.last()
         }
     }
 }

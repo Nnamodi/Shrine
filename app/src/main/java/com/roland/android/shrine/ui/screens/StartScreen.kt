@@ -49,16 +49,9 @@ fun StartScreen(
                 if (cartItems.isEmpty()) firstCartItem = it
                 sharedViewModel.addToCart(it.data)
             },
-            navigateToDetail = {
-                sharedViewModel.addScreen(it)
-                navigateToDetail(it)
-            },
-            addToWishlist = {
-                sharedViewModel.addToWishlist(it)
-            },
-            removeFromWishlist = {
-                sharedViewModel.removeFromWishlist(it)
-            },
+            navigateToDetail = navigateToDetail,
+            addToWishlist = sharedViewModel::addToWishlist,
+            removeFromWishlist = sharedViewModel::removeFromWishlist,
             onViewWishlist = { sheetState = it },
             logout = logout
         )
@@ -72,13 +65,8 @@ fun StartScreen(
             sheetState = sheetState,
             isFirstItem = firstCartItem != null,
             onSheetStateChanged = { sheetState = it },
-            navigateToDetail = {
-                sharedViewModel.addScreen(it)
-                navigateToDetail(it)
-            },
-            onRemoveFromCart = {
-                sharedViewModel.removeFromCart(it)
-            },
+            navigateToDetail = navigateToDetail,
+            onRemoveFromCart = sharedViewModel::removeFromCart,
             moveToCatalogue = { sheetState = CartBottomSheetState.Collapsed },
             proceedToCheckout = proceedToCheckout
         )
@@ -89,9 +77,7 @@ fun StartScreen(
             }
         }
         BackHandler {
-            if (sheetState == CartBottomSheetState.Collapsed) {
-                logout()
-            }
+            if (sheetState == CartBottomSheetState.Collapsed) { logout() }
             if (sheetState == CartBottomSheetState.Expanded) {
                 sheetState = CartBottomSheetState.Collapsed
             }

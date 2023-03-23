@@ -6,8 +6,10 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.roland.android.shrine.viewmodel.SharedViewModel
 
 @ExperimentalAnimationApi
@@ -25,22 +27,21 @@ fun Navigation(
     ) {
         composable(Destination.StartScreen.route) {
             StartScreen(
-                navigateToDetail = { navController.navigate(Destination.DetailScreen.route) },
+                navigateToDetail = { navController.navigate(Destination.DetailScreen.routeWithId(it.id)) },
                 sharedViewModel = sharedViewModel,
                 proceedToCheckout = { navController.navigate(Destination.CheckoutScreen.route) },
                 logout = logout
             )
         }
-        composable(Destination.DetailScreen.route) {
+        composable(
+            route = Destination.DetailScreen.route,
+            arguments = listOf(navArgument("itemId") { type = NavType.IntType })
+        ) { backStackEntry ->
             DetailScreen(
-                navigateToDetail = { navController.navigate(Destination.DetailScreen.route) },
+                itemId = backStackEntry.arguments?.getInt("itemId"),
+                navigateToDetail = { navController.navigate(Destination.DetailScreen.routeWithId(it.id)) },
                 sharedViewModel = sharedViewModel,
-                moveToCatalogue = {
-                    navController.navigate(
-                        route = Destination.StartScreen.route,
-                        builder = { popUpToRoute }
-                    )
-                },
+                moveToCatalogue = { navController.navigate(Destination.StartScreen.route) { popUpToRoute } },
                 proceedToCheckout = { navController.navigate(Destination.CheckoutScreen.route) },
                 onNavigateUp = { navController.navigateUp() }
             )
@@ -56,6 +57,8 @@ fun Navigation(
 
 sealed class Destination(val route: String) {
     object StartScreen: Destination("start_screen")
-    object DetailScreen: Destination("detail_screen")
+    object DetailScreen: Destination("detail_screen/{itemId}") {
+        fun routeWithId(itemId: Int) = String.format("detail_screen/%d", itemId)
+    }
     object CheckoutScreen: Destination("checkout_screen")
 }

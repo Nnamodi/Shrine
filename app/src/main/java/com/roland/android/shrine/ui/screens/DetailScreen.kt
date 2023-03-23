@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.layouts.CartBottomSheet
 import com.roland.android.shrine.ui.layouts.ItemDetail
@@ -25,79 +26,60 @@ import com.roland.android.shrine.viewmodel.SharedViewModelFactory
 @RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun DetailScreen(
+    itemId: Int?,
     navigateToDetail: (ItemData) -> Unit,
     sharedViewModel: SharedViewModel,
     moveToCatalogue: () -> Unit,
     proceedToCheckout: () -> Unit,
     onNavigateUp: () -> Unit
 ) {
+    val item = SampleItemsData.find { itemId == it.id }
     var sheetState by rememberSaveable { mutableStateOf(CartBottomSheetState.Collapsed) }
     val cartItems = sharedViewModel.cartItems
     val wishlist = sharedViewModel.wishlist
     var firstCartItem by remember { mutableStateOf<FirstCartItemData?>(null) }
 
-    if (sharedViewModel.data == null) { onNavigateUp() }
-    else {
-        BoxWithConstraints(
-            Modifier.fillMaxSize()
-        ) {
-            ItemDetail(
-                item = sharedViewModel.data!!,
-	            viewModel = sharedViewModel,
-                addToCart = {
-                    if (cartItems.isEmpty()) firstCartItem = it
-                    sharedViewModel.addToCart(it.data)
-                },
-                addToWishlist = {
-                    sharedViewModel.addToWishlist(it)
-                },
-                removeFromWishlist = {
-                    sharedViewModel.removeFromWishlist(it)
-                },
-                navigateToDetail = {
-                    sharedViewModel.addScreen(it)
-                    navigateToDetail(it)
-                },
-                onViewWishlist = { sheetState = it },
-                onNavigateUp = {
-                    onNavigateUp()
-                    sharedViewModel.removeLastScreen()
-                }
-            )
-            CartBottomSheet(
-                modifier = Modifier.align(Alignment.BottomEnd),
-                viewModel = sharedViewModel,
-                items = cartItems,
-                wishlist = wishlist,
-                maxHeight = maxHeight,
-                maxWidth = maxWidth,
-                sheetState = sheetState,
-                isFirstItem = firstCartItem != null,
-                onSheetStateChanged = { sheetState = it },
-                navigateToDetail = {
-                    sharedViewModel.addScreen(it)
-                    navigateToDetail(it)
-                },
-                onRemoveFromCart = {
-                    sharedViewModel.removeFromCart(it)
-                },
-                moveToCatalogue = moveToCatalogue,
-                proceedToCheckout = proceedToCheckout
-            )
-            if (firstCartItem != null) {
-                FirstCartItem(data = firstCartItem!!) {
-                    // Temporary to dismiss
-                    firstCartItem = null
-                }
+    BoxWithConstraints(
+        Modifier.fillMaxSize()
+    ) {
+        ItemDetail(
+            item = item!!,
+            viewModel = sharedViewModel,
+            addToCart = {
+                if (cartItems.isEmpty()) firstCartItem = it
+                sharedViewModel.addToCart(it.data)
+            },
+            addToWishlist = sharedViewModel::addToWishlist,
+            removeFromWishlist = sharedViewModel::removeFromWishlist,
+            navigateToDetail = navigateToDetail,
+            onViewWishlist = { sheetState = it },
+            onNavigateUp = onNavigateUp
+        )
+        CartBottomSheet(
+            modifier = Modifier.align(Alignment.BottomEnd),
+            viewModel = sharedViewModel,
+            items = cartItems,
+            wishlist = wishlist,
+            maxHeight = maxHeight,
+            maxWidth = maxWidth,
+            sheetState = sheetState,
+            isFirstItem = firstCartItem != null,
+            onSheetStateChanged = { sheetState = it },
+            navigateToDetail = navigateToDetail,
+            onRemoveFromCart = sharedViewModel::removeFromCart,
+            moveToCatalogue = moveToCatalogue,
+            proceedToCheckout = proceedToCheckout
+        )
+        if (firstCartItem != null) {
+            FirstCartItem(data = firstCartItem!!) {
+                // Temporary to dismiss
+                firstCartItem = null
             }
-            BackHandler {
-                if (sheetState != CartBottomSheetState.Collapsed) {
-                    sheetState = CartBottomSheetState.Collapsed
-                } else {
-                    onNavigateUp()
-                    sharedViewModel.removeLastScreen()
-                }
-            }
+        }
+        BackHandler {
+            if (sheetState != CartBottomSheetState.Collapsed) {
+                sheetState = CartBottomSheetState.Collapsed
+            } else { onNavigateUp() }
         }
     }
 }
@@ -109,6 +91,7 @@ fun DetailScreen(
 fun DetailScreenPreview() {
     ShrineTheme {
         DetailScreen(
+            itemId = 10,
             navigateToDetail = {},
             sharedViewModel = viewModel(factory = SharedViewModelFactory()),
             moveToCatalogue = {},
