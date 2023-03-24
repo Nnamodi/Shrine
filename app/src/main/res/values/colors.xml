@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="status_bar_color">#ff442c2e</color>
     <color name="launch_icon_background">#fffedbd0</color>
 </resources>

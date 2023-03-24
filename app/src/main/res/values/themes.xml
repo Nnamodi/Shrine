@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.Shrine" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:colorPrimary">@color/launch_icon_background</item>
-        <item name="android:navigationBarColor">@color/status_bar_color</item>
-        <item name="android:statusBarColor">@color/status_bar_color</item>
+        <item name="android:navigationBarColor">@color/launch_icon_background</item>
+        <item name="android:statusBarColor">@color/launch_icon_background</item>
+        <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
+    </style>
+
+    <!-- Launch screen theme -->
+    <style name="LaunchTheme" parent="Theme.Shrine">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>
 </resources>

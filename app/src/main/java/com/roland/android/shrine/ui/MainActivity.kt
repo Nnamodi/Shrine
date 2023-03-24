@@ -9,6 +9,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.roland.android.shrine.R
 import com.roland.android.shrine.ui.screens.Navigation
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.viewmodel.SharedViewModel
@@ -20,6 +21,7 @@ import com.roland.android.shrine.viewmodel.SharedViewModelFactory
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_Shrine)
         setContent {
             val navController = rememberNavController()
             val sharedViewModel: SharedViewModel = viewModel(factory = SharedViewModelFactory())

@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.data.ExpandedCartItem
@@ -163,11 +162,7 @@ fun CartBottomSheet(
 
             cartTransition.AnimatedVisibility(
                 modifier = Modifier.align(Alignment.BottomCenter),
-                visible = { it == CartBottomSheetState.Expanded },
-                enter = fadeIn(animationSpec = tween(durationMillis = 150, delayMillis = 150, LinearEasing)) +
-                        expandIn(animationSpec = tween(durationMillis = 250, delayMillis = 250, easing = LinearOutSlowInEasing), initialSize = { IntSize.Zero }),
-                exit = fadeOut(animationSpec = tween(durationMillis = 117, easing = LinearEasing)) +
-                        shrinkOut(animationSpec = tween(durationMillis = 100, easing = FastOutLinearInEasing), targetSize = { IntSize.Zero })
+                visible = { it == CartBottomSheetState.Expanded }
             ) {
                 if (items.isNotEmpty()) { CheckoutButton(proceedToCheckout) }
             }

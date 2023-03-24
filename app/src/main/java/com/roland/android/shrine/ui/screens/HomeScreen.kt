@@ -26,7 +26,7 @@ import com.roland.android.shrine.viewmodel.SharedViewModelFactory
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
-fun StartScreen(
+fun HomeScreen(
     navigateToDetail: (ItemData) -> Unit,
     sharedViewModel: SharedViewModel,
     proceedToCheckout: () -> Unit,
@@ -96,9 +96,9 @@ enum class CartBottomSheetState {
 @ExperimentalMaterialApi
 @Preview
 @Composable
-fun StartScreenPreview() {
+fun HomeScreenPreview() {
     ShrineTheme {
-        StartScreen(
+        HomeScreen(
             navigateToDetail = {},
             sharedViewModel = viewModel(factory = SharedViewModelFactory()),
             proceedToCheckout = {}

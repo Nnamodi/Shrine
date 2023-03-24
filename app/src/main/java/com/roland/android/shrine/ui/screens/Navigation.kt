@@ -23,10 +23,10 @@ fun Navigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Destination.StartScreen.route
+        startDestination = Destination.HomeScreen.route
     ) {
-        composable(Destination.StartScreen.route) {
-            StartScreen(
+        composable(Destination.HomeScreen.route) {
+            HomeScreen(
                 navigateToDetail = { navController.navigate(Destination.DetailScreen.routeWithId(it.id)) },
                 sharedViewModel = sharedViewModel,
                 proceedToCheckout = { navController.navigate(Destination.CheckoutScreen.route) },
@@ -41,7 +41,7 @@ fun Navigation(
                 itemId = backStackEntry.arguments?.getInt("itemId"),
                 navigateToDetail = { navController.navigate(Destination.DetailScreen.routeWithId(it.id)) },
                 sharedViewModel = sharedViewModel,
-                moveToCatalogue = { navController.navigate(Destination.StartScreen.route) { popUpToRoute } },
+                moveToCatalogue = { navController.navigate(Destination.HomeScreen.route) { popUpToRoute } },
                 proceedToCheckout = { navController.navigate(Destination.CheckoutScreen.route) },
                 onNavigateUp = { navController.navigateUp() }
             )
@@ -56,7 +56,7 @@ fun Navigation(
 }
 
 sealed class Destination(val route: String) {
-    object StartScreen: Destination("start_screen")
+    object HomeScreen: Destination("home_screen")
     object DetailScreen: Destination("detail_screen/{itemId}") {
         fun routeWithId(itemId: Int) = String.format("detail_screen/%d", itemId)
     }

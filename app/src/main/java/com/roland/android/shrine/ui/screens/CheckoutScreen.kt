@@ -3,10 +3,6 @@ package com.roland.android.shrine.ui.screens
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -52,9 +48,7 @@ fun CheckoutScreen(
         )
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.BottomCenter),
-            visible = true,
-            enter = fadeIn(animationSpec = tween(durationMillis = 150, delayMillis = 150, LinearEasing)),
-            exit = fadeOut(animationSpec = tween(durationMillis = 117, easing = LinearEasing))
+            visible = true
         ) {
             PlaceOrderButton()
         }
