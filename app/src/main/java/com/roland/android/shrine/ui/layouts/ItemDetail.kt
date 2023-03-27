@@ -108,6 +108,7 @@ fun ItemDetail(
             ) {
                 Description(
                     item = item,
+                    viewModel = viewModel,
                     imageSize = imageSize,
                     position = position,
                     addToCart = addToCart,
@@ -160,6 +161,7 @@ fun ItemDetail(
 @Composable
 private fun Description(
     item: ItemData,
+    viewModel: SharedViewModel,
     imageSize: IntSize,
     position: Offset,
     addToCart: (FirstCartItemData) -> Unit,
@@ -167,8 +169,7 @@ private fun Description(
     removeFromWishlist: (ItemData) -> Unit
 ) {
     val openDialog = remember { mutableStateOf(false) }
-    var favourited by remember { mutableStateOf(Icons.Outlined.FavoriteBorder) }
-    val favouriteIcon = if (favourited == Icons.Outlined.Favorite || item.favourited) {
+    val favouriteIcon = if (viewModel.wishlist.any { item.id == it.id }) {
         Icons.Outlined.Favorite } else { Icons.Outlined.FavoriteBorder }
 
     Row(
@@ -223,7 +224,7 @@ private fun Description(
             Text(stringResource(R.string.add_to_cart).uppercase())
         }
         IconButton(onClick = {
-            onFavoriteClicked(item, addToWishlist, { openDialog.value = it }) { favourited = it }
+            onFavoriteClicked(item, addToWishlist) { openDialog.value = it }
         }) {
             Icon(
                 imageVector = favouriteIcon,
@@ -237,8 +238,7 @@ private fun Description(
         WishlistDialog(
             item = item,
             removeFromWishlist = removeFromWishlist,
-            openDialog = { openDialog.value = it },
-            favoriteIcon = { favourited = it }
+            openDialog = { openDialog.value = it }
         )
     }
 }

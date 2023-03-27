@@ -51,9 +51,7 @@ fun CatalogueCard(
     var imageSize by remember { mutableStateOf(IntSize.Zero) }
     var position by remember { mutableStateOf(Offset.Zero) }
     val isInWishlist = viewModel.wishlist.any { data.id == it.id }
-    var favourited by remember { mutableStateOf(Icons.Outlined.FavoriteBorder) }
-    val favouriteIcon = if (favourited == Icons.Outlined.Favorite || isInWishlist) {
-        Icons.Outlined.Favorite } else { Icons.Outlined.FavoriteBorder }
+    val favouriteIcon = if (isInWishlist) { Icons.Outlined.Favorite } else { Icons.Outlined.FavoriteBorder }
 
     Column(
         modifier = modifier
@@ -82,7 +80,7 @@ fun CatalogueCard(
                         )
                     }
                     IconButton(onClick = {
-                        onFavoriteClicked(data, addToWishlist, { openDialog.value = it }) { favourited = it }
+                        onFavoriteClicked(data, addToWishlist) { openDialog.value = it }
                     }) {
                         Icon(
                             imageVector = favouriteIcon,
@@ -115,8 +113,7 @@ fun CatalogueCard(
         WishlistDialog(
             item = data,
             removeFromWishlist = removeFromWishlist,
-            openDialog = { openDialog.value = it },
-            favoriteIcon = { favourited = it }
+            openDialog = { openDialog.value = it }
         )
     }
 }

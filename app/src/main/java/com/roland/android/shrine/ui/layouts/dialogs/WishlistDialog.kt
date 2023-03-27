@@ -4,10 +4,7 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.model.ItemData
@@ -16,8 +13,7 @@ import com.roland.android.shrine.data.model.ItemData
 fun WishlistDialog(
     item: ItemData,
     removeFromWishlist: (ItemData) -> Unit,
-    openDialog: (Boolean) -> Unit,
-    favoriteIcon: (ImageVector) -> Unit
+    openDialog: (Boolean) -> Unit
 ) {
     AlertDialog(
         onDismissRequest = { openDialog(false) },
@@ -27,7 +23,6 @@ fun WishlistDialog(
             TextButton(onClick = {
                 openDialog(false)
                 removeFromWishlist(item)
-                favoriteIcon(Icons.Outlined.FavoriteBorder)
             }) {
                 Text(
                     text = stringResource(R.string.remove),
