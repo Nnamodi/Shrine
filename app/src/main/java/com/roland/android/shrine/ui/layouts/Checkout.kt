@@ -30,7 +30,8 @@ import com.roland.android.shrine.viewmodel.CheckoutViewModelFactory
 fun Checkout(
     viewModel: CheckoutViewModel,
     cartItems: List<ExpandedCartItem>,
-    onNavigateUp: () -> Unit = {}
+    navigateToCompleteOrder: () -> Unit,
+    onNavigateUp: () -> Unit
 ) {
     val openAddressDialog = rememberSaveable { mutableStateOf(false) }
     val openPaymentDialog = rememberSaveable { mutableStateOf(false) }
@@ -170,6 +171,8 @@ fun Checkout(
         if (openPaymentDialog.value) {
             PaymentDialog { openPaymentDialog.value = it }
         }
+
+        if (viewModel.orderSent) navigateToCompleteOrder()
     }
 }
 

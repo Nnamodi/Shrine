@@ -10,6 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.roland.android.shrine.viewmodel.CheckoutViewModel
 import com.roland.android.shrine.viewmodel.SharedViewModel
 
 @ExperimentalAnimationApi
@@ -18,6 +19,7 @@ import com.roland.android.shrine.viewmodel.SharedViewModel
 @Composable
 fun Navigation(
     navController: NavHostController,
+    checkoutViewModel: CheckoutViewModel,
     sharedViewModel: SharedViewModel,
     logout: () -> Unit
 ) {
@@ -49,6 +51,18 @@ fun Navigation(
         composable(Destination.CheckoutScreen.route) {
             CheckoutScreen(
                 sharedViewModel = sharedViewModel,
+                navigateToCompleteOrder = {
+                    navController.apply {
+                        popBackStack()
+                        navigate(Destination.ReceiptScreen.route) }
+                },
+                onNavigateUp = { navController.navigateUp() }
+            )
+        }
+        composable(Destination.ReceiptScreen.route) {
+            ReceiptScreen(
+                checkoutViewModel = checkoutViewModel,
+                sharedViewModel = sharedViewModel,
                 onNavigateUp = { navController.navigateUp() }
             )
         }
@@ -61,4 +75,5 @@ sealed class Destination(val route: String) {
         fun routeWithId(itemId: Int) = String.format("detail_screen/%d", itemId)
     }
     object CheckoutScreen: Destination("checkout_screen")
+    object ReceiptScreen: Destination("receipt_screen")
 }

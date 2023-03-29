@@ -227,32 +227,38 @@ private fun CartHeader(
 }
 
 @Composable
-private fun CartItem(
+fun CartItem(
     item: ItemData,
+    enabled: Boolean = true,
     itemIsFirst: Boolean = false,
+    isShownInCart: Boolean = true,
+    columnPadding: Dp = 0.dp,
+    backgroundColor: Color = MaterialTheme.colors.surface,
     removeFromCart: (ItemData) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit = {}
 ) {
-    Surface(
-        color = MaterialTheme.colors.surface
-    ) {
+    Surface(color = backgroundColor) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { navigateToDetail(item) },
+                .clickable(enabled) { navigateToDetail(item) },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick = { removeFromCart(item) },
-                Modifier.padding(start = 4.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.RemoveCircleOutline,
-                    contentDescription = stringResource(R.string.remove_desc)
-                )
+            if (isShownInCart) {
+                IconButton(
+                    onClick = { removeFromCart(item) },
+                    Modifier.padding(start = 4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.RemoveCircleOutline,
+                        contentDescription = stringResource(R.string.remove_desc)
+                    )
+                }
             }
             Column(
-                Modifier.fillMaxWidth()
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = columnPadding)
             ) {
                 if (!itemIsFirst) {
                     Divider(color = MaterialTheme.colors.onSecondary.copy(alpha = 0.3f))

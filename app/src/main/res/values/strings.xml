@@ -70,4 +70,8 @@
     <string name="set_delivery_address">Set a delivery address!</string>
     <string name="set_card_detail">Enter a valid card detail for your purchase!</string>
     <string name="fetching_catalogue">Fetching catalogue…</string>
+    <string name="processing_order">We are processing your order…</string>
+    <string name="order_complete">Order Complete</string>
+    <string name="order_complete_message">Hang tight, your order is on its way!</string>
+    <string name="stop">Stop</string>
 </resources>
