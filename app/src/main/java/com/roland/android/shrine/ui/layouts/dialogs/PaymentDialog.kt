@@ -25,12 +25,12 @@ import com.roland.android.shrine.utils.CardNumbers.INVALID_DATE
 import com.roland.android.shrine.utils.CardNumbers.SECURITY_CODE
 import com.roland.android.shrine.utils.checkCardDetails
 import com.roland.android.shrine.viewmodel.CheckoutViewModel
-import com.roland.android.shrine.viewmodel.CheckoutViewModelFactory
+import com.roland.android.shrine.viewmodel.ViewModelFactory
 
 @Composable
 fun PaymentDialog(
-    viewModel: CheckoutViewModel = viewModel(factory = CheckoutViewModelFactory()),
-    openDialog: (Boolean) -> Unit
+	viewModel: CheckoutViewModel = viewModel(factory = ViewModelFactory()),
+	openDialog: (Boolean) -> Unit
 ) {
     var cardNumber by remember { mutableStateOf(viewModel.cardDetails.cardNumber) }
     var expiryMonth by remember { mutableStateOf(viewModel.cardDetails.expiryMonth) }

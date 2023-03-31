@@ -20,7 +20,7 @@ import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItem
 import com.roland.android.shrine.utils.FirstCartItemData
 import com.roland.android.shrine.viewmodel.SharedViewModel
-import com.roland.android.shrine.viewmodel.SharedViewModelFactory
+import com.roland.android.shrine.viewmodel.ViewModelFactory
 
 @RequiresApi(Build.VERSION_CODES.N)
 @ExperimentalAnimationApi
@@ -100,7 +100,7 @@ fun HomeScreenPreview() {
     ShrineTheme {
         HomeScreen(
             navigateToDetail = {},
-            sharedViewModel = viewModel(factory = SharedViewModelFactory()),
+            sharedViewModel = viewModel(factory = ViewModelFactory()),
             proceedToCheckout = {}
         )
     }

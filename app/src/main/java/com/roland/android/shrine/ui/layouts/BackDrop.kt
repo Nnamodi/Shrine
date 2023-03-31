@@ -47,7 +47,7 @@ import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
 import com.roland.android.shrine.utils.SnackbarMessage
 import com.roland.android.shrine.viewmodel.SharedViewModel
-import com.roland.android.shrine.viewmodel.SharedViewModelFactory
+import com.roland.android.shrine.viewmodel.ViewModelFactory
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -429,6 +429,6 @@ fun AnimatedVisibilityScope.MenuItem(
 @Composable
 fun BackDropPreview() {
     ShrineTheme {
-        BackDrop(viewModel = viewModel(factory = SharedViewModelFactory()))
+        BackDrop(viewModel = viewModel(factory = ViewModelFactory()))
     }
 }

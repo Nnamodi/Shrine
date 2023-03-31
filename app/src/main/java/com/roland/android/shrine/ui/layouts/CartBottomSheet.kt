@@ -21,7 +21,7 @@ import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.viewmodel.SharedViewModel
-import com.roland.android.shrine.viewmodel.SharedViewModelFactory
+import com.roland.android.shrine.viewmodel.ViewModelFactory
 
 @RequiresApi(Build.VERSION_CODES.N)
 @ExperimentalAnimationApi
@@ -185,7 +185,7 @@ fun CartBottomSheetPreview() {
 
             CartBottomSheet(
                 modifier = Modifier.align(Alignment.BottomEnd),
-                viewModel = viewModel(factory = SharedViewModelFactory()),
+                viewModel = viewModel(factory = ViewModelFactory()),
                 items = cartItems,
                 wishlist = wishlist,
                 maxHeight = maxHeight,

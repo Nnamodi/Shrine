@@ -39,7 +39,7 @@ import com.roland.android.shrine.utils.FirstCartItemData
 import com.roland.android.shrine.utils.SnackbarMessage
 import com.roland.android.shrine.utils.onFavoriteClicked
 import com.roland.android.shrine.viewmodel.SharedViewModel
-import com.roland.android.shrine.viewmodel.SharedViewModelFactory
+import com.roland.android.shrine.viewmodel.ViewModelFactory
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
@@ -169,8 +169,9 @@ private fun Description(
     removeFromWishlist: (ItemData) -> Unit
 ) {
     val openDialog = remember { mutableStateOf(false) }
-    val favouriteIcon = if (viewModel.wishlist.any { item.id == it.id }) {
-        Icons.Outlined.Favorite } else { Icons.Outlined.FavoriteBorder }
+    val isInWishlist = viewModel.wishlist.any { item.id == it.id }
+    val favouriteIcon = if (isInWishlist) { Icons.Outlined.Favorite } else { Icons.Outlined.FavoriteBorder }
+    item.favourited = isInWishlist
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -306,6 +307,6 @@ fun OtherItems(
 @Composable
 fun ItemDetailPreview() {
     ShrineTheme {
-        ItemDetail(SampleItemsData[10], viewModel(factory = SharedViewModelFactory()))
+        ItemDetail(SampleItemsData[10], viewModel(factory = ViewModelFactory()))
     }
 }

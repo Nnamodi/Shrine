@@ -4,9 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.roland.android.shrine.ShrineApp
 import com.roland.android.shrine.data.database.ItemDao
 import com.roland.android.shrine.data.model.ItemData
 import kotlinx.coroutines.Dispatchers
@@ -66,12 +64,5 @@ class SharedViewModel(
         viewModelScope.launch(Dispatchers.IO) {
 	        itemDao.removeItem(data!!)
         }
-    }
-}
-
-@Suppress("UNCHECKED_CAST")
-class SharedViewModelFactory : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return SharedViewModel(ShrineApp.itemDao) as T
     }
 }

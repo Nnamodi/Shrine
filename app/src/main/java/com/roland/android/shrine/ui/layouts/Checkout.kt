@@ -23,7 +23,7 @@ import com.roland.android.shrine.ui.layouts.dialogs.PaymentDialog
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.cardType
 import com.roland.android.shrine.viewmodel.CheckoutViewModel
-import com.roland.android.shrine.viewmodel.CheckoutViewModelFactory
+import com.roland.android.shrine.viewmodel.ViewModelFactory
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -154,7 +154,7 @@ fun Checkout(
             CartSummedValue(
                 modifier = Modifier.padding(start = 72.dp),
                 items = cartItems,
-                shippingFee = 2,
+                shippingFee = if (viewModel.addressSet) 2 else 0,
                 promoCodeApplied = promoCodeApplied,
                 backgroundColor = MaterialTheme.colors.secondary
             )
@@ -189,7 +189,9 @@ fun CheckoutPreview() {
 
         Checkout(
             cartItems = cartItems,
-            viewModel = viewModel(factory = CheckoutViewModelFactory())
+            viewModel = viewModel(factory = ViewModelFactory()),
+            navigateToCompleteOrder = {},
+            onNavigateUp = {}
         )
     }
 }

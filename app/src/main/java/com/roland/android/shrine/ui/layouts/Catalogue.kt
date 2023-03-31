@@ -34,7 +34,7 @@ import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
 import com.roland.android.shrine.utils.onFavoriteClicked
 import com.roland.android.shrine.viewmodel.SharedViewModel
-import com.roland.android.shrine.viewmodel.SharedViewModelFactory
+import com.roland.android.shrine.viewmodel.ViewModelFactory
 
 @Composable
 fun CatalogueCard(
@@ -123,7 +123,7 @@ fun CatalogueCard(
 fun CatalogueCardPreview() {
     ShrineTheme {
         CatalogueCard(
-            viewModel = viewModel(factory = SharedViewModelFactory()),
+            viewModel = viewModel(factory = ViewModelFactory()),
             modifier = Modifier.height(380.dp),
             data = SampleItemsData[5]
         )
@@ -243,7 +243,7 @@ fun CataloguePreview() {
                 Modifier.fillMaxSize()
             ) {
                 Catalogue(
-                    viewModel = viewModel(factory = SharedViewModelFactory()),
+                    viewModel = viewModel(factory = ViewModelFactory()),
                     items = SampleItemsData.filter { it.category == Category.Home }
                 ) {}
             }

@@ -4,9 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.roland.android.shrine.ShrineApp
 import com.roland.android.shrine.data.Address
 import com.roland.android.shrine.data.AppDataStore
 import com.roland.android.shrine.data.CardDetails
@@ -22,6 +20,7 @@ class CheckoutViewModel(
     var cardDetails by mutableStateOf(CardDetails()); private set
     var addressSet by mutableStateOf(false); private set
     var cardDetailsSet by mutableStateOf(false); private set
+    var orderSent by mutableStateOf(false)
 
     init {
         viewModelScope.launch {
@@ -50,12 +49,5 @@ class CheckoutViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             appDataStore.saveCardDetails(cardDetails)
         }
-    }
-}
-
-@Suppress("UNCHECKED_CAST")
-class CheckoutViewModelFactory : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return CheckoutViewModel(ShrineApp.appDataStore) as T
     }
 }

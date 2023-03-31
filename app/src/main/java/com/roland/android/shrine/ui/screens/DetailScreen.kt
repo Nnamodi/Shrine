@@ -20,7 +20,7 @@ import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItem
 import com.roland.android.shrine.utils.FirstCartItemData
 import com.roland.android.shrine.viewmodel.SharedViewModel
-import com.roland.android.shrine.viewmodel.SharedViewModelFactory
+import com.roland.android.shrine.viewmodel.ViewModelFactory
 
 @ExperimentalAnimationApi
 @RequiresApi(Build.VERSION_CODES.N)
@@ -93,7 +93,7 @@ fun DetailScreenPreview() {
         DetailScreen(
             itemId = 10,
             navigateToDetail = {},
-            sharedViewModel = viewModel(factory = SharedViewModelFactory()),
+            sharedViewModel = viewModel(factory = ViewModelFactory()),
             moveToCatalogue = {},
             proceedToCheckout = {},
             onNavigateUp = {}
