@@ -42,10 +42,7 @@ fun ProcessOrderDialog(
 					trackColor = Color.LightGray
 				)
 			}
-			if (viewModel.orderSent) {
-				viewModel.orderSent = false
-//				openDialog(false)
-			}
+			if (viewModel.orderSent) { viewModel.orderSent = false }
 		},
 		confirmButton = {
 			TextButton(onClick = {

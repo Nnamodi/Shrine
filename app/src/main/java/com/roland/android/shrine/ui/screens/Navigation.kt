@@ -62,7 +62,6 @@ fun Navigation(
         composable(Destination.ReceiptScreen.route) {
             ReceiptScreen(
                 checkoutViewModel = checkoutViewModel,
-                sharedViewModel = sharedViewModel,
                 onNavigateUp = { navController.navigateUp() }
             )
         }

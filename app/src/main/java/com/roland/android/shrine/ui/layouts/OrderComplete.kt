@@ -16,23 +16,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.R
+import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.cardType
 import com.roland.android.shrine.viewmodel.CheckoutViewModel
-import com.roland.android.shrine.viewmodel.SharedViewModel
 import com.roland.android.shrine.viewmodel.ViewModelFactory
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun OrderComplete(
 	checkoutViewModel: CheckoutViewModel,
-	sharedViewModel: SharedViewModel,
+	orderedItems: List<ItemData>,
 	onNavigateUp: () -> Unit,
 	purchaseAmount: @Composable () -> Unit
 ) {
-	val items = sharedViewModel.cartItems
-
 	Scaffold(
 		topBar = {
 			TopAppBar(
@@ -113,7 +111,7 @@ fun OrderComplete(
 			}
 			Divider(color = MaterialTheme.colors.onSecondary.copy(alpha = 0.3f))
 
-			OrderList(items = items)
+			OrderList(items = orderedItems)
 
 			purchaseAmount()
 		}
@@ -142,7 +140,7 @@ fun OrderCompletePreview() {
 	ShrineTheme {
 		OrderComplete(
 			checkoutViewModel = viewModel(factory = ViewModelFactory()),
-			sharedViewModel = viewModel(factory = ViewModelFactory()),
+			orderedItems = SampleItemsData.takeLast(5),
 			onNavigateUp = {},
 			purchaseAmount = {}
 		)

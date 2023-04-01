@@ -19,18 +19,12 @@ class SharedViewModel(
 
     init {
         viewModelScope.launch {
-            itemDao.getItems(
-	            isCartItem = true,
-	            favourited = false
-            ).collect {
+            itemDao.getCartItems().collect {
                 cartItems = it
             }
         }
         viewModelScope.launch {
-            itemDao.getItems(
-	            isCartItem = false,
-	            favourited = true
-            ).collect {
+            itemDao.getWishlist().collect {
                 wishlist = it
                 cartIsLoaded = true
             }
@@ -38,7 +32,7 @@ class SharedViewModel(
     }
 
     fun addToCart(item: ItemData) {
-	    item.isCartItem = true
+	    item.apply { isCartItem = true; favourited = false }
         viewModelScope.launch(Dispatchers.IO) {
             itemDao.addItem(item)
         }
@@ -52,7 +46,7 @@ class SharedViewModel(
     }
 
     fun addToWishlist(item: ItemData) {
-	    item.favourited = true
+	    item.apply { favourited = true; isCartItem = false }
         viewModelScope.launch(Dispatchers.IO) {
 	        itemDao.addItem(item)
         }
