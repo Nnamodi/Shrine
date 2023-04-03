@@ -18,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.ExpandedCartItem
 import com.roland.android.shrine.data.SampleItemsData
+import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.layouts.dialogs.AddressDialog
 import com.roland.android.shrine.ui.layouts.dialogs.PaymentDialog
 import com.roland.android.shrine.ui.theme.ShrineTheme
@@ -29,7 +30,7 @@ import com.roland.android.shrine.viewmodel.ViewModelFactory
 @Composable
 fun Checkout(
     viewModel: CheckoutViewModel,
-    cartItems: List<ExpandedCartItem>,
+    cartItems: List<ItemData>,
     navigateToCompleteOrder: () -> Unit,
     onNavigateUp: () -> Unit
 ) {
@@ -37,6 +38,11 @@ fun Checkout(
     val openPaymentDialog = rememberSaveable { mutableStateOf(false) }
     var promoCodeApplied by rememberSaveable { mutableStateOf(false) }
     var promoCode by rememberSaveable { mutableStateOf("") }
+    val expandedCartItems by remember(cartItems) {
+        derivedStateOf {
+            cartItems.mapIndexed { index, it -> ExpandedCartItem(index = index, data = it) }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -153,7 +159,7 @@ fun Checkout(
             }
             CartSummedValue(
                 modifier = Modifier.padding(start = 72.dp),
-                items = cartItems,
+                items = expandedCartItems,
                 shippingFee = if (viewModel.addressSet) 2 else 0,
                 promoCodeApplied = promoCodeApplied,
                 backgroundColor = MaterialTheme.colors.secondary
@@ -180,15 +186,8 @@ fun Checkout(
 @Composable
 fun CheckoutPreview() {
     ShrineTheme {
-        val items = SampleItemsData.take(6)
-        val cartItems by remember(items) {
-            derivedStateOf {
-                items.mapIndexed { index, item -> ExpandedCartItem(index = index, data = item) }
-            }
-        }
-
         Checkout(
-            cartItems = cartItems,
+            cartItems = SampleItemsData.take(5),
             viewModel = viewModel(factory = ViewModelFactory()),
             navigateToCompleteOrder = {},
             onNavigateUp = {}

@@ -8,7 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.R
-import com.roland.android.shrine.data.ExpandedCartItem
 import com.roland.android.shrine.ui.layouts.Checkout
 import com.roland.android.shrine.ui.layouts.dialogs.ProcessOrderDialog
 import com.roland.android.shrine.ui.theme.ShrineTheme
@@ -34,14 +34,8 @@ fun CheckoutScreen(
     onNavigateUp: () -> Unit
 ) {
     Box {
-        val items = sharedViewModel.cartItems
-        val cartItems by remember(items) {
-            derivedStateOf {
-                items.mapIndexed { index, item -> ExpandedCartItem(index = index, data = item) }
-            }
-        }
         Checkout(
-            cartItems = cartItems,
+            cartItems = sharedViewModel.cartItems,
             viewModel = viewModel(factory = ViewModelFactory()),
             navigateToCompleteOrder = navigateToCompleteOrder,
             onNavigateUp = onNavigateUp

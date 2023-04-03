@@ -16,7 +16,10 @@ class ViewModelFactory : ViewModelProvider.Factory {
 			return SharedViewModel(ShrineApp.itemDao) as T
 		}
 		if (modelClass.isAssignableFrom(CheckoutViewModel::class.java)) {
-			return CheckoutViewModel(ShrineApp.appDataStore) as T
+			return CheckoutViewModel(
+				appDataStore = ShrineApp.appDataStore,
+				itemDao = ShrineApp.itemDao
+			) as T
 		}
 		throw IllegalArgumentException("Unknown ViewModel class")
 	}
