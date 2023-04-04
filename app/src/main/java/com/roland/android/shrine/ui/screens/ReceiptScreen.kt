@@ -13,15 +13,13 @@ import com.roland.android.shrine.data.ExpandedCartItem
 import com.roland.android.shrine.ui.layouts.CartSummedValue
 import com.roland.android.shrine.ui.layouts.OrderComplete
 import com.roland.android.shrine.viewmodel.CheckoutViewModel
-import com.roland.android.shrine.viewmodel.SharedViewModel
 
 @Composable
 fun ReceiptScreen(
 	checkoutViewModel: CheckoutViewModel,
-	sharedViewModel: SharedViewModel,
 	onNavigateUp: () -> Unit
 ) {
-	val items = sharedViewModel.cartItems
+	val items = checkoutViewModel.latestOrder
 	val expandedItems by remember(items) {
 		derivedStateOf {
 			items.mapIndexed { index, it -> ExpandedCartItem(index = index, data = it) }
@@ -31,7 +29,7 @@ fun ReceiptScreen(
 	Box {
 		OrderComplete(
 			checkoutViewModel = checkoutViewModel,
-			sharedViewModel = sharedViewModel,
+			orderedItems = items,
 			onNavigateUp = onNavigateUp
 		) {
 			CartSummedValue(

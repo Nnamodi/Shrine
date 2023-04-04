@@ -15,6 +15,7 @@ object CardNumbers {
     const val VERVE_CODE = "5061"
     const val VISA_CODE = "4"
     const val DATE_FORMAT = "yy, MM"
+    const val ORDER_DATE_FORMAT = "MMM dd, yyyy hh:mma"
     const val EXPIRY_DATE = "expiry_date"
     const val SECURITY_CODE = "security_code"
     const val CARD_EXPIRED = "expired_card"

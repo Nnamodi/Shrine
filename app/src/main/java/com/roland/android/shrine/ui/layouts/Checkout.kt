@@ -178,7 +178,10 @@ fun Checkout(
             PaymentDialog { openPaymentDialog.value = it }
         }
 
-        if (viewModel.orderSent) navigateToCompleteOrder()
+        if (viewModel.orderSent) {
+            navigateToCompleteOrder()
+            viewModel.addOrderList(cartItems)
+        }
     }
 }
 
