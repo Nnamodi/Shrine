@@ -9,7 +9,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,6 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.model.ItemData
+import com.roland.android.shrine.ui.layouts.dialogs.OrderInfoDialog
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.cardType
 import com.roland.android.shrine.viewmodel.CheckoutViewModel
@@ -31,6 +34,8 @@ fun OrderComplete(
 	onNavigateUp: () -> Unit,
 	purchaseAmount: @Composable () -> Unit
 ) {
+	val openDialog = rememberSaveable { mutableStateOf(false) }
+
 	Scaffold(
 		topBar = {
 			TopAppBar(
@@ -38,6 +43,15 @@ fun OrderComplete(
 				navigationIcon = {
 					IconButton(onClick = onNavigateUp) {
 						Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(R.string.close_icon_desc))
+					}
+				},
+				actions = {
+					IconButton(onClick = { openDialog.value = true }) {
+						Icon(
+							imageVector = Icons.Outlined.Info,
+							contentDescription = stringResource(R.string.info_icon_desc),
+							tint = LocalContentColor.current.copy(alpha = ContentAlpha.high)
+						)
 					}
 				},
 				backgroundColor = MaterialTheme.colors.secondary
@@ -115,6 +129,10 @@ fun OrderComplete(
 
 			purchaseAmount()
 		}
+	}
+
+	if (openDialog.value) {
+		OrderInfoDialog(viewModel = checkoutViewModel) { openDialog.value = it }
 	}
 }
 

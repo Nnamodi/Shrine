@@ -28,6 +28,7 @@ class CheckoutViewModel(
     var cardDetailsSet by mutableStateOf(false); private set
     var orderSent by mutableStateOf(false)
     var latestOrder by mutableStateOf<List<ItemData>>(emptyList()); private set
+    var orderNumber by mutableStateOf(""); private set
 
     init {
         viewModelScope.launch {
@@ -51,6 +52,9 @@ class CheckoutViewModel(
                     date(data.purchaseDate) == recent
                 }
             }
+        }
+        viewModelScope.launch {
+            appDataStore.getOrderNo().collect { orderNumber = it }
         }
     }
 

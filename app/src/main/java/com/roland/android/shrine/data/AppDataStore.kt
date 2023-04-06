@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.util.*
 
 private val STREET_ADDRESS = stringPreferencesKey("street_address")
 private val VICINITY = stringPreferencesKey("vicinity")
@@ -13,6 +14,7 @@ private val CARD_NUMBER = stringPreferencesKey("card_number")
 private val EXPIRY_MONTH = stringPreferencesKey("expiry_month")
 private val EXPIRY_YEAR = stringPreferencesKey("expiry_year")
 private val SECURITY_CODE = stringPreferencesKey("security_code")
+private val ORDER_NO = stringPreferencesKey("orders_number")
 
 class AppDataStore(private val dataStore: DataStore<Preferences>) {
     suspend fun saveDeliveryAddress(address: Address) {
@@ -49,6 +51,17 @@ class AppDataStore(private val dataStore: DataStore<Preferences>) {
                 securityCode = preferences[SECURITY_CODE] ?: ""
             )
         }
+    }
+
+    suspend fun saveOrderNo() {
+        dataStore.edit { preferences ->
+            preferences[ORDER_NO] = UUID.randomUUID()
+                .toString().takeLast(12)
+        }
+    }
+
+    fun getOrderNo(): Flow<String> = dataStore.data.map {
+        it[ORDER_NO] ?: ""
     }
 }
 
