@@ -74,4 +74,15 @@
     <string name="order_complete">Order Complete</string>
     <string name="order_complete_message">Hang tight, your order is on its way!</string>
     <string name="stop">Stop</string>
+    <string name="info_icon_desc">Order info icon</string>
+    <string name="first_name_text">First name</string>
+    <string name="first_name_holder">Nnamdi</string>
+    <string name="last_name_text">Last name</string>
+    <string name="last_name_holder">Igede</string>
+    <string name="password_text">Password</string>
+    <string name="password_holder">*******</string>
+    <string name="welcome_text">Welcome</string>
+    <string name="password_rule">Password must contain at least 6 characters</string>
+    <string name="skip">Skip</string>
+    <string name="login">Login</string>
 </resources>

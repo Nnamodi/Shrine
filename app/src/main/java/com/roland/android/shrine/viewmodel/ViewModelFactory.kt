@@ -21,6 +21,9 @@ class ViewModelFactory : ViewModelProvider.Factory {
 				itemDao = ShrineApp.itemDao
 			) as T
 		}
+		if (modelClass.isAssignableFrom(AccountViewModel::class.java)) {
+			return AccountViewModel(ShrineApp.appDataStore) as T
+		}
 		throw IllegalArgumentException("Unknown ViewModel class")
 	}
 }

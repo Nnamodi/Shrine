@@ -2,6 +2,7 @@ package com.roland.android.shrine.data
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +16,10 @@ private val EXPIRY_MONTH = stringPreferencesKey("expiry_month")
 private val EXPIRY_YEAR = stringPreferencesKey("expiry_year")
 private val SECURITY_CODE = stringPreferencesKey("security_code")
 private val ORDER_NO = stringPreferencesKey("orders_number")
+private val LAUNCHED = booleanPreferencesKey("first_launch")
+private val FIRST_NAME = stringPreferencesKey("first_name")
+private val LAST_NAME = stringPreferencesKey("last_name")
+private val LOGIN_PIN = stringPreferencesKey("login_pin")
 
 class AppDataStore(private val dataStore: DataStore<Preferences>) {
     suspend fun saveDeliveryAddress(address: Address) {
@@ -63,16 +68,20 @@ class AppDataStore(private val dataStore: DataStore<Preferences>) {
     fun getOrderNo(): Flow<String> = dataStore.data.map {
         it[ORDER_NO] ?: ""
     }
+
+    suspend fun saveLaunchStatus() {
+        dataStore.edit { it[LAUNCHED] = true }
+    }
+
+    fun getLaunchStatus(): Flow<Boolean> = dataStore.data.map {
+        it[LAUNCHED] ?: false
+    }
+
+    suspend fun saveUser(user: User) {
+        dataStore.edit { preferences ->
+            preferences[FIRST_NAME] = user.firstName
+            preferences[LAST_NAME] = user.lastName
+            preferences[LOGIN_PIN] = user.login_pin
+        }
+    }
 }
-
-data class Address(
-    val street: String = "",
-    val vicinity: String = ""
-)
-
-data class CardDetails(
-    val cardNumber: String = "",
-    val expiryMonth: String = "",
-    val expiryYear: String = "",
-    val securityCode: String = ""
-)
