@@ -84,4 +84,14 @@ class AppDataStore(private val dataStore: DataStore<Preferences>) {
             preferences[LOGIN_PIN] = user.login_pin
         }
     }
+
+    fun getUser(): Flow<User> {
+        return dataStore.data.map { preferences ->
+            User(
+                firstName = preferences[FIRST_NAME] ?: "",
+                lastName = preferences[LAST_NAME] ?: "",
+                login_pin = preferences[LOGIN_PIN] ?: ""
+            )
+        }
+    }
 }

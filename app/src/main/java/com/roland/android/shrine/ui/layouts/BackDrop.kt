@@ -47,7 +47,6 @@ import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.FirstCartItemData
 import com.roland.android.shrine.utils.SnackbarMessage
 import com.roland.android.shrine.viewmodel.SharedViewModel
-import com.roland.android.shrine.viewmodel.ViewModelFactory
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -56,13 +55,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun BackDrop(
     viewModel: SharedViewModel,
+    accountMenuText: String,
     onReveal: (Boolean) -> Unit = {},
     addToCart: (FirstCartItemData) -> Unit = {},
     addToWishlist: (ItemData) -> Unit = {},
     removeFromWishlist: (ItemData) -> Unit = {},
     navigateToDetail: (ItemData) -> Unit = {},
     onViewWishlist: (CartBottomSheetState) -> Unit = {},
-    logout: () -> Unit = {}
+    onAccountButtonPressed: () -> Unit = {}
 ) {
     val context = LocalContext.current.applicationContext
     val snackbarHostState = remember { SnackbarHostState() }
@@ -92,17 +92,24 @@ fun BackDrop(
             )
         },
         backLayerContent = {
+            val onMenuPressed = {
+                backdropRevealed = false
+                onReveal(false)
+                scope.launch { scaffoldState.conceal() }
+            }
             BackdropMenuItem(
                 activeMenuItem = menuSelection,
+                accountMenuText = accountMenuText,
                 backdropRevealed = backdropRevealed,
                 modifier = Modifier.padding(top = 12.dp, bottom = 32.dp),
                 onMenuItemSelect = {
-                    backdropRevealed = false
-                    onReveal(false)
+                    onMenuPressed()
                     menuSelection = it
-                    scope.launch { scaffoldState.conceal() }
                 },
-                logout = logout
+                onAccountButtonPressed = {
+                    onMenuPressed()
+                    onAccountButtonPressed()
+                }
             )
         },
         frontLayerContent = {
@@ -322,10 +329,11 @@ fun MenuSearchField() {
 @Composable
 private fun BackdropMenuItem(
     modifier: Modifier = Modifier,
+    accountMenuText: String,
     backdropRevealed: Boolean = true,
     activeMenuItem: Category = Category.All,
     onMenuItemSelect: (Category) -> Unit = {},
-    logout: () -> Unit = {}
+    onAccountButtonPressed: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -371,9 +379,9 @@ private fun BackdropMenuItem(
                     )
                 }
                 MenuItem(
-                    modifier = Modifier.clickable { logout() },
+                    modifier = Modifier.clickable { onAccountButtonPressed() },
                     index = menus.size + 1
-                ) { MenuText() }
+                ) { MenuText(accountMenuText) }
             }
         }
     }
@@ -381,8 +389,8 @@ private fun BackdropMenuItem(
 
 @Composable
 fun MenuText(
-    text: String = "Logout",
-    activeDecoration: @Composable () -> Unit = {}
+    text: String,
+    activeDecoration: @Composable () -> Unit = {},
 ) {
     Box(
         modifier = Modifier.height(44.dp),
@@ -429,6 +437,6 @@ fun AnimatedVisibilityScope.MenuItem(
 @Composable
 fun BackDropPreview() {
     ShrineTheme {
-        BackDrop(viewModel = viewModel(factory = ViewModelFactory()))
+        BackDrop(viewModel = viewModel(), accountMenuText = "Login")
     }
 }

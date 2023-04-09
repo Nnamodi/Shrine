@@ -11,6 +11,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.roland.android.shrine.data.UserWithAddress
 import com.roland.android.shrine.viewmodel.AccountViewModel
 import com.roland.android.shrine.viewmodel.CheckoutViewModel
 import com.roland.android.shrine.viewmodel.SharedViewModel
@@ -24,7 +25,8 @@ fun Navigation(
     navController: NavHostController,
     checkoutViewModel: CheckoutViewModel,
     sharedViewModel: SharedViewModel,
-    logout: () -> Unit
+    accountViewModel: AccountViewModel,
+    closeApp: () -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -32,15 +34,26 @@ fun Navigation(
     ) {
         composable(Destination.LoginScreen.route) {
             LoginScreen {
-                navController.apply { popBackStack(); navigate(Destination.HomeScreen.route) }
+                navController.apply {
+                    popBackStack()
+                    if (backQueue.isEmpty()) {
+                        navigate(Destination.HomeScreen.route)
+                    }
+                }
             }
         }
         composable(Destination.HomeScreen.route) {
             HomeScreen(
                 navigateToDetail = { navController.navigate(Destination.DetailScreen.routeWithId(it.id)) },
                 sharedViewModel = sharedViewModel,
+                userIsNull = accountViewModel.user.firstName.isEmpty(),
                 proceedToCheckout = { navController.navigate(Destination.CheckoutScreen.route) },
-                logout = logout
+                onAccountButtonPressed = {
+                    if (accountViewModel.user.firstName.isEmpty()) {
+                        navController.navigate(Destination.LoginScreen.route)
+                    } else { navController.navigate("") }
+                },
+                closeApp = closeApp
             )
         }
         composable(

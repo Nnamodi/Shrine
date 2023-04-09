@@ -11,8 +11,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.roland.android.shrine.R
 import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.layouts.BackDrop
 import com.roland.android.shrine.ui.layouts.CartBottomSheet
@@ -29,19 +31,24 @@ import com.roland.android.shrine.viewmodel.ViewModelFactory
 fun HomeScreen(
     navigateToDetail: (ItemData) -> Unit,
     sharedViewModel: SharedViewModel,
+    userIsNull: Boolean,
     proceedToCheckout: () -> Unit,
-    logout: () -> Unit = {}
+    onAccountButtonPressed: () -> Unit = {},
+    closeApp: () -> Unit = {}
 ) {
     var sheetState by rememberSaveable { mutableStateOf(CartBottomSheetState.Collapsed) }
     val cartItems = sharedViewModel.cartItems
     val wishlist = sharedViewModel.wishlist
     var firstCartItem by remember { mutableStateOf<FirstCartItemData?>(null) }
+    val accountMenuText = if (!userIsNull) {
+        stringResource(R.string.my_account) } else { stringResource(R.string.login) }
 
     BoxWithConstraints(
         Modifier.fillMaxSize()
     ) {
         BackDrop(
             viewModel = sharedViewModel,
+            accountMenuText = accountMenuText,
             onReveal = { revealed ->
                 sheetState = if (revealed) CartBottomSheetState.Hidden else CartBottomSheetState.Collapsed
             },
@@ -53,7 +60,7 @@ fun HomeScreen(
             addToWishlist = sharedViewModel::addToWishlist,
             removeFromWishlist = sharedViewModel::removeFromWishlist,
             onViewWishlist = { sheetState = it },
-            logout = logout
+            onAccountButtonPressed = onAccountButtonPressed
         )
         CartBottomSheet(
             modifier = Modifier.align(Alignment.BottomEnd),
@@ -77,7 +84,7 @@ fun HomeScreen(
             }
         }
         BackHandler {
-            if (sheetState == CartBottomSheetState.Collapsed) { logout() }
+            if (sheetState == CartBottomSheetState.Collapsed) { closeApp() }
             if (sheetState == CartBottomSheetState.Expanded) {
                 sheetState = CartBottomSheetState.Collapsed
             }
@@ -101,6 +108,7 @@ fun HomeScreenPreview() {
         HomeScreen(
             navigateToDetail = {},
             sharedViewModel = viewModel(factory = ViewModelFactory()),
+            userIsNull = true,
             proceedToCheckout = {}
         )
     }

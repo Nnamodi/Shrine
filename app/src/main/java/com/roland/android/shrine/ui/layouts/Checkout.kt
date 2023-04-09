@@ -179,8 +179,8 @@ fun Checkout(
         }
 
         if (viewModel.orderSent) {
-            navigateToCompleteOrder()
             viewModel.addOrderList(cartItems)
+            navigateToCompleteOrder()
         }
     }
 }

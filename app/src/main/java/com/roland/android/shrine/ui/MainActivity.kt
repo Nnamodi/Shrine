@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.roland.android.shrine.R
 import com.roland.android.shrine.ui.screens.Navigation
 import com.roland.android.shrine.ui.theme.ShrineTheme
+import com.roland.android.shrine.viewmodel.AccountViewModel
 import com.roland.android.shrine.viewmodel.CheckoutViewModel
 import com.roland.android.shrine.viewmodel.SharedViewModel
 import com.roland.android.shrine.viewmodel.ViewModelFactory
@@ -27,13 +28,15 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val checkoutViewModel: CheckoutViewModel = viewModel(factory = ViewModelFactory())
             val sharedViewModel: SharedViewModel = viewModel(factory = ViewModelFactory())
+            val accountViewModel: AccountViewModel = viewModel(factory = ViewModelFactory())
 
             ShrineTheme {
                 Navigation(
                     navController = navController,
                     checkoutViewModel = checkoutViewModel,
                     sharedViewModel = sharedViewModel,
-                    logout = { finish() }
+                    accountViewModel = accountViewModel,
+                    closeApp = { finish() }
                 )
             }
         }
