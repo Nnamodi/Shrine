@@ -51,7 +51,7 @@ fun Navigation(
                 onAccountButtonPressed = {
                     if (accountViewModel.user.firstName.isEmpty()) {
                         navController.navigate(Destination.LoginScreen.route)
-                    } else { navController.navigate("") }
+                    } else { navController.navigate(Destination.AccountScreen.route) }
                 },
                 closeApp = closeApp
             )
@@ -84,6 +84,17 @@ fun Navigation(
                 onNavigateUp = { navController.navigateUp() }
             )
         }
+        composable(Destination.AccountScreen.route) {
+            AccountScreen(
+                userDetails = UserWithAddress(
+                    accountViewModel.user,
+                    checkoutViewModel.address
+                ),
+                viewPendingDelivery = { navController.navigate(Destination.ReceiptScreen.route) },
+                orderHistory = accountViewModel.orderedItems,
+                onNavigateUp = { navController.navigateUp() }
+            )
+        }
     }
 }
 
@@ -101,6 +112,7 @@ private fun findStartDestination(
 sealed class Destination(val route: String) {
     object LoginScreen: Destination("login_screen")
     object HomeScreen: Destination("home_screen")
+    object AccountScreen: Destination("account_screen")
     object DetailScreen: Destination("detail_screen/{itemId}") {
         fun routeWithId(itemId: Int) = String.format("detail_screen/%d", itemId)
     }

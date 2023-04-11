@@ -85,4 +85,11 @@
     <string name="password_rule">Password must contain at least 6 characters</string>
     <string name="skip">Skip</string>
     <string name="login">Login</string>
+    <string name="my_account">My Account</string>
+    <string name="avatar_icon_desc">User avatar</string>
+    <string name="personal_details_text">Personal details</string>
+    <string name="pending_delivery">Pending delivery</string>
+    <string name="orders">Orders</string>
+    <string name="delete_account">Delete account</string>
+    <string name="no_orders_placed">You haven\'t placed any orders yet</string>
 </resources>

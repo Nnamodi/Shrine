@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.roland.android.shrine.data.AppDataStore
 import com.roland.android.shrine.data.User
 import com.roland.android.shrine.data.database.ItemDao
+import com.roland.android.shrine.data.model.ItemData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -15,6 +16,7 @@ class AccountViewModel(
 	private val itemDao: ItemDao,
 	private val appDataStore: AppDataStore
 ) : ViewModel() {
+	var orderedItems by mutableStateOf<List<ItemData>>(emptyList()); private set
 	var user by mutableStateOf(User("", "", "")); private set
 	var firstLaunch by mutableStateOf(false); private set
 	var firstName by mutableStateOf("")
@@ -22,6 +24,11 @@ class AccountViewModel(
 	var password by mutableStateOf("")
 
 	init {
+		viewModelScope.launch {
+			itemDao.getOrderHistory().collect {
+				orderedItems = it
+			}
+		}
 		viewModelScope.launch {
 			appDataStore.getLaunchStatus().collect {
 				firstLaunch = !it

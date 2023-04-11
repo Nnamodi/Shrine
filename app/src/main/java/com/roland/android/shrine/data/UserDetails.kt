@@ -11,6 +11,11 @@ data class Address(
 	val vicinity: String = ""
 )
 
+data class UserWithAddress(
+	val user: User,
+	val address: Address
+)
+
 data class CardDetails(
 	val cardNumber: String = "",
 	val expiryMonth: String = "",
