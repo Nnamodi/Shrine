@@ -5,7 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.roland.android.shrine.data.Address
 import com.roland.android.shrine.data.AppDataStore
+import com.roland.android.shrine.data.CardDetails
 import com.roland.android.shrine.data.User
 import com.roland.android.shrine.data.database.ItemDao
 import com.roland.android.shrine.data.model.ItemData
@@ -51,6 +53,17 @@ class AccountViewModel(
 		viewModelScope.launch(Dispatchers.IO) {
 			val user = User(firstName, lastName, password)
 			appDataStore.saveUser(user)
+		}
+	}
+
+	fun deleteAccount() {
+		viewModelScope.launch(Dispatchers.IO) {
+			itemDao.clearDatabase()
+			appDataStore.apply {
+				saveDeliveryAddress(Address())
+				saveCardDetails(CardDetails())
+				saveUser(User())
+			}
 		}
 	}
 }

@@ -75,6 +75,11 @@
     <string name="order_complete_message">Hang tight, your order is on its way!</string>
     <string name="stop">Stop</string>
     <string name="info_icon_desc">Order info icon</string>
+    <string name="details">Details</string>
+    <string name="order_number_title">Order number:</string>
+    <string name="purchase_date_title">Purchased on:</string>
+    <string name="delivery_status_title">Delivery status:</string>
+    <string name="en_route">En route</string>
     <string name="first_name_text">First name</string>
     <string name="first_name_holder">Nnamdi</string>
     <string name="last_name_text">Last name</string>
@@ -92,4 +97,12 @@
     <string name="orders">Orders</string>
     <string name="delete_account">Delete account</string>
     <string name="no_orders_placed">You haven\'t placed any orders yet</string>
+    <string name="enter_login_password">Enter login password</string>
+    <string name="delete_account_warning">By clicking the `Delete` button, your account, including cart-items, wishlist and all your in-app information, will be deleted.\n\nThis action cannot be undone.</string>
+    <string name="delete">Delete</string>
+    <string name="so_you_know_text">Just so you know</string>
+    <string name="checkout_info_text">Your real address and card details are not really required, since this is only a demo shopping app.
+        \nTherefore, there\'s no need to disclose any personal information anywhere in the app.
+        \n\nBut as long as Shrine is concerned, whatever details entered in the app, stays in the app.</string>
+    <string name="login_snackbar_text">Login to avail this feature</string>
 </resources>

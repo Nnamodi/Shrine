@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -20,6 +21,7 @@ import com.roland.android.shrine.data.ExpandedCartItem
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.layouts.dialogs.AddressDialog
+import com.roland.android.shrine.ui.layouts.dialogs.OrderInfoDialog
 import com.roland.android.shrine.ui.layouts.dialogs.PaymentDialog
 import com.roland.android.shrine.ui.theme.ShrineTheme
 import com.roland.android.shrine.utils.cardType
@@ -35,6 +37,7 @@ fun Checkout(
     onNavigateUp: () -> Unit
 ) {
     val openAddressDialog = rememberSaveable { mutableStateOf(false) }
+    val openInfoDialog = rememberSaveable { mutableStateOf(false) }
     val openPaymentDialog = rememberSaveable { mutableStateOf(false) }
     var promoCodeApplied by rememberSaveable { mutableStateOf(false) }
     var promoCode by rememberSaveable { mutableStateOf("") }
@@ -51,6 +54,15 @@ fun Checkout(
                 navigationIcon = {
                     IconButton(onClick = onNavigateUp) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { openInfoDialog.value = true }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = stringResource(R.string.info_icon_desc),
+                            tint = LocalContentColor.current.copy(alpha = ContentAlpha.high)
+                        )
                     }
                 },
                 backgroundColor = MaterialTheme.colors.secondary
@@ -172,6 +184,13 @@ fun Checkout(
 
         if (openAddressDialog.value) {
             AddressDialog { openAddressDialog.value = it }
+        }
+
+        if(openInfoDialog.value) {
+            OrderInfoDialog(
+                viewModel = viewModel,
+                isOrderInfo = false
+            ) { openInfoDialog.value = it }
         }
 
         if (openPaymentDialog.value) {

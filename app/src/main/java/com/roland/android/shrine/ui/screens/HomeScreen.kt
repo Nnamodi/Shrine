@@ -31,9 +31,10 @@ import com.roland.android.shrine.viewmodel.ViewModelFactory
 fun HomeScreen(
     navigateToDetail: (ItemData) -> Unit,
     sharedViewModel: SharedViewModel,
-    userIsNull: Boolean,
+    userIsNull: Boolean = false,
     proceedToCheckout: () -> Unit,
     onAccountButtonPressed: () -> Unit = {},
+    onLogin: () -> Unit = {},
     closeApp: () -> Unit = {}
 ) {
     var sheetState by rememberSaveable { mutableStateOf(CartBottomSheetState.Collapsed) }
@@ -49,6 +50,7 @@ fun HomeScreen(
         BackDrop(
             viewModel = sharedViewModel,
             accountMenuText = accountMenuText,
+            userIsNull = userIsNull,
             onReveal = { revealed ->
                 sheetState = if (revealed) CartBottomSheetState.Hidden else CartBottomSheetState.Collapsed
             },
@@ -56,6 +58,7 @@ fun HomeScreen(
                 if (cartItems.isEmpty()) firstCartItem = it
                 sharedViewModel.addToCart(it.data)
             },
+            onLogin = onLogin,
             navigateToDetail = navigateToDetail,
             addToWishlist = sharedViewModel::addToWishlist,
             removeFromWishlist = sharedViewModel::removeFromWishlist,
@@ -108,7 +111,6 @@ fun HomeScreenPreview() {
         HomeScreen(
             navigateToDetail = {},
             sharedViewModel = viewModel(factory = ViewModelFactory()),
-            userIsNull = true,
             proceedToCheckout = {}
         )
     }

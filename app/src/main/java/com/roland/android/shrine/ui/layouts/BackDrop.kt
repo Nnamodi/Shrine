@@ -55,11 +55,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun BackDrop(
     viewModel: SharedViewModel,
+    userIsNull: Boolean = false,
     accountMenuText: String,
     onReveal: (Boolean) -> Unit = {},
     addToCart: (FirstCartItemData) -> Unit = {},
     addToWishlist: (ItemData) -> Unit = {},
     removeFromWishlist: (ItemData) -> Unit = {},
+    onLogin: () -> Unit = {},
     navigateToDetail: (ItemData) -> Unit = {},
     onViewWishlist: (CartBottomSheetState) -> Unit = {},
     onAccountButtonPressed: () -> Unit = {}
@@ -124,9 +126,12 @@ fun BackDrop(
                         items = SampleItemsData.filter {
                             menuSelection == Category.All || it.category == menuSelection
                         },
-                        addToCart = addToCart,
+                        addToCart = {
+                            if (!userIsNull) { addToCart(it) }
+                            else { scope.launch { snackbarHostState.showSnackbar("") } }
+                        },
                         addToWishlist = {
-                            addToWishlist(it); favourite = true
+                            if (!userIsNull) { addToWishlist(it); favourite = true }
                             scope.launch { snackbarHostState.showSnackbar("") }
                         },
                         removeFromWishlist = {
@@ -167,8 +172,13 @@ fun BackDrop(
                                 Text(stringResource(R.string.snack_action_text))
                             }
                         }
+                        if (userIsNull) {
+                            TextButton(onClick = onLogin) {
+                                Text(stringResource(R.string.login))
+                            }
+                        }
                     }
-                ) { SnackbarMessage(favourite) }
+                ) { SnackbarMessage(favourite, userIsNull) }
             }
         }
     )

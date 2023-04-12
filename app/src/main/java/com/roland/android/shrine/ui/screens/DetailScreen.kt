@@ -29,8 +29,10 @@ fun DetailScreen(
     itemId: Int?,
     navigateToDetail: (ItemData) -> Unit,
     sharedViewModel: SharedViewModel,
+    userIsNull: Boolean = false,
     moveToCatalogue: () -> Unit,
     proceedToCheckout: () -> Unit,
+    onLogin: () -> Unit,
     onNavigateUp: () -> Unit
 ) {
     val item = SampleItemsData.find { itemId == it.id }
@@ -45,12 +47,14 @@ fun DetailScreen(
         ItemDetail(
             item = item!!,
             viewModel = sharedViewModel,
+            userIsNull = userIsNull,
             addToCart = {
                 if (cartItems.isEmpty()) firstCartItem = it
                 sharedViewModel.addToCart(it.data)
             },
             addToWishlist = sharedViewModel::addToWishlist,
             removeFromWishlist = sharedViewModel::removeFromWishlist,
+            onLogin = onLogin,
             navigateToDetail = navigateToDetail,
             onViewWishlist = { sheetState = it },
             onNavigateUp = onNavigateUp
@@ -96,6 +100,7 @@ fun DetailScreenPreview() {
             sharedViewModel = viewModel(factory = ViewModelFactory()),
             moveToCatalogue = {},
             proceedToCheckout = {},
+            onLogin = {},
             onNavigateUp = {}
         )
     }

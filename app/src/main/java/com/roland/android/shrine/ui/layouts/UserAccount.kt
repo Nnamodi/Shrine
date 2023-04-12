@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.roland.android.shrine.R
@@ -22,9 +23,9 @@ import com.roland.android.shrine.utils.RowContainer
 
 @Composable
 fun UserDetails(
-	userFullName: String = "Nnamodi Roland",
-	userStreet: String = "No 13 Baruwa str. Agboju",
-	userVicinity: String = "Kuje-Amuwo, Lagos"
+	userFullName: String,
+	userStreet: String,
+	userVicinity: String
 ) {
 	Column(
 		modifier = Modifier
@@ -39,6 +40,7 @@ fun UserDetails(
 			Image(
 				modifier = Modifier.size(70.dp),
 				imageVector = Icons.Default.AccountCircle,
+				colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onSecondary),
 				contentDescription = stringResource(R.string.avatar_icon_desc)
 			)
 			Column {

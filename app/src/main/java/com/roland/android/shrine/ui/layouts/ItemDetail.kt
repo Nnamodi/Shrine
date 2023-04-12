@@ -48,9 +48,11 @@ import kotlin.math.max
 fun ItemDetail(
     item: ItemData,
     viewModel: SharedViewModel,
+    userIsNull: Boolean = false,
     addToCart:(FirstCartItemData) -> Unit = {},
     addToWishlist: (ItemData) -> Unit = {},
     removeFromWishlist: (ItemData) -> Unit = {},
+    onLogin: () -> Unit = {},
     navigateToDetail: (ItemData) -> Unit = {},
     onViewWishlist: (CartBottomSheetState) -> Unit = {},
     onNavigateUp: () -> Unit = {}
@@ -74,8 +76,13 @@ fun ItemDetail(
                                 Text(stringResource(R.string.snack_action_text))
                             }
                         }
+                        if (userIsNull) {
+                            TextButton(onClick = onLogin) {
+                                Text(stringResource(R.string.login))
+                            }
+                        }
                     }
-                ) { SnackbarMessage(favourite) }
+                ) { SnackbarMessage(favourite, userIsNull) }
             }
         },
         backgroundColor = MaterialTheme.colors.surface
@@ -111,9 +118,12 @@ fun ItemDetail(
                     viewModel = viewModel,
                     imageSize = imageSize,
                     position = position,
-                    addToCart = addToCart,
+                    addToCart = {
+                        if (!userIsNull) { addToCart(it) }
+                        else { scope.launch { snackbarHostState.showSnackbar("") } }
+                    },
                     addToWishlist = {
-                        addToWishlist(item); favourite = true
+                        if (!userIsNull) { addToWishlist(item); favourite = true }
                         scope.launch { snackbarHostState.showSnackbar("") }
                     },
                     removeFromWishlist = {

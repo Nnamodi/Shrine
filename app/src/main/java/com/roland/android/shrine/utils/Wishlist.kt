@@ -19,10 +19,14 @@ fun onFavoriteClicked(
 }
 
 @Composable
-fun SnackbarMessage(favourite: Boolean) {
-    return if (favourite) {
-        Text(stringResource(R.string.favorite_text))
+fun SnackbarMessage(favourite: Boolean, userIsNull: Boolean) {
+    return if (!userIsNull) {
+        if (favourite) {
+            Text(stringResource(R.string.favorite_text))
+        } else {
+            Text(stringResource(R.string.unfavorite_text))
+        }
     } else {
-        Text(stringResource(R.string.unfavorite_text))
+        Text(stringResource(R.string.login_snackbar_text))
     }
 }

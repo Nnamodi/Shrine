@@ -53,6 +53,7 @@ fun Navigation(
                         navController.navigate(Destination.LoginScreen.route)
                     } else { navController.navigate(Destination.AccountScreen.route) }
                 },
+                onLogin = { navController.navigate(Destination.LoginScreen.route) },
                 closeApp = closeApp
             )
         }
@@ -64,8 +65,10 @@ fun Navigation(
                 itemId = backStackEntry.arguments?.getInt("itemId"),
                 navigateToDetail = { navController.navigate(Destination.DetailScreen.routeWithId(it.id)) },
                 sharedViewModel = sharedViewModel,
+                userIsNull = accountViewModel.user.firstName.isEmpty(),
                 moveToCatalogue = { navController.navigate(Destination.HomeScreen.route) { popUpToRoute } },
                 proceedToCheckout = { navController.navigate(Destination.CheckoutScreen.route) },
+                onLogin = { navController.navigate(Destination.LoginScreen.route) },
                 onNavigateUp = { navController.navigateUp() }
             )
         }
@@ -92,7 +95,8 @@ fun Navigation(
                 ),
                 viewPendingDelivery = { navController.navigate(Destination.ReceiptScreen.route) },
                 orderHistory = accountViewModel.orderedItems,
-                onNavigateUp = { navController.navigateUp() }
+                onNavigateUp = { navController.navigateUp() },
+	            closeApp = closeApp
             )
         }
     }

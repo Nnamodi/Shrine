@@ -47,9 +47,11 @@ class CheckoutViewModel(
         }
         viewModelScope.launch {
             itemDao.getOrderHistory().collect {
-                val recent = date(it.last().purchaseDate)
-                latestOrder = it.filter { data ->
-                    date(data.purchaseDate) == recent
+                if (it.isNotEmpty()) {
+                    val recent = date(it.last().purchaseDate)
+                    latestOrder = it.filter { data ->
+                        date(data.purchaseDate) == recent
+                    }
                 }
             }
         }

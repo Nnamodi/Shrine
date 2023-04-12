@@ -9,6 +9,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +24,7 @@ import com.roland.android.shrine.ui.layouts.DeleteAccount
 import com.roland.android.shrine.ui.layouts.Orders
 import com.roland.android.shrine.ui.layouts.PendingDelivery
 import com.roland.android.shrine.ui.layouts.UserDetails
+import com.roland.android.shrine.ui.layouts.dialogs.ConfirmDeleteDialog
 import com.roland.android.shrine.ui.theme.ShrineTheme
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -30,8 +33,11 @@ fun AccountScreen(
 	userDetails: UserWithAddress,
 	viewPendingDelivery: () -> Unit,
 	orderHistory: List<ItemData>,
-	onNavigateUp: () -> Unit
+	onNavigateUp: () -> Unit,
+	closeApp: () -> Unit
 ) {
+	val openDialog = remember { mutableStateOf(false) }
+
 	Scaffold(
 		topBar = {
 			TopAppBar(
@@ -66,8 +72,15 @@ fun AccountScreen(
 				orderHistory = orderHistory
 			)
 
-			DeleteAccount {}
+			DeleteAccount { openDialog.value = true }
 		}
+	}
+
+	if (openDialog.value) {
+		ConfirmDeleteDialog(
+			closeApp = closeApp,
+			openDialog = { openDialog.value = it }
+		)
 	}
 }
 
@@ -84,7 +97,8 @@ fun UserDetailsPreview() {
 			userDetails = userDetails,
 			viewPendingDelivery = {},
 			orderHistory = SampleItemsData.takeLast(3),
-			onNavigateUp = {}
+			onNavigateUp = {},
+			closeApp = {}
 		)
 	}
 }
