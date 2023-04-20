@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.roland.android.shrine.data.SampleItemsData
+import com.roland.android.shrine.data.FetchData.getItem
 import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.layouts.CartBottomSheet
 import com.roland.android.shrine.ui.layouts.ItemDetail
@@ -35,7 +35,6 @@ fun DetailScreen(
     onLogin: () -> Unit,
     onNavigateUp: () -> Unit
 ) {
-    val item = SampleItemsData.find { itemId == it.id }
     var sheetState by rememberSaveable { mutableStateOf(CartBottomSheetState.Collapsed) }
     val cartItems = sharedViewModel.cartItems
     val wishlist = sharedViewModel.wishlist
@@ -45,7 +44,7 @@ fun DetailScreen(
         Modifier.fillMaxSize()
     ) {
         ItemDetail(
-            item = item!!,
+            item = getItem(itemId),
             viewModel = sharedViewModel,
             userIsNull = userIsNull,
             addToCart = {

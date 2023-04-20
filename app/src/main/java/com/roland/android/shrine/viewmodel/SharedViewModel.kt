@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 class SharedViewModel(
     private val itemDao: ItemDao
 ) : ViewModel() {
+    var searchQuery by mutableStateOf("")
     var cartItems by mutableStateOf<List<ItemData>>(emptyList()); private set
     var wishlist by mutableStateOf<List<ItemData>>(emptyList()); private set
     var cartIsLoaded by mutableStateOf(false); private set

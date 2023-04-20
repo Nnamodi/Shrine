@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.R
+import com.roland.android.shrine.data.FetchData.getMoreItemsFromVendor
+import com.roland.android.shrine.data.FetchData.getSimilarItems
 import com.roland.android.shrine.data.SampleItemsData
 import com.roland.android.shrine.data.getVendorResId
 import com.roland.android.shrine.data.model.ItemData
@@ -136,10 +138,13 @@ fun ItemDetail(
                 viewModel = viewModel,
                 header = stringResource(R.string.items_from_vendor, item.vendor.name),
                 bottomPadding = 20.dp,
-                otherItems = SampleItemsData.filter { it.vendor == item.vendor && it != item },
-                addToCart = addToCart,
+                otherItems = getMoreItemsFromVendor(item),
+                addToCart = {
+                    if (!userIsNull) { addToWishlist(it.data); favourite = true }
+                    scope.launch { snackbarHostState.showSnackbar("") }
+                },
                 addToWishlist = {
-                    addToWishlist(it); favourite = true
+                    if (!userIsNull) { addToWishlist(it); favourite = true }
                     scope.launch { snackbarHostState.showSnackbar("") }
                 },
                 removeFromWishlist = {
@@ -152,10 +157,13 @@ fun ItemDetail(
                 viewModel = viewModel,
                 header = stringResource(R.string.might_like),
                 bottomPadding = 60.dp,
-                otherItems = SampleItemsData.filter { it.category == item.category && it != item },
-                addToCart = addToCart,
+                otherItems = getSimilarItems(item),
+                addToCart = {
+                    if (!userIsNull) { addToWishlist(it.data); favourite = true }
+                    scope.launch { snackbarHostState.showSnackbar("") }
+                },
                 addToWishlist = {
-                    addToWishlist(it); favourite = true
+                    if (!userIsNull) { addToWishlist(it); favourite = true }
                     scope.launch { snackbarHostState.showSnackbar("") }
                 },
                 removeFromWishlist = {

@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.Category
-import com.roland.android.shrine.data.SampleItemsData
+import com.roland.android.shrine.data.FetchData.getItems
 import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
@@ -123,9 +123,7 @@ fun BackDrop(
                     Catalogue(
                         viewModel = viewModel,
                         modifier = Modifier.fillMaxSize(),
-                        items = SampleItemsData.filter {
-                            menuSelection == Category.All || it.category == menuSelection
-                        },
+                        items = getItems(menuSelection),
                         addToCart = {
                             if (!userIsNull) { addToCart(it) }
                             else { scope.launch { snackbarHostState.showSnackbar("") } }

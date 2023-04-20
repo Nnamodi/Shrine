@@ -66,7 +66,11 @@ fun Navigation(
                 navigateToDetail = { navController.navigate(Destination.DetailScreen.routeWithId(it.id)) },
                 sharedViewModel = sharedViewModel,
                 userIsNull = accountViewModel.user.firstName.isEmpty(),
-                moveToCatalogue = { navController.navigate(Destination.HomeScreen.route) { popUpToRoute } },
+                moveToCatalogue = {
+                    navController.apply {
+                        while (currentDestination?.route != Destination.HomeScreen.route) { navigateUp() }
+                    }
+                },
                 proceedToCheckout = { navController.navigate(Destination.CheckoutScreen.route) },
                 onLogin = { navController.navigate(Destination.LoginScreen.route) },
                 onNavigateUp = { navController.navigateUp() }
