@@ -15,6 +15,13 @@ object FetchData {
 		}!!
 	}
 
+	fun searchForItem(query: String): List<ItemData> {
+		return SampleItemsData.filter {
+			it.title.contains(query) ||
+					it.vendor.name.contains(query)
+		}
+	}
+
 	fun getMoreItemsFromVendor(item: ItemData): List<ItemData> {
 		return SampleItemsData.filter {
 			it.vendor == item.vendor &&

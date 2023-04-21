@@ -41,6 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roland.android.shrine.R
 import com.roland.android.shrine.data.Category
 import com.roland.android.shrine.data.FetchData.getItems
+import com.roland.android.shrine.data.FetchData.searchForItem
 import com.roland.android.shrine.data.model.ItemData
 import com.roland.android.shrine.ui.screens.CartBottomSheetState
 import com.roland.android.shrine.ui.theme.ShrineTheme
@@ -69,6 +70,7 @@ fun BackDrop(
     val context = LocalContext.current.applicationContext
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val searchQuery = viewModel.searchQuery
     var favourite by remember { mutableStateOf(false) }
     var menuSelection by rememberSaveable { mutableStateOf(Category.All) }
     val scaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
@@ -78,6 +80,8 @@ fun BackDrop(
         appBar = {
             TopAppBar(
                 backdropRevealed = backdropRevealed,
+                searchQuery = searchQuery,
+                editSearchQuery = { viewModel.searchQuery = it },
                 onBackdropReveal = {
                     if (!scaffoldState.isAnimationRunning) {
                         backdropRevealed = it
@@ -105,6 +109,7 @@ fun BackDrop(
                 backdropRevealed = backdropRevealed,
                 modifier = Modifier.padding(top = 12.dp, bottom = 32.dp),
                 onMenuItemSelect = {
+                    viewModel.searchQuery = ""
                     onMenuPressed()
                     menuSelection = it
                 },
@@ -123,7 +128,7 @@ fun BackDrop(
                     Catalogue(
                         viewModel = viewModel,
                         modifier = Modifier.fillMaxSize(),
-                        items = getItems(menuSelection),
+                        items = if (searchQuery.isEmpty()) { getItems(menuSelection) } else { searchForItem(searchQuery) },
                         addToCart = {
                             if (!userIsNull) { addToCart(it) }
                             else { scope.launch { snackbarHostState.showSnackbar("") } }
@@ -187,6 +192,8 @@ fun BackDrop(
 @Composable
 private fun TopAppBar(
     backdropRevealed: Boolean,
+    searchQuery: String,
+    editSearchQuery: (String) -> Unit,
     onBackdropReveal: (Boolean) -> Unit = {}
 ) {
     TopAppBar(
@@ -263,7 +270,7 @@ private fun TopAppBar(
                 },
                 contentAlignment = Alignment.CenterStart
             ) { revealed ->
-                if (revealed) MenuSearchField() else TopAppBarText()
+                if (revealed) MenuSearchField(searchQuery, editSearchQuery) else TopAppBarText()
             }
         },
         actions = {
@@ -299,8 +306,11 @@ private fun TopAppBarText(
 }
 
 @Composable
-fun MenuSearchField() {
-    var searchText by remember { mutableStateOf("") }
+fun MenuSearchField(
+    searchQuery: String,
+    editSearchQuery: (String) -> Unit,
+) {
+    val searchText = rememberSaveable { mutableStateOf(searchQuery) }
     Box(
         modifier = Modifier
             .height(56.dp)
@@ -308,8 +318,8 @@ fun MenuSearchField() {
         contentAlignment = Alignment.CenterStart
     ) {
         BasicTextField(
-            value = searchText,
-            onValueChange = { searchText = it },
+            value = searchText.value,
+            onValueChange = { searchText.value = it; editSearchQuery(searchText.value) },
             singleLine = true,
             decorationBox = { innerTextField ->
                 Row(
@@ -320,7 +330,7 @@ fun MenuSearchField() {
                 ) { innerTextField() }
             }
         )
-        if (searchText.isEmpty()) {
+        if (searchText.value.isEmpty()) {
             TopAppBarText(
                 modifier = Modifier.alpha(ContentAlpha.disabled),
                 text = stringResource(R.string.search_text)
