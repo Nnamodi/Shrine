@@ -124,8 +124,8 @@ fun CollapsedCart(
         }
     Row(
         modifier = Modifier
-            .padding(start = 24.dp, top = 8.dp, end = 16.dp, bottom = 8.dp)
-            .clickable { onTap() },
+            .clickable { onTap() }
+            .padding(start = 24.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
