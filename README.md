@@ -6,9 +6,9 @@
   ## Screenshots
 |Launch screen with Shrine logo|Dummy Login screen|Shrine catalogue shown using weaved image list|Expanding bottom sheet for shopping cart and wishlist|
 |:---:|:---:|:---:|:---:|
-|![Launch screen](screenshots/launch_screen)|![Login screen](screenshots/login_screen)|![Catalogue screen](screenshots/catalogue_screen)|![Custom bottomsheet](screenshots/custom_bottomsheet)|
+|![Launch screen](screenshots/launch_screen.png)|![Login screen](screenshots/login_screen.png)|![Catalogue screen](screenshots/catalogue_screen.png)|![Custom bottomsheet](screenshots/custom_bottomsheet.png)|
 |Item Detail screen|Checkout screen|Customized navigation drawer in backdrop|User Account screen|
-|![Detail screen](screenshots/detail_screen)|![Checkout screen](screenshots/checkout_screen)|![Backdrop](screenshots/backdrop)|![Account screen](screenshots/account_screen)|
+|![Detail screen](screenshots/detail_screen.png)|![Checkout screen](screenshots/checkout_screen.png)|![Backdrop](screenshots/backdrop.png)|![Account screen](screenshots/account_screen.png)|
 
 [more screenshots](screenshots)
 
